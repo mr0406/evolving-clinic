@@ -57,3 +57,8 @@ Some might call this approach naive, but I disagree. Domain evolution is no less
 Everyone knows something about clinics - patients, appointments, basic concepts. But I've never worked in this industry, which means I won't overthink the domain.
 
 Perfect for discovering patterns as we go, not predicting them upfront.
+
+## 📝 License
+
+Licensed under the [MIT License](LICENSE).  
+You are free to use, modify, and distribute this software. Attribution is appreciated.
