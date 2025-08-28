@@ -1,0 +1,13 @@
+.idea
+.vs/
+/*.suo
+**/bin
+**/**/bin
+**/obj
+**/**/obj
+**/*.csproj.user
+*.user
+/output
+/var
+.env
+.DS_Store
