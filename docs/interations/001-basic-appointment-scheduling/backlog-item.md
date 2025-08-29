@@ -1,4 +1,4 @@
-# Backlog Item: Basic Appointment Scheduling
+# Basic Appointment Scheduling
 
 ## Background Story
 
