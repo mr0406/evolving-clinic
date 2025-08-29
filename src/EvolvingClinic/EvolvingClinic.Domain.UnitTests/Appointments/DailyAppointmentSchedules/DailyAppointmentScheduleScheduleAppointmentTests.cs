@@ -1,5 +1,5 @@
 using EvolvingClinic.Domain.Appointments;
-using FluentAssertions;
+using Shouldly;
 using NUnit.Framework;
 
 namespace EvolvingClinic.Domain.UnitTests.Appointments.DailyAppointmentSchedules;
@@ -26,17 +26,17 @@ public class DailyAppointmentScheduleScheduleAppointmentTests
 
         // Then
         var snapshot = schedule.CreateSnapshot();
-        snapshot.Appointments.Should().HaveCount(2);
+        snapshot.Appointments.Count.ShouldBe(2);
 
         var firstAppointmentSnapshot = snapshot.Appointments.First(a => a.Id == firstAppointment.Id);
-        firstAppointmentSnapshot.PatientName.Should().Be(firstPatient);
-        firstAppointmentSnapshot.StartTime.Should().Be(firstTimeSlot.StartDateTime);
-        firstAppointmentSnapshot.EndTime.Should().Be(firstTimeSlot.EndDateTime);
+        firstAppointmentSnapshot.PatientName.ShouldBe(firstPatient);
+        firstAppointmentSnapshot.StartTime.ShouldBe(firstTimeSlot.StartDateTime);
+        firstAppointmentSnapshot.EndTime.ShouldBe(firstTimeSlot.EndDateTime);
 
         var secondAppointmentSnapshot = snapshot.Appointments.First(a => a.Id == secondAppointment.Id);
-        secondAppointmentSnapshot.PatientName.Should().Be(secondPatient);
-        secondAppointmentSnapshot.StartTime.Should().Be(secondTimeSlot.StartDateTime);
-        secondAppointmentSnapshot.EndTime.Should().Be(secondTimeSlot.EndDateTime);
+        secondAppointmentSnapshot.PatientName.ShouldBe(secondPatient);
+        secondAppointmentSnapshot.StartTime.ShouldBe(secondTimeSlot.StartDateTime);
+        secondAppointmentSnapshot.EndTime.ShouldBe(secondTimeSlot.EndDateTime);
     }
     
     [Test]
@@ -52,17 +52,17 @@ public class DailyAppointmentScheduleScheduleAppointmentTests
         var appointment = schedule.ScheduleAppointment(patientName, timeSlot);
 
         // Then
-        appointment.Should().NotBeNull();
-        appointment.Id.Should().NotBe(Guid.Empty);
+        appointment.ShouldNotBeNull();
+        appointment.Id.ShouldNotBe(Guid.Empty);
 
         var snapshot = schedule.CreateSnapshot();
-        snapshot.Appointments.Should().HaveCount(1);
+        snapshot.Appointments.Count.ShouldBe(1);
         
         var appointmentSnapshot = snapshot.Appointments.First();
-        appointmentSnapshot.Id.Should().Be(appointment.Id);
-        appointmentSnapshot.PatientName.Should().Be(patientName);
-        appointmentSnapshot.StartTime.Should().Be(timeSlot.StartDateTime);
-        appointmentSnapshot.EndTime.Should().Be(timeSlot.EndDateTime);
+        appointmentSnapshot.Id.ShouldBe(appointment.Id);
+        appointmentSnapshot.PatientName.ShouldBe(patientName);
+        appointmentSnapshot.StartTime.ShouldBe(timeSlot.StartDateTime);
+        appointmentSnapshot.EndTime.ShouldBe(timeSlot.EndDateTime);
     }
 
     [Test]
@@ -80,9 +80,9 @@ public class DailyAppointmentScheduleScheduleAppointmentTests
             schedule.ScheduleAppointment(patientName, timeSlot));
         
         // Then
-        exception!.Message.Should().Be("Appointment must be scheduled for the same date as the schedule");
+        exception!.Message.ShouldBe("Appointment must be scheduled for the same date as the schedule");
 
         var snapshot = schedule.CreateSnapshot();
-        snapshot.Appointments.Should().BeEmpty();
+        snapshot.Appointments.ShouldBeEmpty();
     }
 }

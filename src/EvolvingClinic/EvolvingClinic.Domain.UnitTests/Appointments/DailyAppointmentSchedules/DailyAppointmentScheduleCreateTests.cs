@@ -1,5 +1,5 @@
 using EvolvingClinic.Domain.Appointments;
-using FluentAssertions;
+using Shouldly;
 using NUnit.Framework;
 
 namespace EvolvingClinic.Domain.UnitTests.Appointments.DailyAppointmentSchedules;
@@ -17,8 +17,8 @@ public class DailyAppointmentScheduleCreateTests
         var schedule = new DailyAppointmentSchedule(scheduleDate);
 
         // Then
-        schedule.Should().NotBeNull();
-        schedule.Date.Should().Be(scheduleDate);
+        schedule.ShouldNotBeNull();
+        schedule.Date.ShouldBe(scheduleDate);
     }
 
     [Test]
@@ -32,8 +32,8 @@ public class DailyAppointmentScheduleCreateTests
 
         // Then
         var snapshot = schedule.CreateSnapshot();
-        snapshot.Date.Should().Be(scheduleDate);
-        snapshot.Appointments.Should().BeEmpty();
+        snapshot.Date.ShouldBe(scheduleDate);
+        snapshot.Appointments.ShouldBeEmpty();
     }
 
     [Test]
@@ -50,21 +50,21 @@ public class DailyAppointmentScheduleCreateTests
         var thirdSchedule = new DailyAppointmentSchedule(thirdDate);
 
         // Then
-        firstSchedule.Date.Should().Be(firstDate);
-        secondSchedule.Date.Should().Be(secondDate);
-        thirdSchedule.Date.Should().Be(thirdDate);
+        firstSchedule.Date.ShouldBe(firstDate);
+        secondSchedule.Date.ShouldBe(secondDate);
+        thirdSchedule.Date.ShouldBe(thirdDate);
 
         var firstSnapshot = firstSchedule.CreateSnapshot();
         var secondSnapshot = secondSchedule.CreateSnapshot();
         var thirdSnapshot = thirdSchedule.CreateSnapshot();
 
-        firstSnapshot.Date.Should().Be(firstDate);
-        secondSnapshot.Date.Should().Be(secondDate);
-        thirdSnapshot.Date.Should().Be(thirdDate);
+        firstSnapshot.Date.ShouldBe(firstDate);
+        secondSnapshot.Date.ShouldBe(secondDate);
+        thirdSnapshot.Date.ShouldBe(thirdDate);
 
-        firstSnapshot.Appointments.Should().BeEmpty();
-        secondSnapshot.Appointments.Should().BeEmpty();
-        thirdSnapshot.Appointments.Should().BeEmpty();
+        firstSnapshot.Appointments.ShouldBeEmpty();
+        secondSnapshot.Appointments.ShouldBeEmpty();
+        thirdSnapshot.Appointments.ShouldBeEmpty();
     }
 
     [Test]
@@ -77,10 +77,10 @@ public class DailyAppointmentScheduleCreateTests
         var schedule = new DailyAppointmentSchedule(leapYearDate);
 
         // Then
-        schedule.Date.Should().Be(leapYearDate);
+        schedule.Date.ShouldBe(leapYearDate);
         var snapshot = schedule.CreateSnapshot();
-        snapshot.Date.Should().Be(leapYearDate);
-        snapshot.Appointments.Should().BeEmpty();
+        snapshot.Date.ShouldBe(leapYearDate);
+        snapshot.Appointments.ShouldBeEmpty();
     }
 
     [Test]
@@ -93,10 +93,10 @@ public class DailyAppointmentScheduleCreateTests
         var schedule = new DailyAppointmentSchedule(minimumDate);
 
         // Then
-        schedule.Date.Should().Be(minimumDate);
+        schedule.Date.ShouldBe(minimumDate);
         var snapshot = schedule.CreateSnapshot();
-        snapshot.Date.Should().Be(minimumDate);
-        snapshot.Appointments.Should().BeEmpty();
+        snapshot.Date.ShouldBe(minimumDate);
+        snapshot.Appointments.ShouldBeEmpty();
     }
 
     [Test]
@@ -109,9 +109,9 @@ public class DailyAppointmentScheduleCreateTests
         var schedule = new DailyAppointmentSchedule(maximumDate);
 
         // Then
-        schedule.Date.Should().Be(maximumDate);
+        schedule.Date.ShouldBe(maximumDate);
         var snapshot = schedule.CreateSnapshot();
-        snapshot.Date.Should().Be(maximumDate);
-        snapshot.Appointments.Should().BeEmpty();
+        snapshot.Date.ShouldBe(maximumDate);
+        snapshot.Appointments.ShouldBeEmpty();
     }
 }

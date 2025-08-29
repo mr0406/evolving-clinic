@@ -1,5 +1,5 @@
 using EvolvingClinic.Domain.Appointments;
-using FluentAssertions;
+using Shouldly;
 using NUnit.Framework;
 
 namespace EvolvingClinic.Domain.UnitTests.Appointments.DailyAppointmentSchedules;
@@ -24,10 +24,10 @@ public class DailyAppointmentScheduleCollisionTests
             schedule.ScheduleAppointment("Anna Nowak", overlappingTimeSlot));
         
         // Then
-        exception!.Message.Should().Be("Appointment time slot conflicts with existing appointment");
+        exception!.Message.ShouldBe("Appointment time slot conflicts with existing appointment");
 
         var snapshot = schedule.CreateSnapshot();
-        snapshot.Appointments.Should().HaveCount(1);
+        snapshot.Appointments.Count.ShouldBe(1);
     }
 
     [Test]
@@ -45,10 +45,10 @@ public class DailyAppointmentScheduleCollisionTests
             schedule.ScheduleAppointment("Anna Nowak", sameTimeSlot));
         
         // Then
-        exception!.Message.Should().Be("Appointment time slot conflicts with existing appointment");
+        exception!.Message.ShouldBe("Appointment time slot conflicts with existing appointment");
 
         var snapshot = schedule.CreateSnapshot();
-        snapshot.Appointments.Should().HaveCount(1);
+        snapshot.Appointments.Count.ShouldBe(1);
     }
 
     [Test]
@@ -66,10 +66,10 @@ public class DailyAppointmentScheduleCollisionTests
             schedule.ScheduleAppointment("Anna Nowak", overlappingTimeSlot));
         
         // Then
-        exception!.Message.Should().Be("Appointment time slot conflicts with existing appointment");
+        exception!.Message.ShouldBe("Appointment time slot conflicts with existing appointment");
 
         var snapshot = schedule.CreateSnapshot();
-        snapshot.Appointments.Should().HaveCount(1);
+        snapshot.Appointments.Count.ShouldBe(1);
     }
 
     [Test]
@@ -87,10 +87,10 @@ public class DailyAppointmentScheduleCollisionTests
             schedule.ScheduleAppointment("Anna Nowak", overlappingTimeSlot));
         
         // Then
-        exception!.Message.Should().Be("Appointment time slot conflicts with existing appointment");
+        exception!.Message.ShouldBe("Appointment time slot conflicts with existing appointment");
 
         var snapshot = schedule.CreateSnapshot();
-        snapshot.Appointments.Should().HaveCount(1);
+        snapshot.Appointments.Count.ShouldBe(1);
     }
 
     [Test]
@@ -108,10 +108,10 @@ public class DailyAppointmentScheduleCollisionTests
             schedule.ScheduleAppointment("Anna Nowak", enclosingTimeSlot));
         
         // Then
-        exception!.Message.Should().Be("Appointment time slot conflicts with existing appointment");
+        exception!.Message.ShouldBe("Appointment time slot conflicts with existing appointment");
 
         var snapshot = schedule.CreateSnapshot();
-        snapshot.Appointments.Should().HaveCount(1);
+        snapshot.Appointments.Count.ShouldBe(1);
     }
 
     [Test]
@@ -129,15 +129,15 @@ public class DailyAppointmentScheduleCollisionTests
 
         // Then
         var snapshot = schedule.CreateSnapshot();
-        snapshot.Appointments.Should().HaveCount(2);
+        snapshot.Appointments.Count.ShouldBe(2);
         
         var firstSnapshot = snapshot.Appointments.First(a => a.Id == firstAppointment.Id);
-        firstSnapshot.StartTime.Should().Be(firstTimeSlot.StartDateTime);
-        firstSnapshot.EndTime.Should().Be(firstTimeSlot.EndDateTime);
+        firstSnapshot.StartTime.ShouldBe(firstTimeSlot.StartDateTime);
+        firstSnapshot.EndTime.ShouldBe(firstTimeSlot.EndDateTime);
         
         var secondSnapshot = snapshot.Appointments.First(a => a.Id == secondAppointment.Id);
-        secondSnapshot.StartTime.Should().Be(adjacentTimeSlot.StartDateTime);
-        secondSnapshot.EndTime.Should().Be(adjacentTimeSlot.EndDateTime);
+        secondSnapshot.StartTime.ShouldBe(adjacentTimeSlot.StartDateTime);
+        secondSnapshot.EndTime.ShouldBe(adjacentTimeSlot.EndDateTime);
     }
 
     [Test]
@@ -155,15 +155,15 @@ public class DailyAppointmentScheduleCollisionTests
 
         // Then
         var snapshot = schedule.CreateSnapshot();
-        snapshot.Appointments.Should().HaveCount(2);
+        snapshot.Appointments.Count.ShouldBe(2);
         
         var firstSnapshot = snapshot.Appointments.First(a => a.Id == firstAppointment.Id);
-        firstSnapshot.StartTime.Should().Be(firstTimeSlot.StartDateTime);
-        firstSnapshot.EndTime.Should().Be(firstTimeSlot.EndDateTime);
+        firstSnapshot.StartTime.ShouldBe(firstTimeSlot.StartDateTime);
+        firstSnapshot.EndTime.ShouldBe(firstTimeSlot.EndDateTime);
         
         var secondSnapshot = snapshot.Appointments.First(a => a.Id == secondAppointment.Id);
-        secondSnapshot.StartTime.Should().Be(adjacentTimeSlot.StartDateTime);
-        secondSnapshot.EndTime.Should().Be(adjacentTimeSlot.EndDateTime);
+        secondSnapshot.StartTime.ShouldBe(adjacentTimeSlot.StartDateTime);
+        secondSnapshot.EndTime.ShouldBe(adjacentTimeSlot.EndDateTime);
     }
 
     [Test]
@@ -185,9 +185,9 @@ public class DailyAppointmentScheduleCollisionTests
             schedule.ScheduleAppointment("Piotr Nowak", conflictingTimeSlot));
         
         // Then
-        exception!.Message.Should().Be("Appointment time slot conflicts with existing appointment");
+        exception!.Message.ShouldBe("Appointment time slot conflicts with existing appointment");
 
         var snapshot = schedule.CreateSnapshot();
-        snapshot.Appointments.Should().HaveCount(2);
+        snapshot.Appointments.Count.ShouldBe(2);
     }
 }

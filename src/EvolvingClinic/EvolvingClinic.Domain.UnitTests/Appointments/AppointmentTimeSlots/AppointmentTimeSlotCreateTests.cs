@@ -1,8 +1,8 @@
 using EvolvingClinic.Domain.Appointments;
-using FluentAssertions;
+using Shouldly;
 using NUnit.Framework;
 
-namespace EvolvingClinic.Domain.UnitTests.Appointments.AppoitmentTimeSlots;
+namespace EvolvingClinic.Domain.UnitTests.Appointments.AppointmentTimeSlots;
 
 [TestFixture]
 public class AppointmentTimeSlotCreateTests
@@ -19,12 +19,12 @@ public class AppointmentTimeSlotCreateTests
         var timeSlot = new AppointmentTimeSlot(date, startTime, endTime);
 
         // Then
-        timeSlot.Date.Should().Be(date);
-        timeSlot.StartTime.Should().Be(startTime);
-        timeSlot.EndTime.Should().Be(endTime);
-        timeSlot.Duration.Should().Be(TimeSpan.FromHours(1));
-        timeSlot.StartDateTime.Should().Be(date.ToDateTime(startTime));
-        timeSlot.EndDateTime.Should().Be(date.ToDateTime(endTime));
+        timeSlot.Date.ShouldBe(date);
+        timeSlot.StartTime.ShouldBe(startTime);
+        timeSlot.EndTime.ShouldBe(endTime);
+        timeSlot.Duration.ShouldBe(TimeSpan.FromHours(1));
+        timeSlot.StartDateTime.ShouldBe(date.ToDateTime(startTime));
+        timeSlot.EndDateTime.ShouldBe(date.ToDateTime(endTime));
     }
 
     [Test]
@@ -39,7 +39,7 @@ public class AppointmentTimeSlotCreateTests
         var timeSlot = new AppointmentTimeSlot(date, startTime, endTime);
 
         // Then
-        timeSlot.Duration.Should().Be(TimeSpan.FromMinutes(15));
+        timeSlot.Duration.ShouldBe(TimeSpan.FromMinutes(15));
     }
 
     [Test]
@@ -55,7 +55,7 @@ public class AppointmentTimeSlotCreateTests
             new AppointmentTimeSlot(date, startTime, endTime));
         
         // Then
-        exception!.Message.Should().Be("Start time must be before end time");
+        exception!.Message.ShouldBe("Start time must be before end time");
     }
 
     [Test]
@@ -70,7 +70,7 @@ public class AppointmentTimeSlotCreateTests
             new AppointmentTimeSlot(date, sameTime, sameTime));
         
         // Then
-        exception!.Message.Should().Be("Start time must be before end time");
+        exception!.Message.ShouldBe("Start time must be before end time");
     }
 
     [Test]
@@ -86,6 +86,6 @@ public class AppointmentTimeSlotCreateTests
             new AppointmentTimeSlot(date, startTime, endTime));
         
         // Then
-        exception!.Message.Should().Be("Appointment must be at least 15 minutes long");
+        exception!.Message.ShouldBe("Appointment must be at least 15 minutes long");
     }
 }

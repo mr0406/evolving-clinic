@@ -1,8 +1,8 @@
 using EvolvingClinic.Domain.Appointments;
-using FluentAssertions;
+using Shouldly;
 using NUnit.Framework;
 
-namespace EvolvingClinic.Domain.UnitTests.Appointments.AppoitmentTimeSlots;
+namespace EvolvingClinic.Domain.UnitTests.Appointments.AppointmentTimeSlots;
 
 [TestFixture]
 public class AppointmentTimeSlotOverlapsWithTests
@@ -20,7 +20,7 @@ public class AppointmentTimeSlotOverlapsWithTests
         var overlaps = firstTimeSlot.OverlapsWith(secondTimeSlot);
 
         // Then
-        overlaps.Should().BeFalse();
+        overlaps.ShouldBeFalse();
     }
 
     [Test]
@@ -34,7 +34,7 @@ public class AppointmentTimeSlotOverlapsWithTests
         var overlaps = firstTimeSlot.OverlapsWith(secondTimeSlot);
 
         // Then
-        overlaps.Should().BeFalse();
+        overlaps.ShouldBeFalse();
     }
 
     [Test]
@@ -48,7 +48,7 @@ public class AppointmentTimeSlotOverlapsWithTests
         var overlaps = firstTimeSlot.OverlapsWith(secondTimeSlot);
 
         // Then
-        overlaps.Should().BeTrue();
+        overlaps.ShouldBeTrue();
     }
 
     [Test]
@@ -62,7 +62,7 @@ public class AppointmentTimeSlotOverlapsWithTests
         var overlaps = firstTimeSlot.OverlapsWith(secondTimeSlot);
 
         // Then
-        overlaps.Should().BeTrue();
+        overlaps.ShouldBeTrue();
     }
 
     [Test]
@@ -76,7 +76,7 @@ public class AppointmentTimeSlotOverlapsWithTests
         var overlaps = firstTimeSlot.OverlapsWith(secondTimeSlot);
 
         // Then
-        overlaps.Should().BeTrue();
+        overlaps.ShouldBeTrue();
     }
 
     [Test]
@@ -90,7 +90,7 @@ public class AppointmentTimeSlotOverlapsWithTests
         var overlaps = firstTimeSlot.OverlapsWith(secondTimeSlot);
 
         // Then
-        overlaps.Should().BeTrue();
+        overlaps.ShouldBeTrue();
     }
 
     [Test]
@@ -104,7 +104,7 @@ public class AppointmentTimeSlotOverlapsWithTests
         var overlaps = firstTimeSlot.OverlapsWith(secondTimeSlot);
 
         // Then
-        overlaps.Should().BeTrue();
+        overlaps.ShouldBeTrue();
     }
 
     [Test]
@@ -118,7 +118,7 @@ public class AppointmentTimeSlotOverlapsWithTests
         var overlaps = firstTimeSlot.OverlapsWith(secondTimeSlot);
 
         // Then
-        overlaps.Should().BeTrue();
+        overlaps.ShouldBeTrue();
     }
 
     [Test]
@@ -134,7 +134,7 @@ public class AppointmentTimeSlotOverlapsWithTests
         var overlaps = firstTimeSlot.OverlapsWith(secondTimeSlot);
 
         // Then
-        overlaps.Should().BeFalse();
+        overlaps.ShouldBeFalse();
     }
 
     [Test]
@@ -150,6 +150,6 @@ public class AppointmentTimeSlotOverlapsWithTests
         var overlaps = firstTimeSlot.OverlapsWith(secondTimeSlot);
 
         // Then
-        overlaps.Should().BeFalse();
+        overlaps.ShouldBeFalse();
     }
 }

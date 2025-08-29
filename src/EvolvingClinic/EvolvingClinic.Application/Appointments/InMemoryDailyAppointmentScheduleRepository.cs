@@ -1,4 +1,3 @@
-using EvolvingClinic.Domain;
 using EvolvingClinic.Domain.Appointments;
 
 namespace EvolvingClinic.Application.Appointments;
