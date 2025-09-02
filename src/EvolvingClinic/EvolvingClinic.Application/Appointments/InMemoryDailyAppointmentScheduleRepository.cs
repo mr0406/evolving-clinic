@@ -6,14 +6,9 @@ public class InMemoryDailyAppointmentScheduleRepository : IDailyAppointmentSched
 {
     private static List<DailyAppointmentSchedule> _schedules = new();
 
-    public Task<DailyAppointmentSchedule> Get(DateOnly date)
+    public Task<DailyAppointmentSchedule?> GetOptional(DateOnly date)
     {
         var schedule = _schedules.FirstOrDefault(s => s.Date == date);
-        
-        if (schedule is null)
-        {
-            return Task.FromResult(new DailyAppointmentSchedule(date));
-        }
 
         return Task.FromResult(schedule);
     }

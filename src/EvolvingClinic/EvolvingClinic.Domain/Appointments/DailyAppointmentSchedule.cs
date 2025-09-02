@@ -13,12 +13,12 @@ public class DailyAppointmentSchedule
 
     public ScheduledAppointment ScheduleAppointment(
         string patientName,
-        AppointmentTimeSlot timeSlot)
+        TimeOnly startTime,
+        TimeOnly endTime)
     {
-        if (timeSlot.Date != Date)
-        {
-            throw new ArgumentException("Appointment must be scheduled for the same date as the schedule");
-        }
+        var timeSlot = new AppointmentTimeSlot(Date, startTime, endTime);
+
+        ValidateBusinessHours(timeSlot);
 
         if (_appointments.Any(existing => existing.HasCollisionWith(timeSlot)))
         {
@@ -31,6 +31,22 @@ public class DailyAppointmentSchedule
         return appointment;
     }
 
+    private static void ValidateBusinessHours(AppointmentTimeSlot timeSlot)
+    {
+        var dayOfWeek = timeSlot.Date.DayOfWeek;
+        if (dayOfWeek == DayOfWeek.Saturday || dayOfWeek == DayOfWeek.Sunday)
+        {
+            throw new ArgumentException("Appointments can only be scheduled Monday through Friday");
+        }
+
+        var businessStart = new TimeOnly(9, 0);
+        var businessEnd = new TimeOnly(17, 0);
+
+        if (timeSlot.StartTime < businessStart || timeSlot.EndTime > businessEnd)
+        {
+            throw new ArgumentException("Appointments can only be scheduled between 9:00 AM and 5:00 PM");
+        }
+    }
     
     public Snapshot CreateSnapshot()
     {

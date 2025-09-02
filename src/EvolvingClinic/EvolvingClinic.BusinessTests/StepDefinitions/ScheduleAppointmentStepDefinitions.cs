@@ -75,6 +75,12 @@ public sealed class ScheduleAppointmentStepDefinitions
     {
         _scenarioAppointmentId.ShouldBeNull();
     }
+
+    [Then("there should be no appointments in the schedule")]
+    public async Task ThenThereShouldBeNoAppointmentsInTheSchedule()
+    {
+        await ThenThereShouldBeAppointmentsInTheSchedule(0);
+    }
     
     private async Task<Guid?> ScheduleAppointment(
         DateOnly date,
