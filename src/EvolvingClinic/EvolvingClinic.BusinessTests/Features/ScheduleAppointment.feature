@@ -24,9 +24,19 @@ Scenario: Cannot schedule overlapping appointment
 Scenario: Cannot schedule appointment with less than 15 minutes duration
 	When I schedule an appointment for "John Smith" on "2024-01-15" from "10:00" to "10:10"
 	Then the appointment should fail to be scheduled
-	And there should be 0 appointments in the schedule
+	And there should be no appointments in the schedule
 
 Scenario: Cannot schedule appointment with invalid time range
 	When I schedule an appointment for "John Smith" on "2024-01-15" from "11:00" to "10:00"
 	Then the appointment should fail to be scheduled
-	And there should be 0 appointments in the schedule
+	And there should be no appointments in the schedule
+
+Scenario: Cannot schedule appointment on weekend
+	When I schedule an appointment for "John Smith" on "2024-01-13" from "10:00" to "11:00"
+	Then the appointment should fail to be scheduled
+	And there should be no appointments in the schedule
+
+Scenario: Cannot schedule appointment outside business hours
+	When I schedule an appointment for "John Smith" on "2024-01-15" from "08:30" to "09:30"
+	Then the appointment should fail to be scheduled
+	And there should be no appointments in the schedule

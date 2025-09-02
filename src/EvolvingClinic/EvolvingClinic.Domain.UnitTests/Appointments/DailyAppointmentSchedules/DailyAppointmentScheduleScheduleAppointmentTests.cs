@@ -15,14 +15,12 @@ public class DailyAppointmentScheduleScheduleAppointmentTests
         var schedule = new DailyAppointmentSchedule(scheduleDate);
 
         var firstPatient = "Jan Kowalski";
-        var firstTimeSlot = new AppointmentTimeSlot(scheduleDate, new TimeOnly(9, 0), new TimeOnly(10, 0));
-        var firstAppointment = schedule.ScheduleAppointment(firstPatient, firstTimeSlot);
+        var firstAppointment = schedule.ScheduleAppointment(firstPatient, new TimeOnly(9, 0), new TimeOnly(10, 0));
 
         var secondPatient = "Anna Nowak";
-        var secondTimeSlot = new AppointmentTimeSlot(scheduleDate, new TimeOnly(11, 0), new TimeOnly(12, 0));
 
         // When
-        var secondAppointment = schedule.ScheduleAppointment(secondPatient, secondTimeSlot);
+        var secondAppointment = schedule.ScheduleAppointment(secondPatient, new TimeOnly(11, 0), new TimeOnly(12, 0));
 
         // Then
         var snapshot = schedule.CreateSnapshot();
@@ -30,13 +28,13 @@ public class DailyAppointmentScheduleScheduleAppointmentTests
 
         var firstAppointmentSnapshot = snapshot.Appointments.First(a => a.Id == firstAppointment.Id);
         firstAppointmentSnapshot.PatientName.ShouldBe(firstPatient);
-        firstAppointmentSnapshot.StartTime.ShouldBe(firstTimeSlot.StartDateTime);
-        firstAppointmentSnapshot.EndTime.ShouldBe(firstTimeSlot.EndDateTime);
+        firstAppointmentSnapshot.StartTime.ShouldBe(scheduleDate.ToDateTime(new TimeOnly(9, 0)));
+        firstAppointmentSnapshot.EndTime.ShouldBe(scheduleDate.ToDateTime(new TimeOnly(10, 0)));
 
         var secondAppointmentSnapshot = snapshot.Appointments.First(a => a.Id == secondAppointment.Id);
         secondAppointmentSnapshot.PatientName.ShouldBe(secondPatient);
-        secondAppointmentSnapshot.StartTime.ShouldBe(secondTimeSlot.StartDateTime);
-        secondAppointmentSnapshot.EndTime.ShouldBe(secondTimeSlot.EndDateTime);
+        secondAppointmentSnapshot.StartTime.ShouldBe(scheduleDate.ToDateTime(new TimeOnly(11, 0)));
+        secondAppointmentSnapshot.EndTime.ShouldBe(scheduleDate.ToDateTime(new TimeOnly(12, 0)));
     }
     
     [Test]
@@ -46,10 +44,9 @@ public class DailyAppointmentScheduleScheduleAppointmentTests
         var scheduleDate = new DateOnly(2024, 1, 15);
         var schedule = new DailyAppointmentSchedule(scheduleDate);
         var patientName = "Jan Kowalski";
-        var timeSlot = new AppointmentTimeSlot(scheduleDate, new TimeOnly(10, 0), new TimeOnly(11, 0));
 
         // When
-        var appointment = schedule.ScheduleAppointment(patientName, timeSlot);
+        var appointment = schedule.ScheduleAppointment(patientName, new TimeOnly(10, 0), new TimeOnly(11, 0));
 
         // Then
         appointment.ShouldNotBeNull();
@@ -61,28 +58,7 @@ public class DailyAppointmentScheduleScheduleAppointmentTests
         var appointmentSnapshot = snapshot.Appointments.First();
         appointmentSnapshot.Id.ShouldBe(appointment.Id);
         appointmentSnapshot.PatientName.ShouldBe(patientName);
-        appointmentSnapshot.StartTime.ShouldBe(timeSlot.StartDateTime);
-        appointmentSnapshot.EndTime.ShouldBe(timeSlot.EndDateTime);
-    }
-
-    [Test]
-    public void GivenDailyAppointmentScheduleWithoutAppointments_WhenScheduleAppointmentWithDifferentDateThanSchedule_ThenThrowsArgumentException()
-    {
-        // Given
-        var scheduleDate = new DateOnly(2024, 1, 15);
-        var schedule = new DailyAppointmentSchedule(scheduleDate);
-        var patientName = "Jan Kowalski";
-        var wrongDate = new DateOnly(2024, 1, 16);
-        var timeSlot = new AppointmentTimeSlot(wrongDate, new TimeOnly(10, 0), new TimeOnly(11, 0));
-
-        // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            schedule.ScheduleAppointment(patientName, timeSlot));
-        
-        // Then
-        exception!.Message.ShouldBe("Appointment must be scheduled for the same date as the schedule");
-
-        var snapshot = schedule.CreateSnapshot();
-        snapshot.Appointments.ShouldBeEmpty();
+        appointmentSnapshot.StartTime.ShouldBe(scheduleDate.ToDateTime(new TimeOnly(10, 0)));
+        appointmentSnapshot.EndTime.ShouldBe(scheduleDate.ToDateTime(new TimeOnly(11, 0)));
     }
 }

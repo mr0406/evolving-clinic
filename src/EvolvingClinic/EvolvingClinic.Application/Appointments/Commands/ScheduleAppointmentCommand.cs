@@ -15,13 +15,13 @@ public class ScheduleAppointmentCommandHandler(IDailyAppointmentScheduleReposito
 {
     public async Task<Guid> Handle(ScheduleAppointmentCommand command)
     {
-        var schedule = await repository.Get(command.Date);
-
-        var appointmentTimeSlot = new AppointmentTimeSlot(command.Date, command.StartTime, command.EndTime);
+        var schedule = await repository.GetOptional(command.Date) 
+                       ?? new DailyAppointmentSchedule(command.Date);
         
         var appointment = schedule.ScheduleAppointment(
             command.PatientName,
-            appointmentTimeSlot);
+            command.StartTime,
+            command.EndTime);
 
         await repository.Save(schedule);
 

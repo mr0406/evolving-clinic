@@ -14,14 +14,11 @@ public class DailyAppointmentScheduleCollisionTests
     {
         // Given
         var schedule = new DailyAppointmentSchedule(_scheduleDate);
-        var firstTimeSlot = new AppointmentTimeSlot(_scheduleDate, new TimeOnly(10, 0), new TimeOnly(11, 0));
-        schedule.ScheduleAppointment("Jan Kowalski", firstTimeSlot);
+        schedule.ScheduleAppointment("Jan Kowalski", new TimeOnly(10, 0), new TimeOnly(11, 0));
         
-        var overlappingTimeSlot = new AppointmentTimeSlot(_scheduleDate, new TimeOnly(10, 30), new TimeOnly(11, 30));
-
         // When
         var exception = Assert.Throws<ArgumentException>(() => 
-            schedule.ScheduleAppointment("Anna Nowak", overlappingTimeSlot));
+            schedule.ScheduleAppointment("Anna Nowak", new TimeOnly(10, 30), new TimeOnly(11, 30)));
         
         // Then
         exception!.Message.ShouldBe("Appointment time slot conflicts with existing appointment");
@@ -35,14 +32,11 @@ public class DailyAppointmentScheduleCollisionTests
     {
         // Given
         var schedule = new DailyAppointmentSchedule(_scheduleDate);
-        var timeSlot = new AppointmentTimeSlot(_scheduleDate, new TimeOnly(10, 0), new TimeOnly(11, 0));
-        schedule.ScheduleAppointment("Jan Kowalski", timeSlot);
+        schedule.ScheduleAppointment("Jan Kowalski", new TimeOnly(10, 0), new TimeOnly(11, 0));
         
-        var sameTimeSlot = new AppointmentTimeSlot(_scheduleDate, new TimeOnly(10, 0), new TimeOnly(11, 0));
-
         // When
         var exception = Assert.Throws<ArgumentException>(() => 
-            schedule.ScheduleAppointment("Anna Nowak", sameTimeSlot));
+            schedule.ScheduleAppointment("Anna Nowak", new TimeOnly(10, 0), new TimeOnly(11, 0)));
         
         // Then
         exception!.Message.ShouldBe("Appointment time slot conflicts with existing appointment");
@@ -56,14 +50,11 @@ public class DailyAppointmentScheduleCollisionTests
     {
         // Given
         var schedule = new DailyAppointmentSchedule(_scheduleDate);
-        var firstTimeSlot = new AppointmentTimeSlot(_scheduleDate, new TimeOnly(10, 0), new TimeOnly(11, 0));
-        schedule.ScheduleAppointment("Jan Kowalski", firstTimeSlot);
+        schedule.ScheduleAppointment("Jan Kowalski", new TimeOnly(10, 0), new TimeOnly(11, 0));
         
-        var overlappingTimeSlot = new AppointmentTimeSlot(_scheduleDate, new TimeOnly(10, 45), new TimeOnly(12, 0));
-
         // When
         var exception = Assert.Throws<ArgumentException>(() => 
-            schedule.ScheduleAppointment("Anna Nowak", overlappingTimeSlot));
+            schedule.ScheduleAppointment("Anna Nowak", new TimeOnly(10, 45), new TimeOnly(12, 0)));
         
         // Then
         exception!.Message.ShouldBe("Appointment time slot conflicts with existing appointment");
@@ -77,14 +68,11 @@ public class DailyAppointmentScheduleCollisionTests
     {
         // Given
         var schedule = new DailyAppointmentSchedule(_scheduleDate);
-        var firstTimeSlot = new AppointmentTimeSlot(_scheduleDate, new TimeOnly(10, 0), new TimeOnly(11, 0));
-        schedule.ScheduleAppointment("Jan Kowalski", firstTimeSlot);
+        schedule.ScheduleAppointment("Jan Kowalski", new TimeOnly(10, 0), new TimeOnly(11, 0));
         
-        var overlappingTimeSlot = new AppointmentTimeSlot(_scheduleDate, new TimeOnly(9, 0), new TimeOnly(10, 30));
-
         // When
         var exception = Assert.Throws<ArgumentException>(() => 
-            schedule.ScheduleAppointment("Anna Nowak", overlappingTimeSlot));
+            schedule.ScheduleAppointment("Anna Nowak", new TimeOnly(9, 0), new TimeOnly(10, 30)));
         
         // Then
         exception!.Message.ShouldBe("Appointment time slot conflicts with existing appointment");
@@ -98,14 +86,11 @@ public class DailyAppointmentScheduleCollisionTests
     {
         // Given
         var schedule = new DailyAppointmentSchedule(_scheduleDate);
-        var firstTimeSlot = new AppointmentTimeSlot(_scheduleDate, new TimeOnly(10, 0), new TimeOnly(11, 0));
-        schedule.ScheduleAppointment("Jan Kowalski", firstTimeSlot);
+        schedule.ScheduleAppointment("Jan Kowalski", new TimeOnly(10, 0), new TimeOnly(11, 0));
         
-        var enclosingTimeSlot = new AppointmentTimeSlot(_scheduleDate, new TimeOnly(9, 0), new TimeOnly(12, 0));
-
         // When
         var exception = Assert.Throws<ArgumentException>(() => 
-            schedule.ScheduleAppointment("Anna Nowak", enclosingTimeSlot));
+            schedule.ScheduleAppointment("Anna Nowak", new TimeOnly(9, 0), new TimeOnly(12, 0)));
         
         // Then
         exception!.Message.ShouldBe("Appointment time slot conflicts with existing appointment");
@@ -119,25 +104,22 @@ public class DailyAppointmentScheduleCollisionTests
     {
         // Given
         var schedule = new DailyAppointmentSchedule(_scheduleDate);
-        var firstTimeSlot = new AppointmentTimeSlot(_scheduleDate, new TimeOnly(10, 0), new TimeOnly(11, 0));
-        var firstAppointment = schedule.ScheduleAppointment("Jan Kowalski", firstTimeSlot);
+        var firstAppointment = schedule.ScheduleAppointment("Jan Kowalski", new TimeOnly(10, 0), new TimeOnly(11, 0));
         
-        var adjacentTimeSlot = new AppointmentTimeSlot(_scheduleDate, new TimeOnly(9, 0), new TimeOnly(10, 0));
-
         // When
-        var secondAppointment = schedule.ScheduleAppointment("Anna Nowak", adjacentTimeSlot);
+        var secondAppointment = schedule.ScheduleAppointment("Anna Nowak", new TimeOnly(9, 0), new TimeOnly(10, 0));
 
         // Then
         var snapshot = schedule.CreateSnapshot();
         snapshot.Appointments.Count.ShouldBe(2);
         
         var firstSnapshot = snapshot.Appointments.First(a => a.Id == firstAppointment.Id);
-        firstSnapshot.StartTime.ShouldBe(firstTimeSlot.StartDateTime);
-        firstSnapshot.EndTime.ShouldBe(firstTimeSlot.EndDateTime);
+        firstSnapshot.StartTime.ShouldBe(_scheduleDate.ToDateTime(new TimeOnly(10, 0)));
+        firstSnapshot.EndTime.ShouldBe(_scheduleDate.ToDateTime(new TimeOnly(11, 0)));
         
         var secondSnapshot = snapshot.Appointments.First(a => a.Id == secondAppointment.Id);
-        secondSnapshot.StartTime.ShouldBe(adjacentTimeSlot.StartDateTime);
-        secondSnapshot.EndTime.ShouldBe(adjacentTimeSlot.EndDateTime);
+        secondSnapshot.StartTime.ShouldBe(_scheduleDate.ToDateTime(new TimeOnly(9, 0)));
+        secondSnapshot.EndTime.ShouldBe(_scheduleDate.ToDateTime(new TimeOnly(10, 0)));
     }
 
     [Test]
@@ -145,25 +127,22 @@ public class DailyAppointmentScheduleCollisionTests
     {
         // Given
         var schedule = new DailyAppointmentSchedule(_scheduleDate);
-        var firstTimeSlot = new AppointmentTimeSlot(_scheduleDate, new TimeOnly(10, 0), new TimeOnly(11, 0));
-        var firstAppointment = schedule.ScheduleAppointment("Jan Kowalski", firstTimeSlot);
+        var firstAppointment = schedule.ScheduleAppointment("Jan Kowalski", new TimeOnly(10, 0), new TimeOnly(11, 0));
         
-        var adjacentTimeSlot = new AppointmentTimeSlot(_scheduleDate, new TimeOnly(11, 0), new TimeOnly(12, 0));
-
         // When
-        var secondAppointment = schedule.ScheduleAppointment("Anna Nowak", adjacentTimeSlot);
+        var secondAppointment = schedule.ScheduleAppointment("Anna Nowak", new TimeOnly(11, 0), new TimeOnly(12, 0));
 
         // Then
         var snapshot = schedule.CreateSnapshot();
         snapshot.Appointments.Count.ShouldBe(2);
         
         var firstSnapshot = snapshot.Appointments.First(a => a.Id == firstAppointment.Id);
-        firstSnapshot.StartTime.ShouldBe(firstTimeSlot.StartDateTime);
-        firstSnapshot.EndTime.ShouldBe(firstTimeSlot.EndDateTime);
+        firstSnapshot.StartTime.ShouldBe(_scheduleDate.ToDateTime(new TimeOnly(10, 0)));
+        firstSnapshot.EndTime.ShouldBe(_scheduleDate.ToDateTime(new TimeOnly(11, 0)));
         
         var secondSnapshot = snapshot.Appointments.First(a => a.Id == secondAppointment.Id);
-        secondSnapshot.StartTime.ShouldBe(adjacentTimeSlot.StartDateTime);
-        secondSnapshot.EndTime.ShouldBe(adjacentTimeSlot.EndDateTime);
+        secondSnapshot.StartTime.ShouldBe(_scheduleDate.ToDateTime(new TimeOnly(11, 0)));
+        secondSnapshot.EndTime.ShouldBe(_scheduleDate.ToDateTime(new TimeOnly(12, 0)));
     }
 
     [Test]
@@ -172,17 +151,12 @@ public class DailyAppointmentScheduleCollisionTests
         // Given
         var schedule = new DailyAppointmentSchedule(_scheduleDate);
         
-        var firstTimeSlot = new AppointmentTimeSlot(_scheduleDate, new TimeOnly(9, 0), new TimeOnly(10, 0));
-        schedule.ScheduleAppointment("Jan Kowalski", firstTimeSlot);
+        schedule.ScheduleAppointment("Jan Kowalski", new TimeOnly(9, 0), new TimeOnly(10, 0));
+        schedule.ScheduleAppointment("Anna Nowak", new TimeOnly(11, 0), new TimeOnly(12, 0));
         
-        var secondTimeSlot = new AppointmentTimeSlot(_scheduleDate, new TimeOnly(11, 0), new TimeOnly(12, 0));
-        schedule.ScheduleAppointment("Anna Nowak", secondTimeSlot);
-        
-        var conflictingTimeSlot = new AppointmentTimeSlot(_scheduleDate, new TimeOnly(8, 30), new TimeOnly(9, 30));
-
         // When
         var exception = Assert.Throws<ArgumentException>(() => 
-            schedule.ScheduleAppointment("Piotr Nowak", conflictingTimeSlot));
+            schedule.ScheduleAppointment("Piotr Nowak", new TimeOnly(9, 30), new TimeOnly(10, 30)));
         
         // Then
         exception!.Message.ShouldBe("Appointment time slot conflicts with existing appointment");
