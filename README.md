@@ -58,6 +58,19 @@ Everyone knows something about clinics - patients, appointments, basic concepts.
 
 Perfect for discovering patterns as we go, not predicting them upfront.
 
+## 📋 Current State
+
+See [Clinic Overview](docs/clinic-overview.md) for the current operational state of Dr. Smith's practice.
+
+## 🔄 Iterations
+
+- [001 - Basic Appointment Scheduling](docs/iterations/001-basic-appointment-scheduling/basic-appointment-scheduling.md)
+- [002 - Business Hours Validation](docs/iterations/002-business-hours-validation/business-hours-validation.md)
+
+## 📝 Development Logs
+
+Each iteration includes development logs that document the thought process behind design decisions, refactoring steps, and testing approaches. They show what worked, what didn't, and why certain choices were made along the way.
+
 ## 📝 License
 
 Licensed under the [MIT License](LICENSE).  
