@@ -8,7 +8,7 @@ public class InMemoryDailyAppointmentScheduleRepository : IDailyAppointmentSched
 
     public Task<DailyAppointmentSchedule?> GetOptional(DateOnly date)
     {
-        var schedule = _schedules.FirstOrDefault(s => s.Date == date);
+        var schedule = _schedules.SingleOrDefault(s => s.Date == date);
 
         return Task.FromResult(schedule);
     }

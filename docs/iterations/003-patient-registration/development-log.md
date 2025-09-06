@@ -9,3 +9,4 @@
   - Structured Polish addresses - no country field needed
 - **Address design**: Single constructor, natural parameter order, apartment can be letters (15D, A)
 - **Patient creation**: Use `Patient.Register()` factory method instead of constructor for clearer intent
+- **DTO design**: Use primitive types in DTOs with nested records for clean serialization and consistency with existing codebase
