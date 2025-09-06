@@ -10,12 +10,6 @@ public readonly record struct Address
 
     public Address(string street, string houseNumber, string? apartment, string postalCode, string city)
     {
-        street = street.Trim();
-        houseNumber = houseNumber.Trim();
-        apartment = apartment?.Trim();
-        city = city.Trim();
-        postalCode = postalCode.Trim();
-
         if (string.IsNullOrWhiteSpace(street))
         {
             throw new ArgumentException("Street is required");
@@ -35,6 +29,12 @@ public readonly record struct Address
         {
             throw new ArgumentException("Postal code is required");
         }
+
+        street = street.Trim();
+        houseNumber = houseNumber.Trim();
+        apartment = apartment?.Trim();
+        city = city.Trim();
+        postalCode = postalCode.Trim();
 
         Street = street;
         HouseNumber = houseNumber;
