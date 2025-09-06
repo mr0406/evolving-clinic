@@ -20,7 +20,7 @@ public readonly record struct PhoneNumber
         countryCode = countryCode.Trim();
         number = number.Trim();
 
-        if (!countryCode.StartsWith('+') || !countryCode[1..].All(char.IsDigit))
+        if (!countryCode.StartsWith('+') || countryCode.Length <= 1 || !countryCode[1..].All(char.IsDigit))
         {
             throw new ArgumentException("Country code must start with + followed by digits");   
         }
