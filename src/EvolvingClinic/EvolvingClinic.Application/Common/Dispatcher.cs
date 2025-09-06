@@ -16,8 +16,8 @@ public class Dispatcher
 
     private void RegisterServices()
     {
-        _services[typeof(IDailyAppointmentScheduleRepository)] = new InMemoryDailyAppointmentScheduleRepository();
         _services[typeof(IPatientRepository)] = new InMemoryPatientRepository();
+        _services[typeof(IDailyAppointmentScheduleRepository)] = new InMemoryDailyAppointmentScheduleRepository();
     }
 
     private void AutoRegisterHandlers()

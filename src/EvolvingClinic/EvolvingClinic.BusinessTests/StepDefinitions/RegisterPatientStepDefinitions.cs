@@ -62,8 +62,8 @@ public sealed class RegisterPatientStepDefinitions
         _scenarioException.ShouldBeNull();
     }
 
-    [Then("I should be able to retrieve the patient details")]
-    public async Task ThenIShouldBeAbleToRetrieveThePatientDetails()
+    [Then("the patient should be registered with the correct data")]
+    public async Task ThenThePatientShouldBeRegisteredWithTheCorrectData()
     {
         _scenarioPatientId.ShouldNotBeNull();
         _scenarioRegisterPatientData.ShouldNotBeNull();

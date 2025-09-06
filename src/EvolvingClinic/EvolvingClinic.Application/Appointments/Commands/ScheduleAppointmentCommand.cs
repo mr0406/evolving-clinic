@@ -5,7 +5,7 @@ namespace EvolvingClinic.Application.Appointments.Commands;
 
 public record ScheduleAppointmentCommand(
     DateOnly Date,
-    string PatientName,
+    Guid PatientId,
     TimeOnly StartTime,
     TimeOnly EndTime
 ) : ICommand<Guid>;
@@ -19,7 +19,7 @@ public class ScheduleAppointmentCommandHandler(IDailyAppointmentScheduleReposito
                        ?? new DailyAppointmentSchedule(command.Date);
         
         var appointment = schedule.ScheduleAppointment(
-            command.PatientName,
+            command.PatientId,
             command.StartTime,
             command.EndTime);
 

@@ -14,25 +14,25 @@ public class DailyAppointmentScheduleScheduleAppointmentTests
         var scheduleDate = new DateOnly(2024, 1, 15);
         var schedule = new DailyAppointmentSchedule(scheduleDate);
 
-        var firstPatient = "Jan Kowalski";
-        var firstAppointment = schedule.ScheduleAppointment(firstPatient, new TimeOnly(9, 0), new TimeOnly(10, 0));
+        var firstPatientId = Guid.NewGuid();
+        var firstAppointment = schedule.ScheduleAppointment(firstPatientId, new TimeOnly(9, 0), new TimeOnly(10, 0));
 
-        var secondPatient = "Anna Nowak";
+        var secondPatientId = Guid.NewGuid();
 
         // When
-        var secondAppointment = schedule.ScheduleAppointment(secondPatient, new TimeOnly(11, 0), new TimeOnly(12, 0));
+        var secondAppointment = schedule.ScheduleAppointment(secondPatientId, new TimeOnly(11, 0), new TimeOnly(12, 0));
 
         // Then
         var snapshot = schedule.CreateSnapshot();
         snapshot.Appointments.Count.ShouldBe(2);
 
         var firstAppointmentSnapshot = snapshot.Appointments.First(a => a.Id == firstAppointment.Id);
-        firstAppointmentSnapshot.PatientName.ShouldBe(firstPatient);
+        firstAppointmentSnapshot.PatientId.ShouldBe(firstPatientId);
         firstAppointmentSnapshot.StartTime.ShouldBe(scheduleDate.ToDateTime(new TimeOnly(9, 0)));
         firstAppointmentSnapshot.EndTime.ShouldBe(scheduleDate.ToDateTime(new TimeOnly(10, 0)));
 
         var secondAppointmentSnapshot = snapshot.Appointments.First(a => a.Id == secondAppointment.Id);
-        secondAppointmentSnapshot.PatientName.ShouldBe(secondPatient);
+        secondAppointmentSnapshot.PatientId.ShouldBe(secondPatientId);
         secondAppointmentSnapshot.StartTime.ShouldBe(scheduleDate.ToDateTime(new TimeOnly(11, 0)));
         secondAppointmentSnapshot.EndTime.ShouldBe(scheduleDate.ToDateTime(new TimeOnly(12, 0)));
     }
@@ -43,10 +43,10 @@ public class DailyAppointmentScheduleScheduleAppointmentTests
         // Given
         var scheduleDate = new DateOnly(2024, 1, 15);
         var schedule = new DailyAppointmentSchedule(scheduleDate);
-        var patientName = "Jan Kowalski";
+        var patientId = Guid.NewGuid();
 
         // When
-        var appointment = schedule.ScheduleAppointment(patientName, new TimeOnly(10, 0), new TimeOnly(11, 0));
+        var appointment = schedule.ScheduleAppointment(patientId, new TimeOnly(10, 0), new TimeOnly(11, 0));
 
         // Then
         appointment.ShouldNotBeNull();
@@ -57,7 +57,7 @@ public class DailyAppointmentScheduleScheduleAppointmentTests
         
         var appointmentSnapshot = snapshot.Appointments.First();
         appointmentSnapshot.Id.ShouldBe(appointment.Id);
-        appointmentSnapshot.PatientName.ShouldBe(patientName);
+        appointmentSnapshot.PatientId.ShouldBe(patientId);
         appointmentSnapshot.StartTime.ShouldBe(scheduleDate.ToDateTime(new TimeOnly(10, 0)));
         appointmentSnapshot.EndTime.ShouldBe(scheduleDate.ToDateTime(new TimeOnly(11, 0)));
     }
