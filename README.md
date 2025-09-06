@@ -72,6 +72,10 @@ See [Clinic Overview](docs/clinic-overview.md) for the current operational state
 
 Each iteration includes development logs that document the thought process behind design decisions, refactoring steps, and testing approaches. They show what worked, what didn't, and why certain choices were made along the way.
 
+## 🙏 Special Thanks
+
+Special thanks to [@Maderaffie](https://github.com/Maderaffie) for reviewing the pull request and providing valuable feedback that helped improve the codebase quality and domain modeling approach.
+
 ## 📝 License
 
 Licensed under the [MIT License](LICENSE).  
