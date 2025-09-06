@@ -16,7 +16,7 @@ public class DailyAppointmentScheduleBusinessHoursTests
 
         // When
         var exception = Assert.Throws<ArgumentException>(() => 
-            schedule.ScheduleAppointment("Patient", new TimeOnly(10, 0), new TimeOnly(11, 0)));
+            schedule.ScheduleAppointment(Guid.NewGuid(), new TimeOnly(10, 0), new TimeOnly(11, 0)));
 
         // Then
         exception!.Message.ShouldBe("Appointments can only be scheduled Monday through Friday");
@@ -34,7 +34,7 @@ public class DailyAppointmentScheduleBusinessHoursTests
         var schedule = CreateScheduleFor(dayOfWeek);
 
         // When
-        var appointment = schedule.ScheduleAppointment("Patient", new TimeOnly(10, 0), new TimeOnly(11, 0));
+        var appointment = schedule.ScheduleAppointment(Guid.NewGuid(), new TimeOnly(10, 0), new TimeOnly(11, 0));
 
         // Then
         appointment.ShouldNotBeNull();
@@ -49,7 +49,7 @@ public class DailyAppointmentScheduleBusinessHoursTests
 
         // When
         var exception = Assert.Throws<ArgumentException>(() => 
-            schedule.ScheduleAppointment("Patient", new TimeOnly(8, 59), new TimeOnly(9, 20)));
+            schedule.ScheduleAppointment(Guid.NewGuid(), new TimeOnly(8, 59), new TimeOnly(9, 20)));
 
         // Then
         exception!.Message.ShouldBe("Appointments can only be scheduled between 9:00 AM and 5:00 PM");
@@ -64,7 +64,7 @@ public class DailyAppointmentScheduleBusinessHoursTests
 
         // When
         var exception = Assert.Throws<ArgumentException>(() => 
-            schedule.ScheduleAppointment("Patient", new TimeOnly(16, 50), new TimeOnly(17, 10)));
+            schedule.ScheduleAppointment(Guid.NewGuid(), new TimeOnly(16, 50), new TimeOnly(17, 10)));
 
         // Then
         exception!.Message.ShouldBe("Appointments can only be scheduled between 9:00 AM and 5:00 PM");
@@ -78,7 +78,7 @@ public class DailyAppointmentScheduleBusinessHoursTests
         var schedule = CreateScheduleFor(DayOfWeek.Monday);
 
         // When
-        var appointment = schedule.ScheduleAppointment("Patient", new TimeOnly(9, 0), new TimeOnly(10, 0));
+        var appointment = schedule.ScheduleAppointment(Guid.NewGuid(), new TimeOnly(9, 0), new TimeOnly(10, 0));
 
         // Then
         appointment.ShouldNotBeNull();
@@ -92,7 +92,7 @@ public class DailyAppointmentScheduleBusinessHoursTests
         var schedule = CreateScheduleFor(DayOfWeek.Monday);
 
         // When
-        var appointment = schedule.ScheduleAppointment("Patient", new TimeOnly(16, 0), new TimeOnly(17, 0));
+        var appointment = schedule.ScheduleAppointment(Guid.NewGuid(), new TimeOnly(16, 0), new TimeOnly(17, 0));
 
         // Then
         appointment.ShouldNotBeNull();

@@ -1,4 +1,5 @@
 using EvolvingClinic.Application.Appointments;
+using EvolvingClinic.Application.Patients;
 
 namespace EvolvingClinic.Application.Common;
 
@@ -15,6 +16,7 @@ public class Dispatcher
 
     private void RegisterServices()
     {
+        _services[typeof(IPatientRepository)] = new InMemoryPatientRepository();
         _services[typeof(IDailyAppointmentScheduleRepository)] = new InMemoryDailyAppointmentScheduleRepository();
     }
 

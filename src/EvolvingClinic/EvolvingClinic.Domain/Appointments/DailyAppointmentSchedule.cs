@@ -12,7 +12,7 @@ public class DailyAppointmentSchedule
     }
 
     public ScheduledAppointment ScheduleAppointment(
-        string patientName,
+        Guid patientId,
         TimeOnly startTime,
         TimeOnly endTime)
     {
@@ -25,7 +25,7 @@ public class DailyAppointmentSchedule
             throw new ArgumentException("Appointment time slot conflicts with existing appointment");
         }
         
-        var appointment = new ScheduledAppointment(patientName, timeSlot);
+        var appointment = new ScheduledAppointment(patientId, timeSlot);
         _appointments.Add(appointment);
         
         return appointment;

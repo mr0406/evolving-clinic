@@ -5,7 +5,13 @@ This document describes the current operational state of Dr. Smith's medical pra
 ## How It Works Today
 
 - Single doctor, private practice
-- Sarah (the receptionist) schedules appointments digitally
+- Sarah (the receptionist) manages both patient registration and appointment scheduling
+
+## Patient Registration
+- Patients must be registered before scheduling appointments
+- System assigns unique patient IDs to solve identity conflicts
+
+## Appointment Scheduling
 - No more double bookings
 - Appointments have guaranteed time slots
 - Business hours enforced (Monday-Friday, 9:00 AM - 5:00 PM only)

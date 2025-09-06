@@ -3,15 +3,15 @@ namespace EvolvingClinic.Domain.Appointments;
 public class ScheduledAppointment 
 {
     public Guid Id { get; }
-    private string _patientName;
+    private Guid _patientId;
     private AppointmentTimeSlot _timeSlot;
     
     internal ScheduledAppointment(
-        string patientName, 
+        Guid patientId, 
         AppointmentTimeSlot timeSlot)
     {
         Id = Guid.NewGuid();
-        _patientName = patientName;
+        _patientId = patientId;
         _timeSlot = timeSlot;
     }
 
@@ -22,12 +22,12 @@ public class ScheduledAppointment
 
     public Snapshot CreateSnapshot()
     {
-        return new Snapshot(Id, _patientName, _timeSlot.StartDateTime, _timeSlot.EndDateTime);
+        return new Snapshot(Id, _patientId, _timeSlot.StartDateTime, _timeSlot.EndDateTime);
     }
     
     public record Snapshot(
         Guid Id,
-        string PatientName,
+        Guid PatientId,
         DateTime StartTime,
         DateTime EndTime);
 }
