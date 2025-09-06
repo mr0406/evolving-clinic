@@ -32,6 +32,23 @@ public class InMemoryPatientRepository : IPatientRepository
             new PatientDto.AddressData(snapshot.Address.Street, snapshot.Address.HouseNumber, snapshot.Address.Apartment, snapshot.Address.PostalCode, snapshot.Address.City)));
     }
 
+    public Task<IReadOnlyList<PatientDto>> GetAllDtos()
+    {
+        var dtos = _patients.Select(p =>
+        {
+            var snapshot = p.CreateSnapshot();
+            return new PatientDto(
+                snapshot.Id,
+                new PatientDto.PersonNameData(snapshot.Name.FirstName, snapshot.Name.LastName),
+                snapshot.DateOfBirth,
+                new PatientDto.PhoneNumberData(snapshot.PhoneNumber.CountryCode, snapshot.PhoneNumber.Number),
+                new PatientDto.AddressData(snapshot.Address.Street, snapshot.Address.HouseNumber, snapshot.Address.Apartment, snapshot.Address.PostalCode, snapshot.Address.City)
+            );
+        }).ToList();
+
+        return Task.FromResult<IReadOnlyList<PatientDto>>(dtos);
+    }
+
     public Task Save(Patient patient)
     {
         var existingIndex = _patients.FindIndex(p => p.Id == patient.Id);

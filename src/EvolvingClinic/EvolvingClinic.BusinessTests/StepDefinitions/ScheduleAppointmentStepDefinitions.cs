@@ -1,7 +1,7 @@
 using EvolvingClinic.Application.Appointments.Commands;
 using EvolvingClinic.Application.Appointments.Queries;
 using EvolvingClinic.Application.Common;
-using EvolvingClinic.Application.Patients.Commands;
+using EvolvingClinic.Application.Patients.Queries;
 using Reqnroll;
 using Shouldly;
 
@@ -13,22 +13,6 @@ public sealed class ScheduleAppointmentStepDefinitions
     private readonly Dispatcher _dispatcher = new();
     private ScheduleAppointmentData? _scenarioScheduleAppointmentData;
     private Guid? _scenarioAppointmentId;
-    private readonly Dictionary<string, Guid> _registeredPatients = new();
-    
-    [Given("patient {string} {string} is registered")]
-    public async Task GivenPatientIsRegistered(string firstName, string lastName)
-    {
-        var patientKey = $"{firstName} {lastName}";
-        
-        var registerCommand = new RegisterPatientCommand(
-            new RegisterPatientCommand.PersonNameData(firstName, lastName),
-            new DateOnly(1990, 1, 1),
-            new RegisterPatientCommand.PhoneNumberData("+1", "5551234567"),
-            new RegisterPatientCommand.AddressData("Test Street", "123", null, "12345", "Test City"));
-
-        var patientId = await _dispatcher.Execute(registerCommand);
-        _registeredPatients[patientKey] = patientId;
-    }
 
     [Given("I have scheduled an appointment for {string} {string} on {string} from {string} to {string}")]
     public async Task GivenIHaveScheduledAnAppointmentFor(string firstName, string lastName, string dateString, string startTimeString, string endTimeString)
@@ -116,16 +100,20 @@ public sealed class ScheduleAppointmentStepDefinitions
         TimeOnly startTime,
         TimeOnly endTime)
     {
-        var patientKey = $"{firstName} {lastName}";
+        var getAllPatientsQuery = new GetAllPatientsQuery();
+        var allPatients = await _dispatcher.ExecuteQuery(getAllPatientsQuery);
         
-        if (!_registeredPatients.TryGetValue(patientKey, out var patientId))
+        var patient = allPatients.SingleOrDefault(p => 
+            p.Name.FirstName == firstName && p.Name.LastName == lastName);
+            
+        if (patient == null)
         {
-            throw new InvalidOperationException($"Patient {patientKey} is not registered. Please register the patient first.");
+            throw new InvalidOperationException($"Patient {firstName} {lastName} is not registered. Please register the patient first.");
         }
         
         var command = new ScheduleAppointmentCommand(
             date,
-            patientId,
+            patient.Id,
             startTime,
             endTime);
         

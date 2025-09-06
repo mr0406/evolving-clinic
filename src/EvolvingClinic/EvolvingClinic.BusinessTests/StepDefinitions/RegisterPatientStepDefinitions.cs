@@ -54,6 +54,18 @@ public sealed class RegisterPatientStepDefinitions
         }
     }
     
+    [Given("patient {string} {string} is registered")]
+    public async Task GivenPatientIsRegistered(string firstName, string lastName)
+    {
+        var registerCommand = new RegisterPatientCommand(
+            new RegisterPatientCommand.PersonNameData(firstName, lastName),
+            new DateOnly(1990, 1, 1),
+            new RegisterPatientCommand.PhoneNumberData("+1", "5551234567"),
+            new RegisterPatientCommand.AddressData("Test Street", "123", null, "12345", "Test City"));
+
+        await _dispatcher.Execute(registerCommand);
+    }
+    
     [Then("the patient should be registered successfully")]
     public void ThenThePatientShouldBeRegisteredSuccessfully()
     {
