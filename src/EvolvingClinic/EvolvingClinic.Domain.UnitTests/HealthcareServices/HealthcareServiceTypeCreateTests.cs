@@ -22,11 +22,11 @@ public class HealthcareServiceTypeCreateTests
 
         // Then
         serviceType.ShouldNotBeNull();
-        serviceType.Id.ShouldNotBe(Guid.Empty);
+        serviceType.Code.ShouldBe(code.ToUpperInvariant());
 
         var snapshot = serviceType.CreateSnapshot();
-        snapshot.Name.ShouldBe(name);
         snapshot.Code.ShouldBe(code.ToUpperInvariant());
+        snapshot.Name.ShouldBe(name);
         snapshot.Duration.ShouldBe(duration);
     }
 
@@ -82,6 +82,7 @@ public class HealthcareServiceTypeCreateTests
 
         // Then
         serviceType.ShouldNotBeNull();
+        serviceType.Code.ShouldBe(code);
         serviceType.CreateSnapshot().Duration.ShouldBe(duration);
     }
 
@@ -100,6 +101,7 @@ public class HealthcareServiceTypeCreateTests
 
         // Then
         serviceType.ShouldNotBeNull();
+        serviceType.Code.ShouldBe(code);
         serviceType.CreateSnapshot().Duration.ShouldBe(duration);
     }
 

@@ -6,28 +6,27 @@ public class InMemoryHealthcareServiceTypeRepository : IHealthcareServiceTypeRep
 {
     private static List<HealthcareServiceType> _healthcareServiceTypes = new();
 
-    public Task<HealthcareServiceType?> GetOptional(Guid id)
+    public Task<HealthcareServiceType?> GetOptional(string code)
     {
-        var serviceType = _healthcareServiceTypes.SingleOrDefault(s => s.Id == id);
+        var serviceType = _healthcareServiceTypes.SingleOrDefault(s => s.Code == code);
 
         return Task.FromResult(serviceType);
     }
 
-    public Task<HealthcareServiceTypeDto> GetDto(Guid id)
+    public Task<HealthcareServiceTypeDto> GetDto(string code)
     {
-        var serviceType = _healthcareServiceTypes.SingleOrDefault(s => s.Id == id);
+        var serviceType = _healthcareServiceTypes.SingleOrDefault(s => s.Code == code);
 
         if (serviceType is null)
         {
-            throw new InvalidOperationException($"Healthcare service type with id {id} not found");
+            throw new InvalidOperationException($"Healthcare service type with code {code} not found");
         }
 
         var snapshot = serviceType.CreateSnapshot();
 
         return Task.FromResult(new HealthcareServiceTypeDto(
-            snapshot.Id,
-            snapshot.Name,
             snapshot.Code,
+            snapshot.Name,
             snapshot.Duration));
     }
 
@@ -37,9 +36,8 @@ public class InMemoryHealthcareServiceTypeRepository : IHealthcareServiceTypeRep
         {
             var snapshot = s.CreateSnapshot();
             return new HealthcareServiceTypeDto(
-                snapshot.Id,
-                snapshot.Name,
                 snapshot.Code,
+                snapshot.Name,
                 snapshot.Duration
             );
         }).ToList();
@@ -59,7 +57,7 @@ public class InMemoryHealthcareServiceTypeRepository : IHealthcareServiceTypeRep
     public Task<IReadOnlyList<string>> GetAllCodes()
     {
         var codes = _healthcareServiceTypes
-            .Select(s => s.CreateSnapshot().Code)
+            .Select(s => s.Code)
             .ToList();
 
         return Task.FromResult<IReadOnlyList<string>>(codes);
@@ -67,7 +65,7 @@ public class InMemoryHealthcareServiceTypeRepository : IHealthcareServiceTypeRep
 
     public Task Save(HealthcareServiceType healthcareServiceType)
     {
-        var existingIndex = _healthcareServiceTypes.FindIndex(s => s.Id == healthcareServiceType.Id);
+        var existingIndex = _healthcareServiceTypes.FindIndex(s => s.Code == healthcareServiceType.Code);
 
         if (existingIndex >= 0)
         {

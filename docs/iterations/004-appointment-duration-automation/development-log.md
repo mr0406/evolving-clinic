@@ -19,3 +19,13 @@ There is a chance for concurency issue, race condition but in the relational dbs
 **Decision**: Only implement `AddHealthcareServiceTypeCommand` for now.
 - **Why**: Focus on immediate need, expand as system grows
 - **Future**: Will add update/delete/archive operations when requirements emerge
+
+### 3. Code as Primary Key Instead of Guid
+**Decision**: Use healthcare service code as primary identifier instead of synthetic Guid.
+- **Alternatives**: Keep Guid as primary key, use code as secondary unique key
+- **Why chosen**:
+  - **Business-meaningful**: Medical staff reference services by codes naturally (RCU, BT, XR)
+  - **Human-readable**: No need to look up Guids for service identification
+  - **Stable identifiers**: Healthcare service codes rarely change in practice
+  - **Simpler queries**: Reference services directly by code without Guid lookup
+- **Constraint**: Service codes should not change once established (acceptable in healthcare domain)

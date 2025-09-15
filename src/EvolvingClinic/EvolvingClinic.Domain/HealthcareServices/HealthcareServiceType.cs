@@ -2,9 +2,8 @@ namespace EvolvingClinic.Domain.HealthcareServices;
 
 public class HealthcareServiceType
 {
-    public Guid Id { get; }
+    public string Code { get; }
     private string _name;
-    private string _code;
     private TimeSpan _duration;
 
     private HealthcareServiceType(
@@ -12,9 +11,8 @@ public class HealthcareServiceType
         string code,
         TimeSpan duration)
     {
-        Id = Guid.NewGuid();
+        Code = code;
         _name = name;
-        _code = code;
         _duration = duration;
     }
 
@@ -67,15 +65,13 @@ public class HealthcareServiceType
     public Snapshot CreateSnapshot()
     {
         return new Snapshot(
-            Id,
+            Code,
             _name,
-            _code,
             _duration);
     }
 
     public record Snapshot(
-        Guid Id,
-        string Name,
         string Code,
+        string Name,
         TimeSpan Duration);
 }

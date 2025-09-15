@@ -7,12 +7,12 @@ public record AddHealthcareServiceTypeCommand(
     string Name,
     string Code,
     TimeSpan Duration
-) : ICommand<Guid>;
+) : ICommand;
 
 public class AddHealthcareServiceTypeCommandHandler(IHealthcareServiceTypeRepository repository)
-    : ICommandHandler<AddHealthcareServiceTypeCommand, Guid>
+    : ICommandHandler<AddHealthcareServiceTypeCommand>
 {
-    public async Task<Guid> Handle(AddHealthcareServiceTypeCommand command)
+    public async Task Handle(AddHealthcareServiceTypeCommand command)
     {
         var existingNames = await repository.GetAllNames();
         var existingCodes = await repository.GetAllCodes();
@@ -25,7 +25,5 @@ public class AddHealthcareServiceTypeCommandHandler(IHealthcareServiceTypeReposi
             existingCodes.ToList());
 
         await repository.Save(healthcareServiceType);
-
-        return healthcareServiceType.Id;
     }
 }
