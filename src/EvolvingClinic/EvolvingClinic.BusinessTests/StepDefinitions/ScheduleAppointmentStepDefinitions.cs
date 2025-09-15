@@ -1,7 +1,6 @@
 using EvolvingClinic.Application.Appointments.Commands;
 using EvolvingClinic.Application.Appointments.Queries;
 using EvolvingClinic.Application.Common;
-using EvolvingClinic.Application.HealthcareServices.Commands;
 using EvolvingClinic.Application.Patients.Queries;
 using Reqnroll;
 using Shouldly;
@@ -15,13 +14,6 @@ public sealed class ScheduleAppointmentStepDefinitions
     private ScheduleAppointmentData? _scenarioScheduleAppointmentData;
     private Guid? _scenarioAppointmentId;
 
-    [Given("healthcare service type {string} with code {string} and duration {string} exists")]
-    public async Task GivenHealthcareServiceTypeExists(string name, string code, string duration)
-    {
-        var timeSpan = ParseDuration(duration);
-        var command = new AddHealthcareServiceTypeCommand(name, code, timeSpan);
-        await _dispatcher.Execute(command);
-    }
 
     [Given("I have scheduled an appointment for {string} {string} with service {string} on {string} at {string}")]
     public async Task GivenIHaveScheduledAnAppointmentFor(string firstName, string lastName, string serviceCode, string dateString, string startTimeString)
@@ -124,17 +116,4 @@ public sealed class ScheduleAppointmentStepDefinitions
         string ServiceCode,
         TimeOnly StartTime);
 
-    private static TimeSpan ParseDuration(string duration)
-    {
-        var parts = duration.Split(' ');
-        var value = int.Parse(parts[0]);
-        var unit = parts[1].ToLowerInvariant();
-
-        return unit switch
-        {
-            "minutes" or "minute" => TimeSpan.FromMinutes(value),
-            "hours" or "hour" => TimeSpan.FromHours(value),
-            _ => throw new ArgumentException($"Unknown duration unit: {unit}")
-        };
-    }
 }

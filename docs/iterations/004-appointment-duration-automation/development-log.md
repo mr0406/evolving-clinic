@@ -29,3 +29,10 @@ There is a chance for concurency issue, race condition but in the relational dbs
   - **Stable identifiers**: Healthcare service codes rarely change in practice
   - **Simpler queries**: Reference services directly by code without Guid lookup
 - **Constraint**: Service codes should not change once established (acceptable in healthcare domain)
+
+## Guidelines
+
+Added **business-tests-guidelines.md** to document, refine, and improve our approach to business tests.
+The goal is to create a reference that helps us — and AI agents — write better, more consistent tests while avoiding common mistakes.
+
+Although we are still learning BDD and Reqnroll, this document starts to establish standards, capture what already works well. 

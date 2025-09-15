@@ -33,7 +33,9 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
         }
     }
 
+    [Given("I add healthcare service type {string} with code {string} and duration {string}")]
     [Given("I have added healthcare service type {string} with code {string} and duration {string}")]
+    [Given("healthcare service type {string} with code {string} and duration {string} exists")]
     public async Task GivenIHaveAddedHealthcareServiceType(string name, string code, string duration)
     {
         var timeSpan = ParseDuration(duration);
