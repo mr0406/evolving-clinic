@@ -1,3 +1,5 @@
+using EvolvingClinic.Domain.Shared;
+
 namespace EvolvingClinic.Domain.HealthcareServices;
 
 public class HealthcareServiceType
@@ -5,21 +7,25 @@ public class HealthcareServiceType
     public string Code { get; }
     private string _name;
     private TimeSpan _duration;
+    private Money _price;
 
     private HealthcareServiceType(
         string name,
         string code,
-        TimeSpan duration)
+        TimeSpan duration,
+        Money price)
     {
         Code = code;
         _name = name;
         _duration = duration;
+        _price = price;
     }
 
     public static HealthcareServiceType Create(
         string name,
         string code,
         TimeSpan duration,
+        Money price,
         List<string> existingNames,
         List<string> existingCodes)
     {
@@ -56,10 +62,16 @@ public class HealthcareServiceType
             throw new ArgumentException("Service duration cannot exceed 8 hours");
         }
 
+        if (price.Value < 0)
+        {
+            throw new ArgumentException("Service price must be 0 or greater");
+        }
+
         return new HealthcareServiceType(
             name,
             code,
-            duration);
+            duration,
+            price);
     }
 
     public Snapshot CreateSnapshot()
@@ -67,11 +79,13 @@ public class HealthcareServiceType
         return new Snapshot(
             Code,
             _name,
-            _duration);
+            _duration,
+            _price);
     }
 
     public record Snapshot(
         string Code,
         string Name,
-        TimeSpan Duration);
+        TimeSpan Duration,
+        Money Price);
 }

@@ -15,15 +15,16 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
     private Exception? _scenarioException;
     private AddHealthcareServiceTypeData? _scenarioServiceTypeData;
 
-    [When("I add healthcare service type {string} with code {string} and duration {string}")]
-    public async Task WhenIAddHealthcareServiceType(string name, string code, string duration)
+    [When("I add healthcare service type {string} with code {string}, duration {string} and price {string}")]
+    public async Task WhenIAddHealthcareServiceType(string name, string code, string duration, string price)
     {
         var timeSpan = ParseDuration(duration);
-        _scenarioServiceTypeData = new(name, code, timeSpan);
+        var priceValue = ParsePrice(price);
+        _scenarioServiceTypeData = new(name, code, timeSpan, priceValue);
 
         try
         {
-            await AddHealthcareServiceType(name, code, timeSpan);
+            await AddHealthcareServiceType(name, code, timeSpan, priceValue);
             _scenarioServiceTypeCode = code;
         }
         catch (Exception ex)
@@ -33,13 +34,14 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
         }
     }
 
-    [Given("I add healthcare service type {string} with code {string} and duration {string}")]
-    [Given("I have added healthcare service type {string} with code {string} and duration {string}")]
-    [Given("healthcare service type {string} with code {string} and duration {string} exists")]
-    public async Task GivenIHaveAddedHealthcareServiceType(string name, string code, string duration)
+    [Given("I add healthcare service type {string} with code {string}, duration {string} and price {string}")]
+    [Given("I have added healthcare service type {string} with code {string}, duration {string} and price {string}")]
+    [Given("healthcare service type {string} with code {string}, duration {string} and price {string} exists")]
+    public async Task GivenIHaveAddedHealthcareServiceType(string name, string code, string duration, string price)
     {
         var timeSpan = ParseDuration(duration);
-        await AddHealthcareServiceType(name, code, timeSpan);
+        var priceValue = ParsePrice(price);
+        await AddHealthcareServiceType(name, code, timeSpan, priceValue);
     }
 
     [Then("the healthcare service type should be added successfully")]
@@ -63,6 +65,7 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
         serviceType.Code.ShouldBe(_scenarioServiceTypeData.Code);
         serviceType.Name.ShouldBe(_scenarioServiceTypeData.Name);
         serviceType.Duration.ShouldBe(_scenarioServiceTypeData.Duration);
+        serviceType.Price.ShouldBe(_scenarioServiceTypeData.Price);
     }
 
     [Then("there should be {int} healthcare service types in the system")]
@@ -73,9 +76,9 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
         serviceTypes.Count.ShouldBe(expectedCount);
     }
 
-    private async Task AddHealthcareServiceType(string name, string code, TimeSpan duration)
+    private async Task AddHealthcareServiceType(string name, string code, TimeSpan duration, decimal price)
     {
-        var command = new AddHealthcareServiceTypeCommand(name, code, duration);
+        var command = new AddHealthcareServiceTypeCommand(name, code, duration, price);
         await _dispatcher.Execute(command);
     }
 
@@ -93,8 +96,20 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
         };
     }
 
+
+    private static decimal ParsePrice(string price)
+    {
+        if (price.StartsWith("$"))
+        {
+            return decimal.Parse(price[1..]);
+        }
+
+        return decimal.Parse(price);
+    }
+
     private record AddHealthcareServiceTypeData(
         string Name,
         string Code,
-        TimeSpan Duration);
+        TimeSpan Duration,
+        decimal Price);
 }

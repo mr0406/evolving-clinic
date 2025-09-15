@@ -29,4 +29,3 @@ Dr. Smith wants to store service prices directly in the system so that when appo
 - Store prices as decimal/money type
 - Price is copied from service to appointment (not referenced) to handle price changes over time
 - USD currency assumption - no internationalization needed
-- Reasonable price range validation (e.g., $1-$10,000 to catch data entry errors)
