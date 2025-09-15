@@ -1,6 +1,7 @@
 using EvolvingClinic.Application.Appointments.Commands;
 using EvolvingClinic.Application.Appointments.Queries;
 using EvolvingClinic.Application.Common;
+using EvolvingClinic.Application.HealthcareServices.Queries;
 using EvolvingClinic.Application.Patients.Queries;
 using Reqnroll;
 using Shouldly;
@@ -68,6 +69,10 @@ public sealed class ScheduleAppointmentStepDefinitions
             scenarioAppointment.PatientId.ShouldNotBe(Guid.Empty);
             scenarioAppointment.HealthcareServiceTypeCode.ShouldBe(_scenarioScheduleAppointmentData.ServiceCode);
             scenarioAppointment.StartTime.ShouldBe(_scenarioScheduleAppointmentData.Date.ToDateTime(_scenarioScheduleAppointmentData.StartTime));
+
+            var serviceTypeQuery = new GetHealthcareServiceTypeQuery(_scenarioScheduleAppointmentData.ServiceCode);
+            var serviceType = await _dispatcher.ExecuteQuery(serviceTypeQuery);
+            scenarioAppointment.Price.ShouldBe(serviceType.Price);
         }
     }
 

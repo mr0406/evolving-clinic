@@ -12,9 +12,10 @@ This document describes the current operational state of Dr. Smith's medical pra
 - System assigns unique patient IDs to solve identity conflicts
 
 ## Healthcare Service Types
-- Service types define standard appointment durations for different medical services
-- Each service has a name, code, and predefined duration (e.g., "Routine Check-up", 30 minutes)
+- Service types define standard appointment durations and pricing for different medical services
+- Each service has a name, code, predefined duration, and fixed price (e.g., "Routine Check-up", 30 minutes, $100.00)
 - Service types must be registered before appointments can be scheduled
+- Consistent pricing eliminates manual price entry errors
 
 ## Appointment Scheduling
 - No more double bookings
@@ -22,3 +23,4 @@ This document describes the current operational state of Dr. Smith's medical pra
 - Business hours enforced (Monday-Friday, 9:00 AM - 5:00 PM only)
 - System prevents scheduling outside clinic operating hours
 - Automated duration calculation based on service types
+- Automatic price capture from service type at time of scheduling

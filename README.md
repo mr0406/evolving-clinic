@@ -68,6 +68,7 @@ See [Clinic Overview](docs/clinic-overview.md) for the current operational state
 - [002 - Business Hours Validation](docs/iterations/002-business-hours-validation/business-hours-validation.md)
 - [003 - Patient Registration](docs/iterations/003-patient-registration/patient-registration.md)
 - [004 - Appointment Duration Automation](docs/iterations/004-appointment-duration-automation/)
+- [005 - Service Pricing](docs/iterations/005-service-pricing/)
 
 ## 📝 Development Logs
 

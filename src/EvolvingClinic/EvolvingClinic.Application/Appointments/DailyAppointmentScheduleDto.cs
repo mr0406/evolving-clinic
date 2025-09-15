@@ -9,4 +9,5 @@ public record ScheduledAppointmentDto(
     Guid PatientId,
     string HealthcareServiceTypeCode,
     DateTime StartTime,
-    DateTime EndTime);
+    DateTime EndTime,
+    decimal Price);

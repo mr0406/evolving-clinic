@@ -29,7 +29,8 @@ public class InMemoryDailyAppointmentScheduleRepository : IDailyAppointmentSched
             a.PatientId,
             a.HealthcareServiceTypeCode,
             a.StartTime,
-            a.EndTime)).ToList();
+            a.EndTime,
+            a.Price.Value)).ToList();
 
         return Task.FromResult(new DailyAppointmentScheduleDto(snapshot.Date, appointmentDtos));
     }

@@ -24,8 +24,8 @@ public class ScheduleAppointmentCommandHandler(
             throw new ArgumentException($"Healthcare service type '{command.HealthcareServiceTypeCode}' not found");
         }
         
-        var snapshot = serviceType.CreateSnapshot();
-        var endTime = command.StartTime.Add(snapshot.Duration);
+        var serviceTypeSnapshot = serviceType.CreateSnapshot();
+        var endTime = command.StartTime.Add(serviceTypeSnapshot.Duration);
 
         var schedule = await repository.GetOptional(command.Date)
                        ?? new DailyAppointmentSchedule(command.Date);
@@ -34,7 +34,8 @@ public class ScheduleAppointmentCommandHandler(
             command.PatientId,
             command.HealthcareServiceTypeCode,
             command.StartTime,
-            endTime);
+            endTime,
+            serviceTypeSnapshot.Price);
 
         await repository.Save(schedule);
 
