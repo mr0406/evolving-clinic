@@ -1,4 +1,5 @@
 using EvolvingClinic.Domain.Appointments;
+using EvolvingClinic.Domain.Shared;
 using Shouldly;
 using NUnit.Framework;
 
@@ -15,12 +16,12 @@ public class DailyAppointmentScheduleScheduleAppointmentTests
         var schedule = new DailyAppointmentSchedule(scheduleDate);
 
         var firstPatientId = Guid.NewGuid();
-        var firstAppointment = schedule.ScheduleAppointment(firstPatientId, "TEST", new TimeOnly(9, 0), new TimeOnly(10, 0));
+        var firstAppointment = schedule.ScheduleAppointment(firstPatientId, "TEST", new TimeOnly(9, 0), new TimeOnly(10, 0), new Money(100.00m));
 
         var secondPatientId = Guid.NewGuid();
 
         // When
-        var secondAppointment = schedule.ScheduleAppointment(secondPatientId, "TEST", new TimeOnly(11, 0), new TimeOnly(12, 0));
+        var secondAppointment = schedule.ScheduleAppointment(secondPatientId, "TEST", new TimeOnly(11, 0), new TimeOnly(12, 0), new Money(100.00m));
 
         // Then
         var snapshot = schedule.CreateSnapshot();
@@ -30,11 +31,13 @@ public class DailyAppointmentScheduleScheduleAppointmentTests
         firstAppointmentSnapshot.PatientId.ShouldBe(firstPatientId);
         firstAppointmentSnapshot.StartTime.ShouldBe(scheduleDate.ToDateTime(new TimeOnly(9, 0)));
         firstAppointmentSnapshot.EndTime.ShouldBe(scheduleDate.ToDateTime(new TimeOnly(10, 0)));
+        firstAppointmentSnapshot.Price.ShouldBe(new Money(100.00m));
 
         var secondAppointmentSnapshot = snapshot.Appointments.First(a => a.Id == secondAppointment.Id);
         secondAppointmentSnapshot.PatientId.ShouldBe(secondPatientId);
         secondAppointmentSnapshot.StartTime.ShouldBe(scheduleDate.ToDateTime(new TimeOnly(11, 0)));
         secondAppointmentSnapshot.EndTime.ShouldBe(scheduleDate.ToDateTime(new TimeOnly(12, 0)));
+        secondAppointmentSnapshot.Price.ShouldBe(new Money(100.00m));
     }
     
     [Test]
@@ -46,7 +49,7 @@ public class DailyAppointmentScheduleScheduleAppointmentTests
         var patientId = Guid.NewGuid();
 
         // When
-        var appointment = schedule.ScheduleAppointment(patientId, "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0));
+        var appointment = schedule.ScheduleAppointment(patientId, "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m));
 
         // Then
         appointment.ShouldNotBeNull();
@@ -60,5 +63,39 @@ public class DailyAppointmentScheduleScheduleAppointmentTests
         appointmentSnapshot.PatientId.ShouldBe(patientId);
         appointmentSnapshot.StartTime.ShouldBe(scheduleDate.ToDateTime(new TimeOnly(10, 0)));
         appointmentSnapshot.EndTime.ShouldBe(scheduleDate.ToDateTime(new TimeOnly(11, 0)));
+        appointmentSnapshot.Price.ShouldBe(new Money(100.00m));
+    }
+
+    [Test]
+    public void GivenZeroPrice_WhenScheduleAppointment_ThenIsScheduledWithZeroPrice()
+    {
+        // Given
+        var scheduleDate = new DateOnly(2024, 1, 15);
+        var schedule = new DailyAppointmentSchedule(scheduleDate);
+        var patientId = Guid.NewGuid();
+        var price = new Money(0.00m);
+
+        // When
+        var appointment = schedule.ScheduleAppointment(patientId, "FREE", new TimeOnly(10, 0), new TimeOnly(11, 0), price);
+
+        // Then
+        appointment.ShouldNotBeNull();
+        appointment.CreateSnapshot().Price.ShouldBe(price);
+    }
+
+    [Test]
+    public void GivenNegativePrice_WhenScheduleAppointment_ThenThrowsArgumentException()
+    {
+        // Given
+        var scheduleDate = new DateOnly(2024, 1, 15);
+        var schedule = new DailyAppointmentSchedule(scheduleDate);
+        var patientId = Guid.NewGuid();
+        var price = new Money(-10.00m);
+
+        // When & Then
+        var exception = Assert.Throws<ArgumentException>(() =>
+            schedule.ScheduleAppointment(patientId, "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), price));
+
+        exception!.Message.ShouldBe("Appointment price must be 0 or greater");
     }
 }

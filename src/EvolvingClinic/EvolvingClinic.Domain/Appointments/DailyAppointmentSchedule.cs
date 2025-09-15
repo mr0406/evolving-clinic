@@ -1,3 +1,5 @@
+using EvolvingClinic.Domain.Shared;
+
 namespace EvolvingClinic.Domain.Appointments;
 
 public class DailyAppointmentSchedule
@@ -15,7 +17,8 @@ public class DailyAppointmentSchedule
         Guid patientId,
         string healthcareServiceTypeCode,
         TimeOnly startTime,
-        TimeOnly endTime)
+        TimeOnly endTime,
+        Money price)
     {
         var timeSlot = new AppointmentTimeSlot(Date, startTime, endTime);
 
@@ -26,7 +29,7 @@ public class DailyAppointmentSchedule
             throw new ArgumentException("Appointment time slot conflicts with existing appointment");
         }
 
-        var appointment = new ScheduledAppointment(patientId, healthcareServiceTypeCode, timeSlot);
+        var appointment = new ScheduledAppointment(patientId, healthcareServiceTypeCode, timeSlot, price);
         _appointments.Add(appointment);
 
         return appointment;

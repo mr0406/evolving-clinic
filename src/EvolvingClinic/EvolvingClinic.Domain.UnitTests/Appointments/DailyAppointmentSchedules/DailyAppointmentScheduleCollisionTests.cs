@@ -1,4 +1,5 @@
 using EvolvingClinic.Domain.Appointments;
+using EvolvingClinic.Domain.Shared;
 using Shouldly;
 using NUnit.Framework;
 
@@ -14,11 +15,11 @@ public class DailyAppointmentScheduleCollisionTests
     {
         // Given
         var schedule = new DailyAppointmentSchedule(_scheduleDate);
-        schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0));
+        schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m));
         
         // When
         var exception = Assert.Throws<ArgumentException>(() => 
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 30), new TimeOnly(11, 30)));
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 30), new TimeOnly(11, 30), new Money(100.00m)));
         
         // Then
         exception!.Message.ShouldBe("Appointment time slot conflicts with existing appointment");
@@ -32,11 +33,11 @@ public class DailyAppointmentScheduleCollisionTests
     {
         // Given
         var schedule = new DailyAppointmentSchedule(_scheduleDate);
-        schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0));
+        schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m));
         
         // When
         var exception = Assert.Throws<ArgumentException>(() => 
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0)));
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m)));
         
         // Then
         exception!.Message.ShouldBe("Appointment time slot conflicts with existing appointment");
@@ -50,11 +51,11 @@ public class DailyAppointmentScheduleCollisionTests
     {
         // Given
         var schedule = new DailyAppointmentSchedule(_scheduleDate);
-        schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0));
+        schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m));
         
         // When
         var exception = Assert.Throws<ArgumentException>(() => 
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 45), new TimeOnly(12, 0)));
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 45), new TimeOnly(12, 0), new Money(100.00m)));
         
         // Then
         exception!.Message.ShouldBe("Appointment time slot conflicts with existing appointment");
@@ -68,11 +69,11 @@ public class DailyAppointmentScheduleCollisionTests
     {
         // Given
         var schedule = new DailyAppointmentSchedule(_scheduleDate);
-        schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0));
+        schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m));
         
         // When
         var exception = Assert.Throws<ArgumentException>(() => 
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(9, 0), new TimeOnly(10, 30)));
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(9, 0), new TimeOnly(10, 30), new Money(100.00m)));
         
         // Then
         exception!.Message.ShouldBe("Appointment time slot conflicts with existing appointment");
@@ -86,11 +87,11 @@ public class DailyAppointmentScheduleCollisionTests
     {
         // Given
         var schedule = new DailyAppointmentSchedule(_scheduleDate);
-        schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0));
+        schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m));
         
         // When
         var exception = Assert.Throws<ArgumentException>(() => 
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(9, 0), new TimeOnly(12, 0)));
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(9, 0), new TimeOnly(12, 0), new Money(100.00m)));
         
         // Then
         exception!.Message.ShouldBe("Appointment time slot conflicts with existing appointment");
@@ -104,10 +105,10 @@ public class DailyAppointmentScheduleCollisionTests
     {
         // Given
         var schedule = new DailyAppointmentSchedule(_scheduleDate);
-        var firstAppointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0));
+        var firstAppointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m));
         
         // When
-        var secondAppointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(9, 0), new TimeOnly(10, 0));
+        var secondAppointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(9, 0), new TimeOnly(10, 0), new Money(100.00m));
 
         // Then
         var snapshot = schedule.CreateSnapshot();
@@ -127,10 +128,10 @@ public class DailyAppointmentScheduleCollisionTests
     {
         // Given
         var schedule = new DailyAppointmentSchedule(_scheduleDate);
-        var firstAppointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0));
+        var firstAppointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m));
         
         // When
-        var secondAppointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(11, 0), new TimeOnly(12, 0));
+        var secondAppointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(11, 0), new TimeOnly(12, 0), new Money(100.00m));
 
         // Then
         var snapshot = schedule.CreateSnapshot();
@@ -151,12 +152,12 @@ public class DailyAppointmentScheduleCollisionTests
         // Given
         var schedule = new DailyAppointmentSchedule(_scheduleDate);
         
-        schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(9, 0), new TimeOnly(10, 0));
-        schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(11, 0), new TimeOnly(12, 0));
+        schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(9, 0), new TimeOnly(10, 0), new Money(100.00m));
+        schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(11, 0), new TimeOnly(12, 0), new Money(100.00m));
         
         // When
         var exception = Assert.Throws<ArgumentException>(() => 
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(9, 30), new TimeOnly(10, 30)));
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(9, 30), new TimeOnly(10, 30), new Money(100.00m)));
         
         // Then
         exception!.Message.ShouldBe("Appointment time slot conflicts with existing appointment");

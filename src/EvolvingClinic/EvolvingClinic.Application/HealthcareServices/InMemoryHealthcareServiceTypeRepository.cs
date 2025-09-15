@@ -27,7 +27,8 @@ public class InMemoryHealthcareServiceTypeRepository : IHealthcareServiceTypeRep
         return Task.FromResult(new HealthcareServiceTypeDto(
             snapshot.Code,
             snapshot.Name,
-            snapshot.Duration));
+            snapshot.Duration,
+            snapshot.Price.Value));
     }
 
     public Task<IReadOnlyList<HealthcareServiceTypeDto>> GetAllDtos()
@@ -38,7 +39,8 @@ public class InMemoryHealthcareServiceTypeRepository : IHealthcareServiceTypeRep
             return new HealthcareServiceTypeDto(
                 snapshot.Code,
                 snapshot.Name,
-                snapshot.Duration
+                snapshot.Duration,
+                snapshot.Price.Value
             );
         }).ToList();
 
