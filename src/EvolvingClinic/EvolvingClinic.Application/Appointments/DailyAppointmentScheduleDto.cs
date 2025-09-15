@@ -7,5 +7,6 @@ public record DailyAppointmentScheduleDto(
 public record ScheduledAppointmentDto(
     Guid Id,
     Guid PatientId,
+    string HealthcareServiceTypeCode,
     DateTime StartTime,
     DateTime EndTime);
