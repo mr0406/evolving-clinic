@@ -1,4 +1,5 @@
 using EvolvingClinic.Application.Appointments;
+using EvolvingClinic.Application.HealthcareServices;
 using EvolvingClinic.Application.Patients;
 using Reqnroll;
 
@@ -10,7 +11,8 @@ public class TestHooks
     [BeforeScenario]
     public void BeforeScenario()
     {
-        InMemoryDailyAppointmentScheduleRepository.Clear();
         InMemoryPatientRepository.Clear();
+        InMemoryHealthcareServiceTypeRepository.Clear();
+        InMemoryDailyAppointmentScheduleRepository.Clear();
     }
 }
