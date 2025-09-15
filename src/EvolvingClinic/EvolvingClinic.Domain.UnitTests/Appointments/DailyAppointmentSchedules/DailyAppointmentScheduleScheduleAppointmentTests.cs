@@ -15,12 +15,12 @@ public class DailyAppointmentScheduleScheduleAppointmentTests
         var schedule = new DailyAppointmentSchedule(scheduleDate);
 
         var firstPatientId = Guid.NewGuid();
-        var firstAppointment = schedule.ScheduleAppointment(firstPatientId, new TimeOnly(9, 0), new TimeOnly(10, 0));
+        var firstAppointment = schedule.ScheduleAppointment(firstPatientId, "TEST", new TimeOnly(9, 0), new TimeOnly(10, 0));
 
         var secondPatientId = Guid.NewGuid();
 
         // When
-        var secondAppointment = schedule.ScheduleAppointment(secondPatientId, new TimeOnly(11, 0), new TimeOnly(12, 0));
+        var secondAppointment = schedule.ScheduleAppointment(secondPatientId, "TEST", new TimeOnly(11, 0), new TimeOnly(12, 0));
 
         // Then
         var snapshot = schedule.CreateSnapshot();
@@ -46,7 +46,7 @@ public class DailyAppointmentScheduleScheduleAppointmentTests
         var patientId = Guid.NewGuid();
 
         // When
-        var appointment = schedule.ScheduleAppointment(patientId, new TimeOnly(10, 0), new TimeOnly(11, 0));
+        var appointment = schedule.ScheduleAppointment(patientId, "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0));
 
         // Then
         appointment.ShouldNotBeNull();

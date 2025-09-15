@@ -27,6 +27,7 @@ public class InMemoryDailyAppointmentScheduleRepository : IDailyAppointmentSched
         var appointmentDtos = snapshot.Appointments.Select(a => new ScheduledAppointmentDto(
             a.Id,
             a.PatientId,
+            a.HealthcareServiceTypeCode,
             a.StartTime,
             a.EndTime)).ToList();
 
