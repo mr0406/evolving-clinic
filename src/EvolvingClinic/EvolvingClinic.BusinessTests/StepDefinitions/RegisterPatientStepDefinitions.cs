@@ -84,8 +84,7 @@ public sealed class RegisterPatientStepDefinitions
         _scenarioPatientId.ShouldNotBe(Guid.Empty);
         _scenarioException.ShouldBeNull();
     }
-
-
+    
     [Then("the registered patient should be:")]
     public async Task ThenTheRegisteredPatientShouldBe(Table table)
     {

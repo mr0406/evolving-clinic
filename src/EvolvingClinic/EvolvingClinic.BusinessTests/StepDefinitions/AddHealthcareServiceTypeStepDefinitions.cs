@@ -1,5 +1,4 @@
 using EvolvingClinic.Application.Common;
-using EvolvingClinic.Application.HealthcareServices;
 using EvolvingClinic.Application.HealthcareServices.Commands;
 using EvolvingClinic.Application.HealthcareServices.Queries;
 using Reqnroll;
@@ -161,5 +160,4 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
             actual.EffectiveTo.ShouldBe(expected.EffectiveTo);
         }
     }
-
 }

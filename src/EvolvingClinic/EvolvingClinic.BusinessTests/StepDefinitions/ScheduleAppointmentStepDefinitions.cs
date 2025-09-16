@@ -14,8 +14,7 @@ public sealed class ScheduleAppointmentStepDefinitions
     private readonly Dispatcher _dispatcher = new();
     private DateOnly _scenarioDate;
     private Guid? _scenarioAppointmentId;
-
-
+    
     [Given("I have scheduled an appointment for {string} {string} with healthcare service type {string} on {string} at {string}")]
     public async Task GivenIHaveScheduledAnAppointmentFor(string firstName, string lastName, string serviceCode, string dateString, string startTimeString)
     {
@@ -26,7 +25,6 @@ public sealed class ScheduleAppointmentStepDefinitions
 
         await ScheduleAppointment(date, firstName, lastName, serviceCode, startTime);
     }
-    
     
     [When("I schedule an appointment for {string} {string} with healthcare service type {string} on {string} at {string}")]
     public async Task WhenIScheduleAnAppointmentFor(string firstName, string lastName, string serviceCode, string dateString, string startTimeString)
@@ -95,7 +93,6 @@ public sealed class ScheduleAppointmentStepDefinitions
         appointment.EndTime.ToString("HH:mm").ShouldBe(expectedRow["End Time"]);
         $"${appointment.Price}".ShouldBe(expectedRow["Price"]);
     }
-
     
     private async Task<Guid?> ScheduleAppointment(
         DateOnly date,
@@ -123,7 +120,4 @@ public sealed class ScheduleAppointmentStepDefinitions
 
         return await _dispatcher.Execute(command);
     }
-
-
-
 }

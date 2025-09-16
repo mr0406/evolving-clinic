@@ -1,5 +1,4 @@
 using EvolvingClinic.Application.Common;
-using EvolvingClinic.Domain.HealthcareServices;
 using EvolvingClinic.Domain.Shared;
 
 namespace EvolvingClinic.Application.HealthcareServices.Commands;

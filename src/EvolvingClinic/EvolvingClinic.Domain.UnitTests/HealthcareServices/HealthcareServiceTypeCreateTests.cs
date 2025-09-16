@@ -1,6 +1,5 @@
 using EvolvingClinic.Domain.HealthcareServices;
 using EvolvingClinic.Domain.Shared;
-using EvolvingClinic.Domain.Utils;
 using Shouldly;
 using NUnit.Framework;
 
