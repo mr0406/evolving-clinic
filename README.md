@@ -69,6 +69,7 @@ See [Clinic Overview](docs/clinic-overview.md) for the current operational state
 - [003 - Patient Registration](docs/iterations/003-patient-registration/patient-registration.md)
 - [004 - Appointment Duration Automation](docs/iterations/004-appointment-duration-automation/)
 - [005 - Service Pricing](docs/iterations/005-service-pricing/)
+- [006 - Price History Tracking](docs/iterations/006-price-history-tracking/)
 
 ## 📝 Development Logs
 
