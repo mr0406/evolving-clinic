@@ -13,14 +13,12 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
     private readonly Dispatcher _dispatcher = new();
     private string? _scenarioServiceTypeCode;
     private Exception? _scenarioException;
-    private AddHealthcareServiceTypeData? _scenarioServiceTypeData;
 
     [When("I add healthcare service type {string} with code {string}, duration {string} and price {string}")]
     public async Task WhenIAddHealthcareServiceType(string name, string code, string duration, string price)
     {
         var timeSpan = ParseDuration(duration);
         var priceValue = ParsePrice(price);
-        _scenarioServiceTypeData = new(name, code, timeSpan, priceValue);
 
         try
         {
@@ -53,20 +51,29 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
         _scenarioException.ShouldBeNull();
     }
 
-    [Then("the healthcare service type should be added with the correct data")]
-    public async Task ThenTheHealthcareServiceTypeShouldBeAddedWithTheCorrectData()
+    [Then("the added healthcare service type should be:")]
+    public async Task ThenTheAddedHealthcareServiceTypeShouldBe(Table table)
     {
         _scenarioServiceTypeCode.ShouldNotBeNull();
-        _scenarioServiceTypeData.ShouldNotBeNull();
 
         var query = new GetHealthcareServiceTypeQuery(_scenarioServiceTypeCode);
         var serviceType = await _dispatcher.ExecuteQuery(query);
 
         serviceType.ShouldNotBeNull();
-        serviceType.Code.ShouldBe(_scenarioServiceTypeData.Code);
-        serviceType.Name.ShouldBe(_scenarioServiceTypeData.Name);
-        serviceType.Duration.ShouldBe(_scenarioServiceTypeData.Duration);
-        serviceType.Price.ShouldBe(_scenarioServiceTypeData.Price);
+
+        var expectedRow = table.Rows[0];
+
+        serviceType.Name.ShouldBe(expectedRow["Service Name"]);
+        serviceType.Code.ShouldBe(expectedRow["Code"]);
+        serviceType.Duration.ShouldBe(ParseDuration(expectedRow["Duration"]));
+        serviceType.Price.ShouldBe(ParsePrice(expectedRow["Current Price"]));
+
+        // Validate price history
+        serviceType.PriceHistory.Count.ShouldBe(1);
+        var historyEntry = serviceType.PriceHistory[0];
+        historyEntry.Price.ShouldBe(ParsePrice(expectedRow["Current Price"]));
+        historyEntry.EffectiveFrom.ShouldBe(DateOnly.Parse(expectedRow["Price History From"]));
+        historyEntry.EffectiveTo.ShouldBe(string.IsNullOrEmpty(expectedRow["Price History To"]) ? null : DateOnly.Parse(expectedRow["Price History To"]));
     }
 
     [Then("there should be {int} healthcare service types in the system")]
@@ -154,9 +161,4 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
         }
     }
 
-    private record AddHealthcareServiceTypeData(
-        string Name,
-        string Code,
-        TimeSpan Duration,
-        decimal Price);
 }

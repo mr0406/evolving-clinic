@@ -9,6 +9,9 @@ Scenario: Schedule a new appointment
 	And healthcare service type "Routine Check-up" with code "RCU", duration "60 minutes" and price "$120.00" exists
 	When I schedule an appointment for "John" "Smith" with service "RCU" on "2024-01-15" at "10:00"
 	Then the appointment should be scheduled successfully
+	And the scheduled appointment should be:
+		| Patient Name | Service Code | Service Name     | Date       | Start Time | End Time | Price   |
+		| John Smith   | RCU          | Routine Check-up | 2024-01-15 | 10:00      | 11:00    | $120.00 |
 	And there should be 1 appointments in the schedule
 
 Scenario: Schedule two consecutive appointments
@@ -18,6 +21,9 @@ Scenario: Schedule two consecutive appointments
 	And I have scheduled an appointment for "Alice" "Johnson" with service "RCU" on "2024-01-15" at "09:00"
 	When I schedule an appointment for "Bob" "Wilson" with service "RCU" on "2024-01-15" at "10:00"
 	Then the appointment should be scheduled successfully
+	And the scheduled appointment should be:
+		| Patient Name | Service Code | Service Name     | Date       | Start Time | End Time | Price   |
+		| Bob Wilson   | RCU          | Routine Check-up | 2024-01-15 | 10:00      | 11:00    | $120.00 |
 	And there should be 2 appointments in the schedule
 
 Scenario: Cannot schedule overlapping appointment
