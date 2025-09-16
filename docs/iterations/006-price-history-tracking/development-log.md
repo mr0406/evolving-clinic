@@ -56,3 +56,29 @@
   - **Time simulation**: Easy testing of multi-day price change scenarios
   - **Production transparency**: Zero performance overhead, behaves exactly like DateTime.Today
   - **Test isolation**: Each test can control its own time context
+
+### 6. Explicit Table Validation in BDD Tests
+**Decision**: Replace generic "should be registered with correct data" assertions with explicit business-friendly tables.
+- **Problem**:
+  - Hidden validation logic in step definitions made tests opaque
+  - Business stakeholders couldn't understand what was actually being verified
+  - "Magic" assertions like "should have correct data" provided no insight into expectations
+- **Solution**: Use explicit table validation showing all expected data in business language
+- **Implementation**:
+  ```gherkin
+  Then the registered patient should be:
+    | First Name | Last Name | Date of Birth | Phone Number  | Street Address    | Postal Code | City     |
+    | Patrick    | Jones     | 1985-03-20    | +1 5551234567 | Main Street 123 A | 10001       | New York |
+  ```
+- **Benefits**:
+  - **Business transparency**: Stakeholders can see exactly what's being validated
+  - **No hidden magic**: All expectations are explicitly stated in the feature file
+  - **Natural language**: Uses business terms like "First Name" instead of technical "Property/Value"
+  - **Complete visibility**: Every field being validated is clearly shown
+  - **Maintainability**: Changes to validation are visible in the feature file, not buried in step definitions
+- **Trade-offs**:
+  - Slightly more verbose feature files
+  - Requires updating both feature and step definition for new fields
+- **Alternative considered**: Technical Property/Value table approach
+- **Why not**: Too technical, breaks business language of BDD, doesn't improve readability for stakeholders
+- **Code cleanup**: Removed intermediate data structures and simplified step definitions to focus only on table validation
