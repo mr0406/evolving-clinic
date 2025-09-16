@@ -12,27 +12,27 @@ namespace EvolvingClinic.BusinessTests.StepDefinitions;
 public sealed class ScheduleAppointmentStepDefinitions
 {
     private readonly Dispatcher _dispatcher = new();
-    private ScheduleAppointmentData? _scenarioScheduleAppointmentData;
+    private DateOnly _scenarioDate;
     private Guid? _scenarioAppointmentId;
-
-
-    [Given("I have scheduled an appointment for {string} {string} with service {string} on {string} at {string}")]
+    
+    [Given("I have scheduled an appointment for {string} {string} with healthcare service type {string} on {string} at {string}")]
     public async Task GivenIHaveScheduledAnAppointmentFor(string firstName, string lastName, string serviceCode, string dateString, string startTimeString)
     {
         var date = DateOnly.Parse(dateString);
         var startTime = TimeOnly.Parse(startTimeString);
 
+        _scenarioDate = date;
+
         await ScheduleAppointment(date, firstName, lastName, serviceCode, startTime);
     }
     
-    
-    [When("I schedule an appointment for {string} {string} with service {string} on {string} at {string}")]
+    [When("I schedule an appointment for {string} {string} with healthcare service type {string} on {string} at {string}")]
     public async Task WhenIScheduleAnAppointmentFor(string firstName, string lastName, string serviceCode, string dateString, string startTimeString)
     {
         var date = DateOnly.Parse(dateString);
         var startTime = TimeOnly.Parse(startTimeString);
 
-        _scenarioScheduleAppointmentData = new(date, serviceCode, startTime);
+        _scenarioDate = date;
 
         try
         {
@@ -51,41 +51,47 @@ public sealed class ScheduleAppointmentStepDefinitions
         _scenarioAppointmentId.ShouldNotBe(Guid.Empty);
     }
 
-    [Then("there should be {int} appointments in the schedule")]
-    public async Task ThenThereShouldBeAppointmentsInTheSchedule(int expectedCount)
+    [Then("there should be {int} appointment")]
+    [Then("there should be {int} appointments")]
+    public async Task ThenThereShouldBeAppointments(int expectedCount)
     {
-        _scenarioScheduleAppointmentData.ShouldNotBeNull();
-        
-        var query = new GetDailyAppointmentScheduleQuery(_scenarioScheduleAppointmentData.Date);
+        var query = new GetDailyAppointmentScheduleQuery(_scenarioDate);
         var schedule = await _dispatcher.ExecuteQuery(query);
 
         schedule.ShouldNotBeNull();
-        schedule.Date.ShouldBe(_scenarioScheduleAppointmentData.Date);
+        schedule.Date.ShouldBe(_scenarioDate);
         schedule.Appointments.Count.ShouldBe(expectedCount);
-
-        if (_scenarioAppointmentId.HasValue)
-        {
-            var scenarioAppointment = schedule.Appointments.Single(a => a.Id == _scenarioAppointmentId.Value);
-            scenarioAppointment.PatientId.ShouldNotBe(Guid.Empty);
-            scenarioAppointment.HealthcareServiceTypeCode.ShouldBe(_scenarioScheduleAppointmentData.ServiceCode);
-            scenarioAppointment.StartTime.ShouldBe(_scenarioScheduleAppointmentData.Date.ToDateTime(_scenarioScheduleAppointmentData.StartTime));
-
-            var serviceTypeQuery = new GetHealthcareServiceTypeQuery(_scenarioScheduleAppointmentData.ServiceCode);
-            var serviceType = await _dispatcher.ExecuteQuery(serviceTypeQuery);
-            scenarioAppointment.Price.ShouldBe(serviceType.Price);
-        }
     }
 
-    [Then("the appointment should fail to be scheduled")]
-    public void ThenTheAppointmentShouldFailToBeScheduled()
+    [Then("the scheduled appointment should be:")]
+    public async Task ThenTheScheduledAppointmentShouldBe(Table table)
     {
-        _scenarioAppointmentId.ShouldBeNull();
-    }
+        _scenarioAppointmentId.ShouldNotBeNull();
 
-    [Then("there should be no appointments in the schedule")]
-    public async Task ThenThereShouldBeNoAppointmentsInTheSchedule()
-    {
-        await ThenThereShouldBeAppointmentsInTheSchedule(0);
+        var query = new GetDailyAppointmentScheduleQuery(_scenarioDate);
+        var schedule = await _dispatcher.ExecuteQuery(query);
+
+        schedule.ShouldNotBeNull();
+        var appointment = schedule.Appointments.Single(a => a.Id == _scenarioAppointmentId.Value);
+
+        var expectedRow = table.Rows[0];
+
+        // Get patient name
+        var patientQuery = new GetPatientQuery(appointment.PatientId);
+        var patient = await _dispatcher.ExecuteQuery(patientQuery);
+        var patientName = $"{patient.Name.FirstName} {patient.Name.LastName}";
+
+        // Get service type details
+        var serviceTypeQuery = new GetHealthcareServiceTypeQuery(appointment.HealthcareServiceTypeCode);
+        var serviceType = await _dispatcher.ExecuteQuery(serviceTypeQuery);
+
+        patientName.ShouldBe(expectedRow["Patient Name"]);
+        appointment.HealthcareServiceTypeCode.ShouldBe(expectedRow["Healthcare Service Code"]);
+        serviceType.Name.ShouldBe(expectedRow["Healthcare Service Name"]);
+        appointment.StartTime.ToString("yyyy-MM-dd").ShouldBe(expectedRow["Date"]);
+        appointment.StartTime.ToString("HH:mm").ShouldBe(expectedRow["Start Time"]);
+        appointment.EndTime.ToString("HH:mm").ShouldBe(expectedRow["End Time"]);
+        $"${appointment.Price}".ShouldBe(expectedRow["Price"]);
     }
     
     private async Task<Guid?> ScheduleAppointment(
@@ -114,11 +120,4 @@ public sealed class ScheduleAppointmentStepDefinitions
 
         return await _dispatcher.Execute(command);
     }
-
-
-    private record ScheduleAppointmentData(
-        DateOnly Date,
-        string ServiceCode,
-        TimeOnly StartTime);
-
 }

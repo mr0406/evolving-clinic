@@ -4,8 +4,7 @@ using NUnit.Framework;
 
 namespace EvolvingClinic.Domain.UnitTests.Shared;
 
-[TestFixture]
-public class PersonNameCreateTests
+public class PersonNameCreateTests : TestBase
 {
     [Test]
     public void GivenValidFirstAndLastName_WhenCreatePersonName_ThenIsCreatedSuccessfully()

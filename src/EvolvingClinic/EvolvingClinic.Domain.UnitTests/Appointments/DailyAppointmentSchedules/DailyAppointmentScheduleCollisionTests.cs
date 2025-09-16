@@ -5,8 +5,7 @@ using NUnit.Framework;
 
 namespace EvolvingClinic.Domain.UnitTests.Appointments.DailyAppointmentSchedules;
 
-[TestFixture]
-public class DailyAppointmentScheduleCollisionTests
+public class DailyAppointmentScheduleCollisionTests : TestBase
 {
     private readonly DateOnly _scheduleDate = new(2024, 1, 15);
 

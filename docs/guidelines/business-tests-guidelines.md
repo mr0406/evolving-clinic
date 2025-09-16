@@ -51,9 +51,43 @@ BDD follows natural language patterns where each step type has a specific gramma
 - Example: `ScheduleAppointment.feature` uses both `RegisterPatientStepDefinitions` (for setup) and `ScheduleAppointmentStepDefinitions` (for the main action)
 - Each step definition class maintains its single responsibility regardless of which features use it
 
+## Validation Patterns
+
+### Explicit Table Validation
+
+Use explicit business-friendly tables instead of hidden "magic" assertions:
+
+**✅ Good - Explicit validation:**
+```gherkin
+Then the registered patient should be:
+  | First Name | Last Name | Date of Birth | Phone Number  | Street Address    | Postal Code | City     |
+  | Patrick    | Jones     | 1985-03-20    | +1 5551234567 | Main Street 123 A | 10001       | New York |
+```
+
+**❌ Bad - Hidden magic:**
+```gherkin
+Then the patient should be registered with the correct data
+```
+
+**Benefits:**
+- Business stakeholders can see exactly what's being validated
+- No hidden validation logic buried in step definitions
+- Uses natural business language (not technical Property/Value pairs)
+- Complete transparency of expectations
+- Changes to validation are visible in feature files
+
+**Implementation:**
+- Use business column names: "First Name" not "firstName"
+- Single row for entity validation
+- Step definitions focus only on table parsing, not data storage
+- Remove intermediate data structures - validate directly from table
+
 ## Anti-Patterns
 
 ❌ Cross-domain logic (appointment steps creating patients) \
 ❌ Shared utilities between step definition classes \
 ❌ Technical language in feature files \
-❌ God classes with multiple domain responsibilities
+❌ God classes with multiple domain responsibilities \
+❌ Hidden validation logic in step definitions \
+❌ Generic assertions like "should have correct data" \
+❌ Technical Property/Value table structures

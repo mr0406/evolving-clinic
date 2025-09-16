@@ -4,8 +4,7 @@ using NUnit.Framework;
 
 namespace EvolvingClinic.Domain.UnitTests.Appointments.AppointmentTimeSlots;
 
-[TestFixture]
-public class AppointmentTimeSlotCreateTests
+public class AppointmentTimeSlotCreateTests : TestBase
 {
     [Test]
     public void GivenValidDateAndTimes_WhenCreateAppointmentTimeSlot_ThenIsCreatedSuccessfully()

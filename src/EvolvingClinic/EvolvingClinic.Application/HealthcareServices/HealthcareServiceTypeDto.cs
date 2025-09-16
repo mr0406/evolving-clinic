@@ -4,4 +4,10 @@ public record HealthcareServiceTypeDto(
     string Code,
     string Name,
     TimeSpan Duration,
-    decimal Price);
+    decimal Price,
+    IReadOnlyList<PriceHistoryEntryData> PriceHistory);
+
+public record PriceHistoryEntryData(
+    decimal Price,
+    DateOnly EffectiveFrom,
+    DateOnly? EffectiveTo);

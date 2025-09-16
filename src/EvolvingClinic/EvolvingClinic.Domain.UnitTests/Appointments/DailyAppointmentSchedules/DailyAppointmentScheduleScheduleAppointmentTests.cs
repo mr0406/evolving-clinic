@@ -5,8 +5,7 @@ using NUnit.Framework;
 
 namespace EvolvingClinic.Domain.UnitTests.Appointments.DailyAppointmentSchedules;
 
-[TestFixture]
-public class DailyAppointmentScheduleScheduleAppointmentTests
+public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
 {
     [Test]
     public void GivenDailyAppointmentScheduleWithOneAppointment_WhenScheduleSecondValidAppointment_ThenBothAreScheduled()

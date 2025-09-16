@@ -5,8 +5,7 @@ using NUnit.Framework;
 
 namespace EvolvingClinic.Domain.UnitTests.Patients;
 
-[TestFixture]
-public class PatientRegisterTests
+public class PatientRegisterTests : TestBase
 {
     [Test]
     public void GivenValidPatientData_WhenRegisterPatient_ThenIsRegisteredSuccessfully()

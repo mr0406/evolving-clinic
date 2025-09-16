@@ -4,8 +4,7 @@ using NUnit.Framework;
 
 namespace EvolvingClinic.Domain.UnitTests.Shared;
 
-[TestFixture]
-public class PhoneNumberCreateTests
+public class PhoneNumberCreateTests : TestBase
 {
     [Test]
     public void GivenValidCountryCodeAndNumber_WhenCreatePhoneNumber_ThenIsCreatedSuccessfully()

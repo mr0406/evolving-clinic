@@ -11,11 +11,14 @@ public sealed class RegisterPatientStepDefinitions
 {
     private readonly Dispatcher _dispatcher = new();
     private Guid? _scenarioPatientId;
-    private RegisterPatientData? _scenarioRegisterPatientData;
     private Exception? _scenarioException;
 
     [When("I register a patient {string} born on {string} with phone {string} and address {string}")]
-    public async Task WhenIRegisterAPatient(string fullName, string dateOfBirth, string phoneNumberFull, string addressFull)
+    public async Task WhenIRegisterAPatient(
+        string fullName, 
+        string dateOfBirth, 
+        string phoneNumberFull, 
+        string addressFull)
     {
         var nameParts = fullName.Split(' ');
         var firstName = nameParts[0];
@@ -40,12 +43,20 @@ public sealed class RegisterPatientStepDefinitions
         var cityWords = cityPart.Split(' ');
         var postalCode = cityWords[0]; // "10001"
         var city = string.Join(" ", cityWords.Skip(1)); // "New York"
-        
-        _scenarioRegisterPatientData = new(firstName, lastName, birthDate, countryCode, phoneNumber, street, houseNumber, apartment, postalCode, city);
 
         try
         {
-            _scenarioPatientId = await RegisterPatient(firstName, lastName, birthDate, countryCode, phoneNumber, street, houseNumber, apartment, postalCode, city);
+            _scenarioPatientId = await RegisterPatient(
+                firstName, 
+                lastName, 
+                birthDate, 
+                countryCode, 
+                phoneNumber, 
+                street, 
+                houseNumber, 
+                apartment, 
+                postalCode, 
+                city);
         }
         catch (Exception ex)
         {
@@ -73,31 +84,39 @@ public sealed class RegisterPatientStepDefinitions
         _scenarioPatientId.ShouldNotBe(Guid.Empty);
         _scenarioException.ShouldBeNull();
     }
-
-    [Then("the patient should be registered with the correct data")]
-    public async Task ThenThePatientShouldBeRegisteredWithTheCorrectData()
+    
+    [Then("the registered patient should be:")]
+    public async Task ThenTheRegisteredPatientShouldBe(Table table)
     {
         _scenarioPatientId.ShouldNotBeNull();
-        _scenarioRegisterPatientData.ShouldNotBeNull();
 
         var query = new GetPatientQuery(_scenarioPatientId.Value);
         var patient = await _dispatcher.ExecuteQuery(query);
 
         patient.ShouldNotBeNull();
-        patient.Id.ShouldBe(_scenarioPatientId.Value);
-        patient.Name.FirstName.ShouldBe(_scenarioRegisterPatientData.FirstName);
-        patient.Name.LastName.ShouldBe(_scenarioRegisterPatientData.LastName);
-        patient.DateOfBirth.ShouldBe(_scenarioRegisterPatientData.DateOfBirth);
-        patient.PhoneNumber.CountryCode.ShouldBe(_scenarioRegisterPatientData.CountryCode);
-        patient.PhoneNumber.Number.ShouldBe(_scenarioRegisterPatientData.PhoneNumber);
-        patient.Address.Street.ShouldBe(_scenarioRegisterPatientData.Street);
-        patient.Address.HouseNumber.ShouldBe(_scenarioRegisterPatientData.HouseNumber);
-        patient.Address.Apartment.ShouldBe(_scenarioRegisterPatientData.Apartment);
-        patient.Address.PostalCode.ShouldBe(_scenarioRegisterPatientData.PostalCode);
-        patient.Address.City.ShouldBe(_scenarioRegisterPatientData.City);
+
+        var expectedRow = table.Rows[0];
+
+        patient.Name.FirstName.ShouldBe(expectedRow["First Name"]);
+        patient.Name.LastName.ShouldBe(expectedRow["Last Name"]);
+        patient.DateOfBirth.ToString("yyyy-MM-dd").ShouldBe(expectedRow["Date of Birth"]);
+        $"{patient.PhoneNumber.CountryCode} {patient.PhoneNumber.Number}".ShouldBe(expectedRow["Phone Number"]);
+        $"{patient.Address.Street} {patient.Address.HouseNumber} {patient.Address.Apartment}".Trim().ShouldBe(expectedRow["Street Address"]);
+        patient.Address.PostalCode.ShouldBe(expectedRow["Postal Code"]);
+        patient.Address.City.ShouldBe(expectedRow["City"]);
     }
     
-    private async Task<Guid> RegisterPatient(string firstName, string lastName, DateOnly dateOfBirth, string countryCode, string phoneNumber, string street, string houseNumber, string apartment, string postalCode, string city)
+    private async Task<Guid> RegisterPatient(
+        string firstName, 
+        string lastName, 
+        DateOnly dateOfBirth, 
+        string countryCode, 
+        string phoneNumber, 
+        string street, 
+        string houseNumber, 
+        string apartment, 
+        string postalCode, 
+        string city)
     {
         var command = new RegisterPatientCommand(
             new RegisterPatientCommand.PersonNameData(firstName, lastName),
@@ -107,16 +126,4 @@ public sealed class RegisterPatientStepDefinitions
 
         return await _dispatcher.Execute(command);
     }
-
-    private record RegisterPatientData(
-        string FirstName,
-        string LastName,
-        DateOnly DateOfBirth,
-        string CountryCode,
-        string PhoneNumber,
-        string Street,
-        string HouseNumber,
-        string Apartment,
-        string PostalCode,
-        string City);
 }

@@ -5,8 +5,7 @@ using NUnit.Framework;
 
 namespace EvolvingClinic.Domain.UnitTests.Appointments.DailyAppointmentSchedules;
 
-[TestFixture]
-public class DailyAppointmentScheduleBusinessHoursTests
+public class DailyAppointmentScheduleBusinessHoursTests : TestBase
 {
     [TestCase(DayOfWeek.Saturday)]
     [TestCase(DayOfWeek.Sunday)]

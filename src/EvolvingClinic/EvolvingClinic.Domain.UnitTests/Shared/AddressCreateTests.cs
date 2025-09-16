@@ -4,8 +4,7 @@ using NUnit.Framework;
 
 namespace EvolvingClinic.Domain.UnitTests.Shared;
 
-[TestFixture]
-public class AddressCreateTests
+public class AddressCreateTests : TestBase
 {
     [Test]
     public void GivenValidAddressComponents_WhenCreateAddress_ThenIsCreatedSuccessfully()

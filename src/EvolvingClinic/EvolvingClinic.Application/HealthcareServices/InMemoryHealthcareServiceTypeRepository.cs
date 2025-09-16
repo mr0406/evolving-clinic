@@ -28,9 +28,13 @@ public class InMemoryHealthcareServiceTypeRepository : IHealthcareServiceTypeRep
             snapshot.Code,
             snapshot.Name,
             snapshot.Duration,
-            snapshot.Price.Value));
+            snapshot.Price.Value,
+            snapshot.PriceHistory.Select(ph => new PriceHistoryEntryData(
+                ph.Price.Value,
+                ph.EffectiveFrom,
+                ph.EffectiveTo)).ToList()));
     }
-
+    
     public Task<IReadOnlyList<HealthcareServiceTypeDto>> GetAllDtos()
     {
         var dtos = _healthcareServiceTypes.Select(s =>
@@ -40,7 +44,11 @@ public class InMemoryHealthcareServiceTypeRepository : IHealthcareServiceTypeRep
                 snapshot.Code,
                 snapshot.Name,
                 snapshot.Duration,
-                snapshot.Price.Value
+                snapshot.Price.Value,
+                snapshot.PriceHistory.Select(ph => new PriceHistoryEntryData(
+                    ph.Price.Value,
+                    ph.EffectiveFrom,
+                    ph.EffectiveTo)).ToList()
             );
         }).ToList();
 
