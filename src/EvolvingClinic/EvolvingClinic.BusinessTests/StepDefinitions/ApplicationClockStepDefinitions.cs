@@ -7,12 +7,14 @@ namespace EvolvingClinic.BusinessTests.StepDefinitions;
 public class ApplicationClockStepDefinitions
 {
     [Given(@"'(.*)' date")]
+    [Given(@"""(.*)"" date")]
     public void GivenDate(string date)
     {
         ApplicationClock.SetDate(DateOnly.Parse(date));
     }
 
     [When(@"'(.*)' date")]
+    [When(@"""(.*)"" date")]
     public void WhenDate(string date)
     {
         ApplicationClock.SetDate(DateOnly.Parse(date));

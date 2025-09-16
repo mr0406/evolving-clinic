@@ -63,7 +63,7 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
 
         var expectedRow = table.Rows[0];
 
-        serviceType.Name.ShouldBe(expectedRow["Service Name"]);
+        serviceType.Name.ShouldBe(expectedRow["Healthcare Service Name"]);
         serviceType.Code.ShouldBe(expectedRow["Code"]);
         serviceType.Duration.ShouldBe(ParseDuration(expectedRow["Duration"]));
         serviceType.Price.ShouldBe(ParsePrice(expectedRow["Current Price"]));
@@ -76,8 +76,9 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
         historyEntry.EffectiveTo.ShouldBe(string.IsNullOrEmpty(expectedRow["Price History To"]) ? null : DateOnly.Parse(expectedRow["Price History To"]));
     }
 
-    [Then("there should be {int} healthcare service types in the system")]
-    public async Task ThenThereShouldBeHealthcareServiceTypesInTheSystem(int expectedCount)
+    [Then("there should be {int} healthcare service type")]
+    [Then("there should be {int} healthcare service types")]
+    public async Task ThenThereShouldBeHealthcareServiceTypes(int expectedCount)
     {
         var query = new GetAllHealthcareServiceTypesQuery();
         var serviceTypes = await _dispatcher.ExecuteQuery(query);
@@ -144,8 +145,8 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
         var expectedEntries = table.Rows.Select(row => new
         {
             Price = ParsePrice(row["Price"]),
-            EffectiveFrom = DateOnly.Parse(row["EffectiveFrom"]),
-            EffectiveTo = string.IsNullOrEmpty(row["EffectiveTo"]) ? (DateOnly?)null : DateOnly.Parse(row["EffectiveTo"])
+            EffectiveFrom = DateOnly.Parse(row["Effective From"]),
+            EffectiveTo = string.IsNullOrEmpty(row["Effective To"]) ? (DateOnly?)null : DateOnly.Parse(row["Effective To"])
         }).ToList();
 
         serviceType.PriceHistory.Count.ShouldBe(expectedEntries.Count);
