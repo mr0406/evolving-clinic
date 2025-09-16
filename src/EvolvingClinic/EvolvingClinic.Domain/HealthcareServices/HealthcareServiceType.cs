@@ -1,4 +1,5 @@
 using EvolvingClinic.Domain.Shared;
+using EvolvingClinic.Domain.Utils;
 
 namespace EvolvingClinic.Domain.HealthcareServices;
 
@@ -8,6 +9,7 @@ public class HealthcareServiceType
     private string _name;
     private TimeSpan _duration;
     private Money _price;
+    private List<PriceHistoryEntry> _priceHistory;
 
     private HealthcareServiceType(
         string name,
@@ -18,7 +20,8 @@ public class HealthcareServiceType
         Code = code;
         _name = name;
         _duration = duration;
-        _price = price;
+        _priceHistory = new List<PriceHistoryEntry>();
+        ApplyPriceChange(price);
     }
 
     public static HealthcareServiceType Create(
@@ -62,11 +65,6 @@ public class HealthcareServiceType
             throw new ArgumentException("Service duration cannot exceed 8 hours");
         }
 
-        if (price.Value < 0)
-        {
-            throw new ArgumentException("Service price must be 0 or greater");
-        }
-
         return new HealthcareServiceType(
             name,
             code,
@@ -80,12 +78,51 @@ public class HealthcareServiceType
             Code,
             _name,
             _duration,
-            _price);
+            _price,
+            _priceHistory.AsReadOnly());
+    }
+
+    public void ChangePrice(Money newPrice)
+    {
+        ApplyPriceChange(newPrice);
+    }
+
+    private void ApplyPriceChange(Money newPrice)
+    {
+        if (newPrice.Value < 0)
+        {
+            throw new ArgumentException("Service price must be 0 or greater");
+        }
+
+        var today = ApplicationClock.Today;
+        var todayEntry = _priceHistory.SingleOrDefault(e => e.EffectiveFrom == today);
+
+        if (todayEntry != null)
+        {
+            var index = _priceHistory.IndexOf(todayEntry);
+            _priceHistory[index] = todayEntry with { Price = newPrice };
+            _price = newPrice;
+
+            return;
+        }
+
+        var currentEntry = _priceHistory.SingleOrDefault(e => e.EffectiveTo == null);
+        if (currentEntry != null)
+        {
+            var index = _priceHistory.IndexOf(currentEntry);
+            _priceHistory[index] = currentEntry with { EffectiveTo = today.AddDays(-1) };
+        }
+
+        _priceHistory.Add(new PriceHistoryEntry(newPrice, today, null));
+        _price = newPrice;
     }
 
     public record Snapshot(
         string Code,
         string Name,
         TimeSpan Duration,
-        Money Price);
+        Money Price,
+        IReadOnlyList<PriceHistoryEntry> PriceHistory);
+
+    public record PriceHistoryEntry(Money Price, DateOnly EffectiveFrom, DateOnly? EffectiveTo);
 }

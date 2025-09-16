@@ -16,6 +16,7 @@ This document describes the current operational state of Dr. Smith's medical pra
 - Each service has a name, code, predefined duration, and fixed price (e.g., "Routine Check-up", 30 minutes, $100.00)
 - Service types must be registered before appointments can be scheduled
 - Consistent pricing eliminates manual price entry errors
+- Complete price history tracking maintains records of all pricing changes with effective dates
 
 ## Appointment Scheduling
 - No more double bookings

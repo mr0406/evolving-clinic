@@ -4,8 +4,7 @@ using NUnit.Framework;
 
 namespace EvolvingClinic.Domain.UnitTests.Appointments.AppointmentTimeSlots;
 
-[TestFixture]
-public class AppointmentTimeSlotOverlapsWithTests
+public class AppointmentTimeSlotOverlapsWithTests : TestBase
 {
     private readonly DateOnly _testDate = new(2024, 1, 15);
 

@@ -4,8 +4,7 @@ using NUnit.Framework;
 
 namespace EvolvingClinic.Domain.UnitTests.Appointments.DailyAppointmentSchedules;
 
-[TestFixture]
-public class DailyAppointmentScheduleCreateTests
+public class DailyAppointmentScheduleCreateTests : TestBase
 {
     [Test]
     public void GivenValidDate_WhenCreateDailyAppointmentSchedule_ThenIsCreatedSuccessfully()

@@ -1,12 +1,12 @@
 using EvolvingClinic.Domain.HealthcareServices;
 using EvolvingClinic.Domain.Shared;
+using EvolvingClinic.Domain.Utils;
 using Shouldly;
 using NUnit.Framework;
 
 namespace EvolvingClinic.Domain.UnitTests.HealthcareServices;
 
-[TestFixture]
-public class HealthcareServiceTypeCreateTests
+public class HealthcareServiceTypeCreateTests : TestBase
 {
     [Test]
     public void GivenValidServiceData_WhenCreateHealthcareServiceType_ThenIsCreatedSuccessfully()
@@ -23,14 +23,20 @@ public class HealthcareServiceTypeCreateTests
         var serviceType = HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes);
 
         // Then
+        var expectedHistory = new[]
+        {
+            new HealthcareServiceType.PriceHistoryEntry(price, DateOnly.FromDateTime(DateTime.Now.Date), null)
+        };
+        
         serviceType.ShouldNotBeNull();
-        serviceType.Code.ShouldBe(code.ToUpperInvariant());
+        serviceType.Code.ShouldBe(code);
 
         var snapshot = serviceType.CreateSnapshot();
-        snapshot.Code.ShouldBe(code.ToUpperInvariant());
+        snapshot.Code.ShouldBe(code);
         snapshot.Name.ShouldBe(name);
         snapshot.Duration.ShouldBe(duration);
         snapshot.Price.ShouldBe(price);
+        snapshot.PriceHistory.ShouldBe(expectedHistory);
     }
 
     [Test]

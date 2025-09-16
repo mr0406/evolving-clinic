@@ -4,8 +4,7 @@ using NUnit.Framework;
 
 namespace EvolvingClinic.Domain.UnitTests.Shared;
 
-[TestFixture]
-public class MoneyCreateTests
+public class MoneyCreateTests : TestBase
 {
     [Test]
     public void GivenPositiveDecimal_WhenCreateMoney_ThenValueIsSet()
