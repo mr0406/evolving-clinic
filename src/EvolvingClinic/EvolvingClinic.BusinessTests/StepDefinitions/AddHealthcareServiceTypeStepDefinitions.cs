@@ -37,6 +37,7 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
     [Given("I add healthcare service type {string} with code {string}, duration {string} and price {string}")]
     [Given("I have added healthcare service type {string} with code {string}, duration {string} and price {string}")]
     [Given("healthcare service type {string} with code {string}, duration {string} and price {string} exists")]
+    [Given("I have a healthcare service type {string} with code {string}, duration {string}, and price {string}")]
     public async Task GivenIHaveAddedHealthcareServiceType(string name, string code, string duration, string price)
     {
         var timeSpan = ParseDuration(duration);
@@ -71,8 +72,8 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
     [Then("there should be {int} healthcare service types in the system")]
     public async Task ThenThereShouldBeHealthcareServiceTypesInTheSystem(int expectedCount)
     {
-        var repository = new InMemoryHealthcareServiceTypeRepository();
-        var serviceTypes = await repository.GetAllDtos();
+        var query = new GetAllHealthcareServiceTypesQuery();
+        var serviceTypes = await _dispatcher.ExecuteQuery(query);
         serviceTypes.Count.ShouldBe(expectedCount);
     }
 
@@ -105,6 +106,52 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
         }
 
         return decimal.Parse(price);
+    }
+
+    [When("I change healthcare service type price of {string} to {string}")]
+    public async Task WhenIChangeThePrice(string serviceCode, string newPrice)
+    {
+        var priceValue = ParsePrice(newPrice);
+        var command = new ChangeHealthcareServiceTypePriceCommand(serviceCode, priceValue);
+        await _dispatcher.Execute(command);
+    }
+
+    [Then("the current price should be {string}")]
+    public async Task ThenTheCurrentPriceShouldBe(string expectedPrice)
+    {
+        _scenarioServiceTypeCode.ShouldNotBeNull();
+        var query = new GetHealthcareServiceTypeQuery(_scenarioServiceTypeCode);
+        var serviceType = await _dispatcher.ExecuteQuery(query);
+
+        var expectedPriceValue = ParsePrice(expectedPrice);
+        serviceType.Price.ShouldBe(expectedPriceValue);
+    }
+
+    [Then("the price history should contain exactly:")]
+    public async Task ThenThePriceHistoryShouldContain(Table table)
+    {
+        _scenarioServiceTypeCode.ShouldNotBeNull();
+        var query = new GetHealthcareServiceTypeQuery(_scenarioServiceTypeCode);
+        var serviceType = await _dispatcher.ExecuteQuery(query);
+
+        var expectedEntries = table.Rows.Select(row => new
+        {
+            Price = ParsePrice(row["Price"]),
+            EffectiveFrom = DateOnly.Parse(row["EffectiveFrom"]),
+            EffectiveTo = string.IsNullOrEmpty(row["EffectiveTo"]) ? (DateOnly?)null : DateOnly.Parse(row["EffectiveTo"])
+        }).ToList();
+
+        serviceType.PriceHistory.Count.ShouldBe(expectedEntries.Count);
+
+        for (int i = 0; i < expectedEntries.Count; i++)
+        {
+            var expected = expectedEntries[i];
+            var actual = serviceType.PriceHistory[i];
+
+            actual.Price.ShouldBe(expected.Price);
+            actual.EffectiveFrom.ShouldBe(expected.EffectiveFrom);
+            actual.EffectiveTo.ShouldBe(expected.EffectiveTo);
+        }
     }
 
     private record AddHealthcareServiceTypeData(
