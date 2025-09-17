@@ -7,59 +7,69 @@ namespace EvolvingClinic.Domain.UnitTests.Appointments.DailyAppointmentSchedules
 public class DailyAppointmentScheduleCreateTests : TestBase
 {
     [Test]
-    public void GivenValidDate_WhenCreateDailyAppointmentSchedule_ThenIsCreatedSuccessfully()
+    public void GivenValidKey_WhenCreateDailyAppointmentSchedule_ThenIsCreatedSuccessfully()
     {
         // Given
+        var doctorCode = "SMITH";
         var scheduleDate = new DateOnly(2024, 1, 15);
+        var key = new DailyAppointmentSchedule.Key(doctorCode, scheduleDate);
 
         // When
-        var schedule = new DailyAppointmentSchedule(scheduleDate);
+        var schedule = new DailyAppointmentSchedule(key);
 
         // Then
         schedule.ShouldNotBeNull();
-        schedule.Date.ShouldBe(scheduleDate);
+        schedule.ScheduleKey.ShouldBe(key);
+        schedule.ScheduleKey.DoctorCode.ShouldBe(doctorCode);
+        schedule.ScheduleKey.Date.ShouldBe(scheduleDate);
     }
 
     [Test]
-    public void GivenValidDate_WhenCreateDailyAppointmentSchedule_ThenHasNoAppointments()
+    public void GivenValidKey_WhenCreateDailyAppointmentSchedule_ThenHasNoAppointments()
     {
         // Given
+        var doctorCode = "SMITH";
         var scheduleDate = new DateOnly(2024, 1, 15);
+        var key = new DailyAppointmentSchedule.Key(doctorCode, scheduleDate);
 
         // When
-        var schedule = new DailyAppointmentSchedule(scheduleDate);
+        var schedule = new DailyAppointmentSchedule(key);
 
         // Then
         var snapshot = schedule.CreateSnapshot();
+        snapshot.DoctorCode.ShouldBe(doctorCode);
         snapshot.Date.ShouldBe(scheduleDate);
         snapshot.Appointments.ShouldBeEmpty();
     }
 
     [Test]
-    public void GivenDifferentDates_WhenCreateMultipleDailyAppointmentSchedules_ThenEachHasCorrectDate()
+    public void GivenDifferentKeys_WhenCreateMultipleDailyAppointmentSchedules_ThenEachHasCorrectKey()
     {
         // Given
-        var firstDate = new DateOnly(2024, 1, 15);
-        var secondDate = new DateOnly(2024, 1, 16);
-        var thirdDate = new DateOnly(2024, 2, 1);
+        var firstKey = new DailyAppointmentSchedule.Key("SMITH", new DateOnly(2024, 1, 15));
+        var secondKey = new DailyAppointmentSchedule.Key("JONES", new DateOnly(2024, 1, 16));
+        var thirdKey = new DailyAppointmentSchedule.Key("SMITH", new DateOnly(2024, 2, 1));
 
         // When
-        var firstSchedule = new DailyAppointmentSchedule(firstDate);
-        var secondSchedule = new DailyAppointmentSchedule(secondDate);
-        var thirdSchedule = new DailyAppointmentSchedule(thirdDate);
+        var firstSchedule = new DailyAppointmentSchedule(firstKey);
+        var secondSchedule = new DailyAppointmentSchedule(secondKey);
+        var thirdSchedule = new DailyAppointmentSchedule(thirdKey);
 
         // Then
-        firstSchedule.Date.ShouldBe(firstDate);
-        secondSchedule.Date.ShouldBe(secondDate);
-        thirdSchedule.Date.ShouldBe(thirdDate);
+        firstSchedule.ScheduleKey.ShouldBe(firstKey);
+        secondSchedule.ScheduleKey.ShouldBe(secondKey);
+        thirdSchedule.ScheduleKey.ShouldBe(thirdKey);
 
         var firstSnapshot = firstSchedule.CreateSnapshot();
         var secondSnapshot = secondSchedule.CreateSnapshot();
         var thirdSnapshot = thirdSchedule.CreateSnapshot();
 
-        firstSnapshot.Date.ShouldBe(firstDate);
-        secondSnapshot.Date.ShouldBe(secondDate);
-        thirdSnapshot.Date.ShouldBe(thirdDate);
+        firstSnapshot.DoctorCode.ShouldBe("SMITH");
+        firstSnapshot.Date.ShouldBe(new DateOnly(2024, 1, 15));
+        secondSnapshot.DoctorCode.ShouldBe("JONES");
+        secondSnapshot.Date.ShouldBe(new DateOnly(2024, 1, 16));
+        thirdSnapshot.DoctorCode.ShouldBe("SMITH");
+        thirdSnapshot.Date.ShouldBe(new DateOnly(2024, 2, 1));
 
         firstSnapshot.Appointments.ShouldBeEmpty();
         secondSnapshot.Appointments.ShouldBeEmpty();
@@ -71,12 +81,13 @@ public class DailyAppointmentScheduleCreateTests : TestBase
     {
         // Given
         var leapYearDate = new DateOnly(2024, 2, 29); // 2024 is a leap year
+        var key = new DailyAppointmentSchedule.Key("SMITH", leapYearDate);
 
         // When
-        var schedule = new DailyAppointmentSchedule(leapYearDate);
+        var schedule = new DailyAppointmentSchedule(key);
 
         // Then
-        schedule.Date.ShouldBe(leapYearDate);
+        schedule.ScheduleKey.Date.ShouldBe(leapYearDate);
         var snapshot = schedule.CreateSnapshot();
         snapshot.Date.ShouldBe(leapYearDate);
         snapshot.Appointments.ShouldBeEmpty();
@@ -87,12 +98,13 @@ public class DailyAppointmentScheduleCreateTests : TestBase
     {
         // Given
         var minimumDate = DateOnly.MinValue;
+        var key = new DailyAppointmentSchedule.Key("SMITH", minimumDate);
 
         // When
-        var schedule = new DailyAppointmentSchedule(minimumDate);
+        var schedule = new DailyAppointmentSchedule(key);
 
         // Then
-        schedule.Date.ShouldBe(minimumDate);
+        schedule.ScheduleKey.Date.ShouldBe(minimumDate);
         var snapshot = schedule.CreateSnapshot();
         snapshot.Date.ShouldBe(minimumDate);
         snapshot.Appointments.ShouldBeEmpty();
@@ -103,12 +115,13 @@ public class DailyAppointmentScheduleCreateTests : TestBase
     {
         // Given
         var maximumDate = DateOnly.MaxValue;
+        var key = new DailyAppointmentSchedule.Key("SMITH", maximumDate);
 
         // When
-        var schedule = new DailyAppointmentSchedule(maximumDate);
+        var schedule = new DailyAppointmentSchedule(key);
 
         // Then
-        schedule.Date.ShouldBe(maximumDate);
+        schedule.ScheduleKey.Date.ShouldBe(maximumDate);
         var snapshot = schedule.CreateSnapshot();
         snapshot.Date.ShouldBe(maximumDate);
         snapshot.Appointments.ShouldBeEmpty();

@@ -4,7 +4,7 @@ namespace EvolvingClinic.Application.Appointments;
 
 public interface IDailyAppointmentScheduleRepository
 {
-    Task<DailyAppointmentSchedule?> GetOptional(DateOnly date);
-    Task<DailyAppointmentScheduleDto> GetDto(DateOnly date);
+    Task<DailyAppointmentSchedule?> GetOptional(DailyAppointmentSchedule.Key key);
+    Task<DailyAppointmentScheduleDto> GetDto(DailyAppointmentSchedule.Key key);
     Task Save(DailyAppointmentSchedule schedule);
 }

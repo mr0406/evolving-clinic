@@ -1,6 +1,7 @@
 using EvolvingClinic.Application.Common;
 using EvolvingClinic.Application.HealthcareServices.Commands;
 using EvolvingClinic.Application.HealthcareServices.Queries;
+using EvolvingClinic.Domain.Utils;
 using Reqnroll;
 using Shouldly;
 
@@ -11,11 +12,53 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
 {
     private readonly Dispatcher _dispatcher = new();
     private string? _scenarioServiceTypeCode;
-    private Exception? _scenarioException;
 
-    [When("I add healthcare service type {string} with code {string}, duration {string} and price {string}")]
-    public async Task WhenIAddHealthcareServiceType(string name, string code, string duration, string price)
+    [Given("I added healthcare service types:")]
+    public async Task GivenIAddedHealthcareServiceTypes(Table table)
     {
+        foreach (var row in table.Rows)
+        {
+            var name = row["Healthcare Service Name"];
+            var code = row["Code"];
+            var duration = row["Duration"];
+            var price = row["Price"];
+
+            var timeSpan = ParseDuration(duration);
+            var priceValue = ParsePrice(price);
+            await AddHealthcareServiceType(name, code, timeSpan, priceValue);
+        }
+    }
+
+    [Given("I added healthcare service type on {string}:")]
+    public async Task GivenIAddedHealthcareServiceTypeOn(string dateString, Table table)
+    {
+        var date = DateOnly.Parse(dateString);
+        ApplicationClock.SetDate(date);
+
+        var row = table.Rows[0];
+        var name = row["Healthcare Service Name"];
+        var code = row["Code"];
+        var duration = row["Duration"];
+        var price = row["Price"];
+
+        var timeSpan = ParseDuration(duration);
+        var priceValue = ParsePrice(price);
+        await AddHealthcareServiceType(name, code, timeSpan, priceValue);
+        _scenarioServiceTypeCode = code;
+    }
+
+    [When("I add healthcare service type on {string}:")]
+    public async Task WhenIAddHealthcareServiceTypeOn(string dateString, Table table)
+    {
+        var date = DateOnly.Parse(dateString);
+        ApplicationClock.SetDate(date);
+
+        var row = table.Rows[0];
+        var name = row["Healthcare Service Name"];
+        var code = row["Code"];
+        var duration = row["Duration"];
+        var price = row["Price"];
+
         var timeSpan = ParseDuration(duration);
         var priceValue = ParsePrice(price);
 
@@ -24,31 +67,13 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
             await AddHealthcareServiceType(name, code, timeSpan, priceValue);
             _scenarioServiceTypeCode = code;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            _scenarioException = ex;
             _scenarioServiceTypeCode = null;
         }
     }
 
-    [Given("I add healthcare service type {string} with code {string}, duration {string} and price {string}")]
-    [Given("I have added healthcare service type {string} with code {string}, duration {string} and price {string}")]
-    [Given("healthcare service type {string} with code {string}, duration {string} and price {string} exists")]
-    [Given("I have a healthcare service type {string} with code {string}, duration {string}, and price {string}")]
-    public async Task GivenIHaveAddedHealthcareServiceType(string name, string code, string duration, string price)
-    {
-        var timeSpan = ParseDuration(duration);
-        var priceValue = ParsePrice(price);
-        await AddHealthcareServiceType(name, code, timeSpan, priceValue);
-    }
 
-    [Then("the healthcare service type should be added successfully")]
-    public void ThenTheHealthcareServiceTypeShouldBeAddedSuccessfully()
-    {
-        _scenarioServiceTypeCode.ShouldNotBeNull();
-        _scenarioServiceTypeCode.ShouldNotBeNullOrWhiteSpace();
-        _scenarioException.ShouldBeNull();
-    }
 
     [Then("the added healthcare service type should be:")]
     public async Task ThenTheAddedHealthcareServiceTypeShouldBe(Table table)
@@ -115,24 +140,18 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
         return decimal.Parse(price);
     }
 
-    [When("I change healthcare service type price of {string} to {string}")]
-    public async Task WhenIChangeThePrice(string serviceCode, string newPrice)
+
+    [When("I change healthcare service type price of {string} to {string} on {string}")]
+    public async Task WhenIChangeThePriceOn(string serviceCode, string newPrice, string dateString)
     {
+        var date = DateOnly.Parse(dateString);
+        ApplicationClock.SetDate(date);
+
         var priceValue = ParsePrice(newPrice);
         var command = new ChangeHealthcareServiceTypePriceCommand(serviceCode, priceValue);
         await _dispatcher.Execute(command);
     }
 
-    [Then("the current price should be {string}")]
-    public async Task ThenTheCurrentPriceShouldBe(string expectedPrice)
-    {
-        _scenarioServiceTypeCode.ShouldNotBeNull();
-        var query = new GetHealthcareServiceTypeQuery(_scenarioServiceTypeCode);
-        var serviceType = await _dispatcher.ExecuteQuery(query);
-
-        var expectedPriceValue = ParsePrice(expectedPrice);
-        serviceType.Price.ShouldBe(expectedPriceValue);
-    }
 
     [Then("the price history should contain exactly:")]
     public async Task ThenThePriceHistoryShouldContain(Table table)

@@ -5,6 +5,7 @@ using EvolvingClinic.Domain.Appointments;
 namespace EvolvingClinic.Application.Appointments.Commands;
 
 public record ScheduleAppointmentCommand(
+    string DoctorCode,
     DateOnly Date,
     Guid PatientId,
     string HealthcareServiceTypeCode,
@@ -27,8 +28,9 @@ public class ScheduleAppointmentCommandHandler(
         var serviceTypeSnapshot = serviceType.CreateSnapshot();
         var endTime = command.StartTime.Add(serviceTypeSnapshot.Duration);
 
-        var schedule = await repository.GetOptional(command.Date)
-                       ?? new DailyAppointmentSchedule(command.Date);
+        var scheduleKey = new DailyAppointmentSchedule.Key(command.DoctorCode, command.Date);
+        var schedule = await repository.GetOptional(scheduleKey)
+                       ?? new DailyAppointmentSchedule(scheduleKey);
 
         var appointment = schedule.ScheduleAppointment(
             command.PatientId,

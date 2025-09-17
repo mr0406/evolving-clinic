@@ -4,14 +4,16 @@ namespace EvolvingClinic.Domain.Appointments;
 
 public class DailyAppointmentSchedule
 {
-    public DateOnly Date { get; }
+    public Key ScheduleKey { get; }
     private readonly List<ScheduledAppointment> _appointments;
 
-    public DailyAppointmentSchedule(DateOnly date)
+    public DailyAppointmentSchedule(Key scheduleKey)
     {
-        Date = date;
+        ScheduleKey = scheduleKey;
         _appointments = new List<ScheduledAppointment>();
     }
+
+    public record Key(string DoctorCode, DateOnly Date);
 
     public ScheduledAppointment ScheduleAppointment(
         Guid patientId,
@@ -20,7 +22,7 @@ public class DailyAppointmentSchedule
         TimeOnly endTime,
         Money price)
     {
-        var timeSlot = new AppointmentTimeSlot(Date, startTime, endTime);
+        var timeSlot = new AppointmentTimeSlot(ScheduleKey.Date, startTime, endTime);
 
         ValidateBusinessHours(timeSlot);
 
@@ -55,10 +57,11 @@ public class DailyAppointmentSchedule
     public Snapshot CreateSnapshot()
     {
         var appointmentSnapshots = _appointments.Select(a => a.CreateSnapshot()).ToList();
-        return new Snapshot(Date, appointmentSnapshots);
+        return new Snapshot(ScheduleKey.DoctorCode, ScheduleKey.Date, appointmentSnapshots);
     }
 
     public record Snapshot(
+        string DoctorCode,
         DateOnly Date,
         IReadOnlyList<ScheduledAppointment.Snapshot> Appointments);
 }

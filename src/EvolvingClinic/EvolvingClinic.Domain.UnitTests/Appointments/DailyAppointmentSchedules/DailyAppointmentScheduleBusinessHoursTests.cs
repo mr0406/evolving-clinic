@@ -99,7 +99,7 @@ public class DailyAppointmentScheduleBusinessHoursTests : TestBase
         schedule.CreateSnapshot().Appointments.Count.ShouldBe(1);
     }
     
-    private static DailyAppointmentSchedule CreateScheduleFor(DayOfWeek dayOfWeek) => new(GetDateFor(dayOfWeek));
+    private static DailyAppointmentSchedule CreateScheduleFor(DayOfWeek dayOfWeek) => new(new DailyAppointmentSchedule.Key("SMITH", GetDateFor(dayOfWeek)));
 
     private static DateOnly GetDateFor(DayOfWeek targetDayOfWeek)
     {

@@ -12,7 +12,7 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
     {
         // Given
         var scheduleDate = new DateOnly(2024, 1, 15);
-        var schedule = new DailyAppointmentSchedule(scheduleDate);
+        var schedule = new DailyAppointmentSchedule(new DailyAppointmentSchedule.Key("SMITH", scheduleDate));
 
         var firstPatientId = Guid.NewGuid();
         var firstAppointment = schedule.ScheduleAppointment(firstPatientId, "TEST", new TimeOnly(9, 0), new TimeOnly(10, 0), new Money(100.00m));
@@ -44,7 +44,7 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
     {
         // Given
         var scheduleDate = new DateOnly(2024, 1, 15);
-        var schedule = new DailyAppointmentSchedule(scheduleDate);
+        var schedule = new DailyAppointmentSchedule(new DailyAppointmentSchedule.Key("SMITH", scheduleDate));
         var patientId = Guid.NewGuid();
 
         // When
@@ -70,7 +70,7 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
     {
         // Given
         var scheduleDate = new DateOnly(2024, 1, 15);
-        var schedule = new DailyAppointmentSchedule(scheduleDate);
+        var schedule = new DailyAppointmentSchedule(new DailyAppointmentSchedule.Key("SMITH", scheduleDate));
         var patientId = Guid.NewGuid();
         var price = new Money(0.00m);
 
@@ -87,7 +87,7 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
     {
         // Given
         var scheduleDate = new DateOnly(2024, 1, 15);
-        var schedule = new DailyAppointmentSchedule(scheduleDate);
+        var schedule = new DailyAppointmentSchedule(new DailyAppointmentSchedule.Key("SMITH", scheduleDate));
         var patientId = Guid.NewGuid();
         var price = new Money(-10.00m);
 

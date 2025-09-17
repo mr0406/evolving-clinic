@@ -9,12 +9,12 @@ public record AddHealthcareServiceTypeCommand(
     string Code,
     TimeSpan Duration,
     decimal Price
-) : ICommand;
+) : ICommand<string>;
 
 public class AddHealthcareServiceTypeCommandHandler(IHealthcareServiceTypeRepository repository)
-    : ICommandHandler<AddHealthcareServiceTypeCommand>
+    : ICommandHandler<AddHealthcareServiceTypeCommand, string>
 {
-    public async Task Handle(AddHealthcareServiceTypeCommand command)
+    public async Task<string> Handle(AddHealthcareServiceTypeCommand command)
     {
         var price = new Money(command.Price);
         
@@ -30,5 +30,7 @@ public class AddHealthcareServiceTypeCommandHandler(IHealthcareServiceTypeReposi
             existingCodes.ToList());
 
         await repository.Save(healthcareServiceType);
+
+        return healthcareServiceType.Code;
     }
 }

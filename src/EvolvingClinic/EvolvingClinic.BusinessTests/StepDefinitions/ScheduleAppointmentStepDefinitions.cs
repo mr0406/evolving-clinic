@@ -1,6 +1,10 @@
+using System.Globalization;
 using EvolvingClinic.Application.Appointments.Commands;
 using EvolvingClinic.Application.Appointments.Queries;
 using EvolvingClinic.Application.Common;
+using EvolvingClinic.Application.Doctors.Commands;
+using EvolvingClinic.Application.Doctors.Queries;
+using EvolvingClinic.Application.HealthcareServices.Commands;
 using EvolvingClinic.Application.HealthcareServices.Queries;
 using EvolvingClinic.Application.Patients.Queries;
 using Reqnroll;
@@ -12,37 +16,71 @@ namespace EvolvingClinic.BusinessTests.StepDefinitions;
 public sealed class ScheduleAppointmentStepDefinitions
 {
     private readonly Dispatcher _dispatcher = new();
-    private DateOnly _scenarioDate;
     private Guid? _scenarioAppointmentId;
     
-    [Given("I have scheduled an appointment for {string} {string} with healthcare service type {string} on {string} at {string}")]
-    public async Task GivenIHaveScheduledAnAppointmentFor(string firstName, string lastName, string serviceCode, string dateString, string startTimeString)
+    [Given("I registered doctors:")]
+    public async Task GivenIRegisteredDoctors(Table table)
     {
-        var date = DateOnly.Parse(dateString);
-        var startTime = TimeOnly.Parse(startTimeString);
+        foreach (var row in table.Rows)
+        {
+            var code = row["Code"];
+            var firstName = row["First Name"];
+            var lastName = row["Last Name"];
 
-        _scenarioDate = date;
+            var command = new RegisterDoctorCommand(
+                code,
+                new RegisterDoctorCommand.PersonNameData(firstName, lastName));
 
-        await ScheduleAppointment(date, firstName, lastName, serviceCode, startTime);
+            await _dispatcher.Execute(command);
+        }
     }
-    
-    [When("I schedule an appointment for {string} {string} with healthcare service type {string} on {string} at {string}")]
-    public async Task WhenIScheduleAnAppointmentFor(string firstName, string lastName, string serviceCode, string dateString, string startTimeString)
+
+
+    [Given("I scheduled appointment on {string}:")]
+    public async Task GivenIScheduledAppointmentOn(string dateString, Table table)
     {
         var date = DateOnly.Parse(dateString);
-        var startTime = TimeOnly.Parse(startTimeString);
 
-        _scenarioDate = date;
+        foreach (var row in table.Rows)
+        {
+            var patientName = row["Patient Name"];
+            var doctorCode = row["Doctor Code"];
+            var serviceCode = row["Healthcare Service Code"];
+            var startTime = TimeOnly.Parse(row["Start Time"]);
+
+            var nameParts = patientName.Split(' ');
+            var firstName = nameParts[0];
+            var lastName = nameParts[1];
+
+            await ScheduleAppointment(date, doctorCode, firstName, lastName, serviceCode, startTime);
+        }
+    }
+
+    [When("I schedule appointment on {string}:")]
+    public async Task WhenIScheduleAppointmentOn(string dateString, Table table)
+    {
+        var date = DateOnly.Parse(dateString);
+
+        var row = table.Rows[0];
+        var patientName = row["Patient Name"];
+        var doctorCode = row["Doctor Code"];
+        var serviceCode = row["Healthcare Service Code"];
+        var startTime = TimeOnly.Parse(row["Start Time"]);
+
+        var nameParts = patientName.Split(' ');
+        var firstName = nameParts[0];
+        var lastName = nameParts[1];
 
         try
         {
-            _scenarioAppointmentId = await ScheduleAppointment(date, firstName, lastName, serviceCode, startTime);
+            _scenarioAppointmentId = await ScheduleAppointment(date, doctorCode, firstName, lastName, serviceCode, startTime);
         }
         catch (Exception)
         {
             _scenarioAppointmentId = null;
         }
     }
+
 
     [Then("the appointment should be scheduled successfully")]
     public void ThenTheAppointmentShouldBeScheduledSuccessfully()
@@ -51,15 +89,16 @@ public sealed class ScheduleAppointmentStepDefinitions
         _scenarioAppointmentId.ShouldNotBe(Guid.Empty);
     }
 
-    [Then("there should be {int} appointment")]
-    [Then("there should be {int} appointments")]
-    public async Task ThenThereShouldBeAppointments(int expectedCount)
+    [Then("there should be {int} appointment for doctor {string} on {string}")]
+    [Then("there should be {int} appointments for doctor {string} on {string}")]
+    public async Task ThenThereShouldBeAppointments(int expectedCount, string doctorCode, string dateString)
     {
-        var query = new GetDailyAppointmentScheduleQuery(_scenarioDate);
+        var date = DateOnly.Parse(dateString);
+        var query = new GetDailyAppointmentScheduleQuery(doctorCode, date);
         var schedule = await _dispatcher.ExecuteQuery(query);
 
         schedule.ShouldNotBeNull();
-        schedule.Date.ShouldBe(_scenarioDate);
+        schedule.Date.ShouldBe(date);
         schedule.Appointments.Count.ShouldBe(expectedCount);
     }
 
@@ -68,24 +107,26 @@ public sealed class ScheduleAppointmentStepDefinitions
     {
         _scenarioAppointmentId.ShouldNotBeNull();
 
-        var query = new GetDailyAppointmentScheduleQuery(_scenarioDate);
+        var expectedRow = table.Rows[0];
+        var doctorCode = expectedRow["Doctor Code"];
+        var dateString = expectedRow["Date"];
+        var date = DateOnly.Parse(dateString);
+
+        var query = new GetDailyAppointmentScheduleQuery(doctorCode, date);
         var schedule = await _dispatcher.ExecuteQuery(query);
 
         schedule.ShouldNotBeNull();
         var appointment = schedule.Appointments.Single(a => a.Id == _scenarioAppointmentId.Value);
-
-        var expectedRow = table.Rows[0];
-
-        // Get patient name
+        
         var patientQuery = new GetPatientQuery(appointment.PatientId);
         var patient = await _dispatcher.ExecuteQuery(patientQuery);
         var patientName = $"{patient.Name.FirstName} {patient.Name.LastName}";
-
-        // Get service type details
+        
         var serviceTypeQuery = new GetHealthcareServiceTypeQuery(appointment.HealthcareServiceTypeCode);
         var serviceType = await _dispatcher.ExecuteQuery(serviceTypeQuery);
 
         patientName.ShouldBe(expectedRow["Patient Name"]);
+        schedule.DoctorCode.ShouldBe(expectedRow["Doctor Code"]);
         appointment.HealthcareServiceTypeCode.ShouldBe(expectedRow["Healthcare Service Code"]);
         serviceType.Name.ShouldBe(expectedRow["Healthcare Service Name"]);
         appointment.StartTime.ToString("yyyy-MM-dd").ShouldBe(expectedRow["Date"]);
@@ -96,6 +137,7 @@ public sealed class ScheduleAppointmentStepDefinitions
     
     private async Task<Guid?> ScheduleAppointment(
         DateOnly date,
+        string doctorCode,
         string firstName,
         string lastName,
         string serviceCode,
@@ -107,17 +149,42 @@ public sealed class ScheduleAppointmentStepDefinitions
         var patient = allPatients.SingleOrDefault(p =>
             p.Name.FirstName == firstName && p.Name.LastName == lastName);
 
-        if (patient == null)
+        if (patient is null)
         {
             throw new InvalidOperationException($"Patient {firstName} {lastName} is not registered. Please register the patient first.");
         }
 
         var command = new ScheduleAppointmentCommand(
+            doctorCode,
             date,
             patient.Id,
             serviceCode,
             startTime);
 
         return await _dispatcher.Execute(command);
+    }
+
+    private static TimeSpan ParseDuration(string duration)
+    {
+        var parts = duration.Split(' ');
+        var value = int.Parse(parts[0]);
+        var unit = parts[1].ToLowerInvariant();
+
+        return unit switch
+        {
+            "minutes" or "minute" => TimeSpan.FromMinutes(value),
+            "hours" or "hour" => TimeSpan.FromHours(value),
+            _ => throw new ArgumentException($"Unknown duration unit: {unit}")
+        };
+    }
+
+    private static decimal ParsePrice(string price)
+    {
+        if (price.StartsWith("$"))
+        {
+            return decimal.Parse(price[1..]);
+        }
+
+        return decimal.Parse(price);
     }
 }
