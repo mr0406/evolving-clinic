@@ -1,6 +1,7 @@
 namespace EvolvingClinic.Application.Appointments;
 
 public record DailyAppointmentScheduleDto(
+    string DoctorCode,
     DateOnly Date,
     IReadOnlyList<ScheduledAppointmentDto> Appointments);
 

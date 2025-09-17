@@ -7,6 +7,10 @@ This document describes the current operational state of Dr. Smith's medical pra
 - Multiple doctor practice with Dr. Smith and Dr. Jones
 - Sarah (the receptionist) manages both patient registration and appointment scheduling for all doctors
 
+## Doctor Registration
+- Doctors must be registered in the system before appointments can be scheduled with them
+- Each doctor has a unique code for easy identification (e.g., "SMITH", "JONES")
+
 ## Patient Registration
 - Patients must be registered before scheduling appointments
 - System assigns unique patient IDs to solve identity conflicts

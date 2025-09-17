@@ -6,24 +6,24 @@ public class InMemoryDailyAppointmentScheduleRepository : IDailyAppointmentSched
 {
     private static List<DailyAppointmentSchedule> _schedules = new();
 
-    public Task<DailyAppointmentSchedule?> GetOptional(DateOnly date)
+    public Task<DailyAppointmentSchedule?> GetOptional(DailyAppointmentSchedule.Key key)
     {
-        var schedule = _schedules.SingleOrDefault(s => s.Date == date);
+        var schedule = _schedules.SingleOrDefault(s => s.ScheduleKey.Equals(key));
 
         return Task.FromResult(schedule);
     }
 
-    public Task<DailyAppointmentScheduleDto> GetDto(DateOnly date)
+    public Task<DailyAppointmentScheduleDto> GetDto(DailyAppointmentSchedule.Key key)
     {
-        var schedule = _schedules.FirstOrDefault(s => s.Date == date);
-        
+        var schedule = _schedules.SingleOrDefault(s => s.ScheduleKey == key);
+
         if (schedule is null)
         {
-            schedule = new DailyAppointmentSchedule(date);
+            throw new InvalidOperationException("Daily appointment schedule not found");
         }
 
         var snapshot = schedule.CreateSnapshot();
-        
+
         var appointmentDtos = snapshot.Appointments.Select(a => new ScheduledAppointmentDto(
             a.Id,
             a.PatientId,
@@ -32,13 +32,13 @@ public class InMemoryDailyAppointmentScheduleRepository : IDailyAppointmentSched
             a.EndTime,
             a.Price.Value)).ToList();
 
-        return Task.FromResult(new DailyAppointmentScheduleDto(snapshot.Date, appointmentDtos));
+        return Task.FromResult(new DailyAppointmentScheduleDto(snapshot.DoctorCode, snapshot.Date, appointmentDtos));
     }
 
     public Task Save(DailyAppointmentSchedule schedule)
     {
-        var existingIndex = _schedules.FindIndex(s => s.Date == schedule.Date);
-        
+        var existingIndex = _schedules.FindIndex(s => s.ScheduleKey == schedule.ScheduleKey);
+
         if (existingIndex >= 0)
         {
             _schedules[existingIndex] = schedule;

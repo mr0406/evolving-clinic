@@ -55,7 +55,7 @@ public sealed class ScheduleAppointmentStepDefinitions
     [Then("there should be {int} appointments")]
     public async Task ThenThereShouldBeAppointments(int expectedCount)
     {
-        var query = new GetDailyAppointmentScheduleQuery(_scenarioDate);
+        var query = new GetDailyAppointmentScheduleQuery("SMITH", _scenarioDate);
         var schedule = await _dispatcher.ExecuteQuery(query);
 
         schedule.ShouldNotBeNull();
@@ -68,7 +68,7 @@ public sealed class ScheduleAppointmentStepDefinitions
     {
         _scenarioAppointmentId.ShouldNotBeNull();
 
-        var query = new GetDailyAppointmentScheduleQuery(_scenarioDate);
+        var query = new GetDailyAppointmentScheduleQuery("SMITH", _scenarioDate);
         var schedule = await _dispatcher.ExecuteQuery(query);
 
         schedule.ShouldNotBeNull();
@@ -113,6 +113,7 @@ public sealed class ScheduleAppointmentStepDefinitions
         }
 
         var command = new ScheduleAppointmentCommand(
+            "SMITH",
             date,
             patient.Id,
             serviceCode,
