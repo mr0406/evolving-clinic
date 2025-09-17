@@ -8,7 +8,7 @@ public class InMemoryDailyAppointmentScheduleRepository : IDailyAppointmentSched
 
     public Task<DailyAppointmentSchedule?> GetOptional(DailyAppointmentSchedule.Key key)
     {
-        var schedule = _schedules.SingleOrDefault(s => s.ScheduleKey.Equals(key));
+        var schedule = _schedules.SingleOrDefault(s => s.ScheduleKey == key);
 
         return Task.FromResult(schedule);
     }

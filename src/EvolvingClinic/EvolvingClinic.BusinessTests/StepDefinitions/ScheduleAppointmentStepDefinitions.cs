@@ -1,3 +1,4 @@
+using System.Globalization;
 using EvolvingClinic.Application.Appointments.Commands;
 using EvolvingClinic.Application.Appointments.Queries;
 using EvolvingClinic.Application.Common;
@@ -58,7 +59,7 @@ public sealed class ScheduleAppointmentStepDefinitions
     {
         var date = DateOnly.Parse(dateString);
 
-        var row = table.Rows[0]; // Only process the first row for the "When" step
+        var row = table.Rows[0];
         var patientName = row["Patient Name"];
         var doctorCode = row["Doctor Code"];
         var serviceCode = row["Healthcare Service Code"];
@@ -114,13 +115,11 @@ public sealed class ScheduleAppointmentStepDefinitions
 
         schedule.ShouldNotBeNull();
         var appointment = schedule.Appointments.Single(a => a.Id == _scenarioAppointmentId.Value);
-
-        // Get patient name
+        
         var patientQuery = new GetPatientQuery(appointment.PatientId);
         var patient = await _dispatcher.ExecuteQuery(patientQuery);
         var patientName = $"{patient.Name.FirstName} {patient.Name.LastName}";
-
-        // Get service type details
+        
         var serviceTypeQuery = new GetHealthcareServiceTypeQuery(appointment.HealthcareServiceTypeCode);
         var serviceType = await _dispatcher.ExecuteQuery(serviceTypeQuery);
 
@@ -131,7 +130,7 @@ public sealed class ScheduleAppointmentStepDefinitions
         appointment.StartTime.ToString("yyyy-MM-dd").ShouldBe(expectedRow["Date"]);
         appointment.StartTime.ToString("HH:mm").ShouldBe(expectedRow["Start Time"]);
         appointment.EndTime.ToString("HH:mm").ShouldBe(expectedRow["End Time"]);
-        $"${appointment.Price}".ShouldBe(expectedRow["Price"]);
+        appointment.Price.ToString(CultureInfo.InvariantCulture).ShouldBe(expectedRow["Price"]);
     }
     
     private async Task<Guid?> ScheduleAppointment(
@@ -148,7 +147,7 @@ public sealed class ScheduleAppointmentStepDefinitions
         var patient = allPatients.SingleOrDefault(p =>
             p.Name.FirstName == firstName && p.Name.LastName == lastName);
 
-        if (patient == null)
+        if (patient is null)
         {
             throw new InvalidOperationException($"Patient {firstName} {lastName} is not registered. Please register the patient first.");
         }

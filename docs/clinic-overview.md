@@ -4,7 +4,7 @@ This document describes the current operational state of Dr. Smith's medical pra
 
 ## How It Works Today
 
-- Multiple doctor practice with Dr. Smith and Dr. Jones
+- Multiple doctor practice
 - Sarah (the receptionist) manages both patient registration and appointment scheduling for all doctors
 
 ## Doctor Registration
