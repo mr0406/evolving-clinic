@@ -65,6 +65,66 @@ public sealed class RegisterPatientStepDefinitions
         }
     }
     
+    [Given("I registered patients:")]
+    public async Task GivenIRegisteredPatients(Table table)
+    {
+        foreach (var row in table.Rows)
+        {
+            var firstName = row["First Name"];
+            var lastName = row["Last Name"];
+
+            var registerCommand = new RegisterPatientCommand(
+                new RegisterPatientCommand.PersonNameData(firstName, lastName),
+                new DateOnly(1990, 1, 1),
+                new RegisterPatientCommand.PhoneNumberData("+1", "5551234567"),
+                new RegisterPatientCommand.AddressData("Test Street", "123", null, "12345", "Test City"));
+
+            await _dispatcher.Execute(registerCommand);
+        }
+    }
+
+    [When("I register patient on {string}:")]
+    public async Task WhenIRegisterPatientOn(string dateString, Table table)
+    {
+        var row = table.Rows[0];
+        var firstName = row["First Name"];
+        var lastName = row["Last Name"];
+        var dateOfBirth = DateOnly.Parse(row["Date of Birth"]);
+        var phoneNumberFull = row["Phone Number"];
+        var streetAddress = row["Street Address"];
+        var postalCode = row["Postal Code"];
+        var city = row["City"];
+
+        var phoneParts = phoneNumberFull.Split(' ');
+        var countryCode = phoneParts[0];
+        var phoneNumber = phoneParts[1];
+
+        var streetParts = streetAddress.Split(' ');
+        var street = string.Join(" ", streetParts.Take(streetParts.Length - 2));
+        var houseNumber = streetParts[^2];
+        var apartment = streetParts[^1];
+
+        try
+        {
+            _scenarioPatientId = await RegisterPatient(
+                firstName,
+                lastName,
+                dateOfBirth,
+                countryCode,
+                phoneNumber,
+                street,
+                houseNumber,
+                apartment,
+                postalCode,
+                city);
+        }
+        catch (Exception ex)
+        {
+            _scenarioException = ex;
+            _scenarioPatientId = null;
+        }
+    }
+
     [Given("patient {string} {string} is registered")]
     public async Task GivenPatientIsRegistered(string firstName, string lastName)
     {

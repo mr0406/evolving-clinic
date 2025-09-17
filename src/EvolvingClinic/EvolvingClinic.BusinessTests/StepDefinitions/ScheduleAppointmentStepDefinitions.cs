@@ -4,6 +4,7 @@ using EvolvingClinic.Application.Appointments.Queries;
 using EvolvingClinic.Application.Common;
 using EvolvingClinic.Application.Doctors.Commands;
 using EvolvingClinic.Application.Doctors.Queries;
+using EvolvingClinic.Application.HealthcareServices.Commands;
 using EvolvingClinic.Application.HealthcareServices.Queries;
 using EvolvingClinic.Application.Patients.Queries;
 using Reqnroll;
@@ -33,6 +34,7 @@ public sealed class ScheduleAppointmentStepDefinitions
             await _dispatcher.Execute(command);
         }
     }
+
 
     [Given("I scheduled appointment on {string}:")]
     public async Task GivenIScheduledAppointmentOn(string dateString, Table table)
@@ -130,7 +132,7 @@ public sealed class ScheduleAppointmentStepDefinitions
         appointment.StartTime.ToString("yyyy-MM-dd").ShouldBe(expectedRow["Date"]);
         appointment.StartTime.ToString("HH:mm").ShouldBe(expectedRow["Start Time"]);
         appointment.EndTime.ToString("HH:mm").ShouldBe(expectedRow["End Time"]);
-        appointment.Price.ToString(CultureInfo.InvariantCulture).ShouldBe(expectedRow["Price"]);
+        $"${appointment.Price}".ShouldBe(expectedRow["Price"]);
     }
     
     private async Task<Guid?> ScheduleAppointment(
@@ -160,5 +162,29 @@ public sealed class ScheduleAppointmentStepDefinitions
             startTime);
 
         return await _dispatcher.Execute(command);
+    }
+
+    private static TimeSpan ParseDuration(string duration)
+    {
+        var parts = duration.Split(' ');
+        var value = int.Parse(parts[0]);
+        var unit = parts[1].ToLowerInvariant();
+
+        return unit switch
+        {
+            "minutes" or "minute" => TimeSpan.FromMinutes(value),
+            "hours" or "hour" => TimeSpan.FromHours(value),
+            _ => throw new ArgumentException($"Unknown duration unit: {unit}")
+        };
+    }
+
+    private static decimal ParsePrice(string price)
+    {
+        if (price.StartsWith("$"))
+        {
+            return decimal.Parse(price[1..]);
+        }
+
+        return decimal.Parse(price);
     }
 }
