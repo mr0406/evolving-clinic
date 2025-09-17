@@ -19,7 +19,7 @@ public class InMemoryDailyAppointmentScheduleRepository : IDailyAppointmentSched
 
         if (schedule is null)
         {
-            throw new InvalidOperationException("Daily appointment schedule not found");
+            return Task.FromResult(new DailyAppointmentScheduleDto(key.DoctorCode, key.Date, []));
         }
 
         var snapshot = schedule.CreateSnapshot();
