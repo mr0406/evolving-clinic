@@ -1,4 +1,5 @@
 using EvolvingClinic.Application.Appointments;
+using EvolvingClinic.Application.Doctors;
 using EvolvingClinic.Application.HealthcareServices;
 using EvolvingClinic.Application.Patients;
 using EvolvingClinic.Domain.Utils;
@@ -14,6 +15,7 @@ public class TestHooks
     {
         ApplicationClock.Reset();
         
+        InMemoryDoctorRepository.Clear();
         InMemoryPatientRepository.Clear();
         InMemoryHealthcareServiceTypeRepository.Clear();
         InMemoryDailyAppointmentScheduleRepository.Clear();

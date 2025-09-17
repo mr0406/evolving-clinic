@@ -4,8 +4,8 @@ This document describes the current operational state of Dr. Smith's medical pra
 
 ## How It Works Today
 
-- Single doctor, private practice
-- Sarah (the receptionist) manages both patient registration and appointment scheduling
+- Multiple doctor practice with Dr. Smith and Dr. Jones
+- Sarah (the receptionist) manages both patient registration and appointment scheduling for all doctors
 
 ## Patient Registration
 - Patients must be registered before scheduling appointments
@@ -25,3 +25,5 @@ This document describes the current operational state of Dr. Smith's medical pra
 - System prevents scheduling outside clinic operating hours
 - Automated duration calculation based on service types
 - Automatic price capture from service type at time of scheduling
+- Appointments can be scheduled for specific doctors
+- Each doctor maintains their own separate appointment schedule

@@ -1,4 +1,5 @@
 using EvolvingClinic.Application.Appointments;
+using EvolvingClinic.Application.Doctors;
 using EvolvingClinic.Application.HealthcareServices;
 using EvolvingClinic.Application.Patients;
 
@@ -20,6 +21,7 @@ public class Dispatcher
         _services[typeof(IPatientRepository)] = new InMemoryPatientRepository();
         _services[typeof(IDailyAppointmentScheduleRepository)] = new InMemoryDailyAppointmentScheduleRepository();
         _services[typeof(IHealthcareServiceTypeRepository)] = new InMemoryHealthcareServiceTypeRepository();
+        _services[typeof(IDoctorRepository)] = new InMemoryDoctorRepository();
     }
 
     private void AutoRegisterHandlers()
