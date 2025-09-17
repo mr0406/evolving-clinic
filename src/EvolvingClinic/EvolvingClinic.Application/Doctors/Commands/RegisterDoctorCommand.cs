@@ -6,16 +6,18 @@ namespace EvolvingClinic.Application.Doctors.Commands;
 
 public record RegisterDoctorCommand(
     string Code,
-    string FirstName,
-    string LastName
-) : ICommand;
+    RegisterDoctorCommand.PersonNameData Name
+) : ICommand<string>
+{
+    public record PersonNameData(string FirstName, string LastName);
+}
 
 public class RegisterDoctorCommandHandler(IDoctorRepository repository)
-    : ICommandHandler<RegisterDoctorCommand>
+    : ICommandHandler<RegisterDoctorCommand, string>
 {
-    public async Task Handle(RegisterDoctorCommand command)
+    public async Task<string> Handle(RegisterDoctorCommand command)
     {
-        var name = new PersonName(command.FirstName, command.LastName);
+        var name = new PersonName(command.Name.FirstName, command.Name.LastName);
 
         var existingCodes = await repository.GetAllCodes();
 
@@ -25,5 +27,7 @@ public class RegisterDoctorCommandHandler(IDoctorRepository repository)
             existingCodes.ToList());
 
         await repository.Save(doctor);
+
+        return doctor.Code;
     }
 }
