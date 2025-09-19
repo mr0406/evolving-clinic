@@ -15,7 +15,7 @@ public class DailyAppointmentScheduleBusinessHoursTests : TestBase
         var schedule = CreateScheduleWithWorkingHours(DayOfWeek.Monday, workingHours);
 
         // When
-        var appointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m));
+        var appointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(10, 0), new TimeOnly(11, 0)), new Money(100.00m));
 
         // Then
         appointment.ShouldNotBeNull();
@@ -31,7 +31,7 @@ public class DailyAppointmentScheduleBusinessHoursTests : TestBase
 
         // When
         var exception = Should.Throw<ArgumentException>(() =>
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(8, 59), new TimeOnly(9, 20), new Money(100.00m)));
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(8, 59), new TimeOnly(9, 20)), new Money(100.00m)));
 
         // Then
         exception.Message.ShouldBe("Appointments can only be scheduled between 09:00 and 17:00");
@@ -47,7 +47,7 @@ public class DailyAppointmentScheduleBusinessHoursTests : TestBase
 
         // When
         var exception = Should.Throw<ArgumentException>(() =>
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(16, 50), new TimeOnly(17, 10), new Money(100.00m)));
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(16, 50), new TimeOnly(17, 10)), new Money(100.00m)));
 
         // Then
         exception.Message.ShouldBe("Appointments can only be scheduled between 09:00 and 17:00");
@@ -63,7 +63,7 @@ public class DailyAppointmentScheduleBusinessHoursTests : TestBase
 
         // When
         var exception = Should.Throw<ArgumentException>(() =>
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(7, 30), new TimeOnly(8, 30), new Money(100.00m)));
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(7, 30), new TimeOnly(8, 30)), new Money(100.00m)));
 
         // Then
         exception.Message.ShouldBe("Appointments can only be scheduled between 08:00 and 18:00");
@@ -77,7 +77,7 @@ public class DailyAppointmentScheduleBusinessHoursTests : TestBase
         var schedule = CreateScheduleWithWorkingHours(DayOfWeek.Saturday, workingHours);
 
         // When
-        var appointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(16, 0), new Money(100.00m));
+        var appointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(10, 0), new TimeOnly(16, 0)), new Money(100.00m));
 
         // Then
         appointment.ShouldNotBeNull();
@@ -92,7 +92,7 @@ public class DailyAppointmentScheduleBusinessHoursTests : TestBase
         var schedule = CreateScheduleWithWorkingHours(DayOfWeek.Sunday, morningHours);
 
         // When
-        var appointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(8, 0), new TimeOnly(10, 0), new Money(100.00m));
+        var appointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(8, 0), new TimeOnly(10, 0)), new Money(100.00m));
 
         // Then
         appointment.ShouldNotBeNull();

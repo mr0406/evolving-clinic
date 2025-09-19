@@ -25,11 +25,10 @@ public class DailyAppointmentSchedule
     public ScheduledAppointment ScheduleAppointment(
         Guid patientId,
         string healthcareServiceTypeCode,
-        TimeOnly startTime,
-        TimeOnly endTime,
+        TimeRange appointmentTime,
         Money price)
     {
-        var timeSlot = new AppointmentTimeSlot(ScheduleKey.Date, startTime, endTime);
+        var timeSlot = new AppointmentTimeSlot(ScheduleKey.Date, appointmentTime.Start, appointmentTime.End);
 
         ValidateWorkingHours(timeSlot);
 

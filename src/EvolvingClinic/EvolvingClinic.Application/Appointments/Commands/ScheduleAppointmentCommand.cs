@@ -37,8 +37,7 @@ public class ScheduleAppointmentCommandHandler(
         var appointment = schedule.ScheduleAppointment(
             command.PatientId,
             command.HealthcareServiceTypeCode,
-            command.StartTime,
-            endTime,
+            new TimeRange(command.StartTime, endTime),
             serviceTypeSnapshot.Price);
 
         await repository.Save(schedule);

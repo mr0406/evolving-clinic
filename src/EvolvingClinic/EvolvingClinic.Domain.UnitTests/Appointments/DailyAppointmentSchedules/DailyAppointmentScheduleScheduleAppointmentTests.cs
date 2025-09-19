@@ -16,12 +16,12 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
         var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", scheduleDate), workingHours);
 
         var firstPatientId = Guid.NewGuid();
-        var firstAppointment = schedule.ScheduleAppointment(firstPatientId, "TEST", new TimeOnly(9, 0), new TimeOnly(10, 0), new Money(100.00m));
+        var firstAppointment = schedule.ScheduleAppointment(firstPatientId, "TEST", new TimeRange(new TimeOnly(9, 0), new TimeOnly(10, 0)), new Money(100.00m));
 
         var secondPatientId = Guid.NewGuid();
 
         // When
-        var secondAppointment = schedule.ScheduleAppointment(secondPatientId, "TEST", new TimeOnly(11, 0), new TimeOnly(12, 0), new Money(100.00m));
+        var secondAppointment = schedule.ScheduleAppointment(secondPatientId, "TEST", new TimeRange(new TimeOnly(11, 0), new TimeOnly(12, 0)), new Money(100.00m));
 
         // Then
         var snapshot = schedule.CreateSnapshot();
@@ -50,7 +50,7 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
         var patientId = Guid.NewGuid();
 
         // When
-        var appointment = schedule.ScheduleAppointment(patientId, "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m));
+        var appointment = schedule.ScheduleAppointment(patientId, "TEST", new TimeRange(new TimeOnly(10, 0), new TimeOnly(11, 0)), new Money(100.00m));
 
         // Then
         appointment.ShouldNotBeNull();
@@ -78,7 +78,7 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
         var price = new Money(0.00m);
 
         // When
-        var appointment = schedule.ScheduleAppointment(patientId, "FREE", new TimeOnly(10, 0), new TimeOnly(11, 0), price);
+        var appointment = schedule.ScheduleAppointment(patientId, "FREE", new TimeRange(new TimeOnly(10, 0), new TimeOnly(11, 0)), price);
 
         // Then
         appointment.ShouldNotBeNull();
@@ -97,7 +97,7 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
 
         // When
         var exception = Should.Throw<ArgumentException>(() =>
-            schedule.ScheduleAppointment(patientId, "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), price));
+            schedule.ScheduleAppointment(patientId, "TEST", new TimeRange(new TimeOnly(10, 0), new TimeOnly(11, 0)), price));
 
         // Then
         exception!.Message.ShouldBe("Appointment price must be 0 or greater");
@@ -110,11 +110,11 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
         var scheduleDate = new DateOnly(2024, 1, 15);
         var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
         var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", scheduleDate), workingHours);
-        schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m));
+        schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(10, 0), new TimeOnly(11, 0)), new Money(100.00m));
 
         // When
         var exception = Should.Throw<ArgumentException>(() =>
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 30), new TimeOnly(11, 30), new Money(100.00m)));
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(10, 30), new TimeOnly(11, 30)), new Money(100.00m)));
 
         // Then
         exception.Message.ShouldBe("Appointment time slot conflicts with existing appointment");
@@ -132,7 +132,7 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
 
         // When
         var exception = Should.Throw<ArgumentException>(() =>
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(8, 30), new TimeOnly(9, 30), new Money(100.00m)));
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(8, 30), new TimeOnly(9, 30)), new Money(100.00m)));
 
         // Then
         exception.Message.ShouldBe("Appointments can only be scheduled between 09:00 and 17:00");
@@ -147,7 +147,7 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
 
         // When
         var exception = Should.Throw<ArgumentException>(() =>
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(16, 30), new TimeOnly(17, 30), new Money(100.00m)));
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(16, 30), new TimeOnly(17, 30)), new Money(100.00m)));
 
         // Then
         exception.Message.ShouldBe("Appointments can only be scheduled between 09:00 and 17:00");
@@ -162,7 +162,7 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
 
         // When
         var exception = Should.Throw<ArgumentException>(() =>
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(18, 0), new TimeOnly(19, 0), new Money(100.00m)));
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(18, 0), new TimeOnly(19, 0)), new Money(100.00m)));
 
         // Then
         exception.Message.ShouldBe("Appointments can only be scheduled between 09:00 and 17:00");
