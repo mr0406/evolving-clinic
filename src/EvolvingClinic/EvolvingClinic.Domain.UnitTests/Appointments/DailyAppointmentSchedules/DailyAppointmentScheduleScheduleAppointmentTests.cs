@@ -102,4 +102,69 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
         // Then
         exception!.Message.ShouldBe("Appointment price must be 0 or greater");
     }
+
+    [Test]
+    public void GivenScheduleWithAppointment_WhenScheduleOverlappingAppointment_ThenThrowsArgumentException()
+    {
+        // Given
+        var scheduleDate = new DateOnly(2024, 1, 15);
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", scheduleDate), workingHours);
+        schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m));
+
+        // When
+        var exception = Should.Throw<ArgumentException>(() =>
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 30), new TimeOnly(11, 30), new Money(100.00m)));
+
+        // Then
+        exception.Message.ShouldBe("Appointment time slot conflicts with existing appointment");
+
+        var snapshot = schedule.CreateSnapshot();
+        snapshot.Appointments.Count.ShouldBe(1);
+    }
+
+    [Test]
+    public void GivenWorkingHours9To17_WhenScheduleAppointmentStartingBefore9_ThenThrowsArgumentException()
+    {
+        // Given
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", new DateOnly(2024, 1, 15)), workingHours);
+
+        // When
+        var exception = Should.Throw<ArgumentException>(() =>
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(8, 30), new TimeOnly(9, 30), new Money(100.00m)));
+
+        // Then
+        exception.Message.ShouldBe("Appointments can only be scheduled between 09:00 and 17:00");
+    }
+
+    [Test]
+    public void GivenWorkingHours9To17_WhenScheduleAppointmentEndingAfter17_ThenThrowsArgumentException()
+    {
+        // Given
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", new DateOnly(2024, 1, 15)), workingHours);
+
+        // When
+        var exception = Should.Throw<ArgumentException>(() =>
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(16, 30), new TimeOnly(17, 30), new Money(100.00m)));
+
+        // Then
+        exception.Message.ShouldBe("Appointments can only be scheduled between 09:00 and 17:00");
+    }
+
+    [Test]
+    public void GivenWorkingHours9To17_WhenScheduleAppointmentCompletelyOutside_ThenThrowsArgumentException()
+    {
+        // Given
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", new DateOnly(2024, 1, 15)), workingHours);
+
+        // When
+        var exception = Should.Throw<ArgumentException>(() =>
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(18, 0), new TimeOnly(19, 0), new Money(100.00m)));
+
+        // Then
+        exception.Message.ShouldBe("Appointments can only be scheduled between 09:00 and 17:00");
+    }
 }

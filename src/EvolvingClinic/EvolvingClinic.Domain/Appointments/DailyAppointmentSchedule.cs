@@ -55,11 +55,12 @@ public class DailyAppointmentSchedule
     public Snapshot CreateSnapshot()
     {
         var appointmentSnapshots = _appointments.Select(a => a.CreateSnapshot()).ToList();
-        return new Snapshot(ScheduleKey.DoctorCode, ScheduleKey.Date, appointmentSnapshots);
+        return new Snapshot(ScheduleKey.DoctorCode, ScheduleKey.Date, _workingHours, appointmentSnapshots);
     }
 
     public record Snapshot(
         string DoctorCode,
         DateOnly Date,
+        TimeRange WorkingHours,
         IReadOnlyList<ScheduledAppointment.Snapshot> Appointments);
 }
