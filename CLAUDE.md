@@ -98,12 +98,12 @@ When adding a new feature idea to the backlog:
 When implementing a new feature from the backlog:
 
 ### ALWAYS start with these steps:
-1. **Create feature branch**: `git checkout -b iteration-{number}-{feature-name}`
+1. **Create feature branch**: `git checkout -b {feature-name}`
 2. **Create next iteration folder**: `docs/iterations/{next-number}-{feature-name}/`
 3. **Move backlog item**: Take the selected item from backlog and place it in the new iteration
-4. **Create development log**: Set up empty development log file in the iteration folder
+4. **Create development log**: Set up EMPTY development log file in the iteration folder with only the title "# Development Log - {Feature Name}". NEVER pre-fill content - the log will be filled during implementation only when explicitly instructed by the user.
 5. **Update clinic-overview.md**: Mark the feature as implemented
-6. **Update README.md**: Add link to the new iteration
+6. **Update README.md**: Add link to the new iteration folder (use pattern `docs/iterations/{number}-{name}/` NOT the specific file)
 
 ## Specific Preferences
 - Use `Dispatcher` pattern for command/query execution
