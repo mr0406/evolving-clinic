@@ -1,6 +1,7 @@
 using EvolvingClinic.Application.Common;
 using EvolvingClinic.Application.HealthcareServices;
 using EvolvingClinic.Domain.Appointments;
+using EvolvingClinic.Domain.Shared;
 
 namespace EvolvingClinic.Application.Appointments.Commands;
 
@@ -30,7 +31,8 @@ public class ScheduleAppointmentCommandHandler(
 
         var scheduleKey = new DailyAppointmentSchedule.Key(command.DoctorCode, command.Date);
         var schedule = await repository.GetOptional(scheduleKey)
-                       ?? new DailyAppointmentSchedule(scheduleKey);
+                       // TODO: Replace hardcoded working hours with doctor-specific schedule from DoctorWorkSchedule
+                       ?? DailyAppointmentSchedule.Create(scheduleKey, new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0)));
 
         var appointment = schedule.ScheduleAppointment(
             command.PatientId,

@@ -76,7 +76,7 @@ public class AddressCreateTests : TestBase
         var city = "Warsaw";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new Address(street, houseNumber, apartment, postalCode, city));
         
         // Then
@@ -94,7 +94,7 @@ public class AddressCreateTests : TestBase
         var city = "Warsaw";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new Address(street, houseNumber, apartment, postalCode, city));
         
         // Then
@@ -112,7 +112,7 @@ public class AddressCreateTests : TestBase
         var city = "Warsaw";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new Address(street, houseNumber, apartment, postalCode, city));
         
         // Then
@@ -130,7 +130,7 @@ public class AddressCreateTests : TestBase
         var city = "Warsaw";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new Address(street, houseNumber, apartment, postalCode, city));
         
         // Then
@@ -148,7 +148,7 @@ public class AddressCreateTests : TestBase
         var city = "Warsaw";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new Address(street, houseNumber, apartment, postalCode, city));
         
         // Then
@@ -166,7 +166,7 @@ public class AddressCreateTests : TestBase
         var city = "Warsaw";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new Address(street, houseNumber, apartment, postalCode, city));
         
         // Then
@@ -184,7 +184,7 @@ public class AddressCreateTests : TestBase
         var city = "";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new Address(street, houseNumber, apartment, postalCode, city));
         
         // Then
@@ -202,7 +202,7 @@ public class AddressCreateTests : TestBase
         string city = null!;
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new Address(street, houseNumber, apartment, postalCode, city));
         
         // Then

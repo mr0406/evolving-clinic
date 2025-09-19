@@ -84,10 +84,11 @@ public class HealthcareServiceTypeChangePriceTests : TestBase
         var serviceType = CreateDefaultService(initialPrice);
         var negativePrice = new Money(-50.00m);
 
-        // When & Then
-        var exception = Assert.Throws<ArgumentException>(() =>
+        // When
+        var exception = Should.Throw<ArgumentException>(() =>
             serviceType.ChangePrice(negativePrice));
 
+        // Then
         exception!.Message.ShouldBe("Service price must be 0 or greater");
     }
     

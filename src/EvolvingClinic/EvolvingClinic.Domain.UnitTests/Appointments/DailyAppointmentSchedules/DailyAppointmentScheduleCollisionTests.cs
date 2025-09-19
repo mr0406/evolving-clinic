@@ -13,11 +13,12 @@ public class DailyAppointmentScheduleCollisionTests : TestBase
     public void GivenScheduleWithAppointment_WhenScheduleOverlappingAppointment_ThenThrowsArgumentException()
     {
         // Given
-        var schedule = new DailyAppointmentSchedule(new DailyAppointmentSchedule.Key("SMITH", _scheduleDate));
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", _scheduleDate), workingHours);
         schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m));
         
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 30), new TimeOnly(11, 30), new Money(100.00m)));
         
         // Then
@@ -31,11 +32,12 @@ public class DailyAppointmentScheduleCollisionTests : TestBase
     public void GivenScheduleWithAppointment_WhenScheduleExactlyOverlappingAppointment_ThenThrowsArgumentException()
     {
         // Given
-        var schedule = new DailyAppointmentSchedule(new DailyAppointmentSchedule.Key("SMITH", _scheduleDate));
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", _scheduleDate), workingHours);
         schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m));
         
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m)));
         
         // Then
@@ -49,11 +51,12 @@ public class DailyAppointmentScheduleCollisionTests : TestBase
     public void GivenScheduleWithAppointment_WhenScheduleAppointmentStartingDuringExisting_ThenThrowsArgumentException()
     {
         // Given
-        var schedule = new DailyAppointmentSchedule(new DailyAppointmentSchedule.Key("SMITH", _scheduleDate));
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", _scheduleDate), workingHours);
         schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m));
         
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 45), new TimeOnly(12, 0), new Money(100.00m)));
         
         // Then
@@ -67,11 +70,12 @@ public class DailyAppointmentScheduleCollisionTests : TestBase
     public void GivenScheduleWithAppointment_WhenScheduleAppointmentEndingDuringExisting_ThenThrowsArgumentException()
     {
         // Given
-        var schedule = new DailyAppointmentSchedule(new DailyAppointmentSchedule.Key("SMITH", _scheduleDate));
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", _scheduleDate), workingHours);
         schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m));
         
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(9, 0), new TimeOnly(10, 30), new Money(100.00m)));
         
         // Then
@@ -85,11 +89,12 @@ public class DailyAppointmentScheduleCollisionTests : TestBase
     public void GivenScheduleWithAppointment_WhenScheduleAppointmentCompletelyEnclosingExisting_ThenThrowsArgumentException()
     {
         // Given
-        var schedule = new DailyAppointmentSchedule(new DailyAppointmentSchedule.Key("SMITH", _scheduleDate));
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", _scheduleDate), workingHours);
         schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m));
         
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(9, 0), new TimeOnly(12, 0), new Money(100.00m)));
         
         // Then
@@ -103,7 +108,8 @@ public class DailyAppointmentScheduleCollisionTests : TestBase
     public void GivenScheduleWithAppointment_WhenScheduleAdjacentAppointmentBefore_ThenBothAreScheduled()
     {
         // Given
-        var schedule = new DailyAppointmentSchedule(new DailyAppointmentSchedule.Key("SMITH", _scheduleDate));
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", _scheduleDate), workingHours);
         var firstAppointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m));
         
         // When
@@ -126,7 +132,8 @@ public class DailyAppointmentScheduleCollisionTests : TestBase
     public void GivenScheduleWithAppointment_WhenScheduleAdjacentAppointmentAfter_ThenBothAreScheduled()
     {
         // Given
-        var schedule = new DailyAppointmentSchedule(new DailyAppointmentSchedule.Key("SMITH", _scheduleDate));
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", _scheduleDate), workingHours);
         var firstAppointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m));
         
         // When
@@ -149,13 +156,14 @@ public class DailyAppointmentScheduleCollisionTests : TestBase
     public void GivenScheduleWithMultipleAppointments_WhenScheduleConflictingAppointment_ThenThrowsArgumentException()
     {
         // Given
-        var schedule = new DailyAppointmentSchedule(new DailyAppointmentSchedule.Key("SMITH", _scheduleDate));
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", _scheduleDate), workingHours);
         
         schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(9, 0), new TimeOnly(10, 0), new Money(100.00m));
         schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(11, 0), new TimeOnly(12, 0), new Money(100.00m));
         
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(9, 30), new TimeOnly(10, 30), new Money(100.00m)));
         
         // Then

@@ -12,7 +12,8 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
     {
         // Given
         var scheduleDate = new DateOnly(2024, 1, 15);
-        var schedule = new DailyAppointmentSchedule(new DailyAppointmentSchedule.Key("SMITH", scheduleDate));
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", scheduleDate), workingHours);
 
         var firstPatientId = Guid.NewGuid();
         var firstAppointment = schedule.ScheduleAppointment(firstPatientId, "TEST", new TimeOnly(9, 0), new TimeOnly(10, 0), new Money(100.00m));
@@ -44,7 +45,8 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
     {
         // Given
         var scheduleDate = new DateOnly(2024, 1, 15);
-        var schedule = new DailyAppointmentSchedule(new DailyAppointmentSchedule.Key("SMITH", scheduleDate));
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", scheduleDate), workingHours);
         var patientId = Guid.NewGuid();
 
         // When
@@ -70,7 +72,8 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
     {
         // Given
         var scheduleDate = new DateOnly(2024, 1, 15);
-        var schedule = new DailyAppointmentSchedule(new DailyAppointmentSchedule.Key("SMITH", scheduleDate));
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", scheduleDate), workingHours);
         var patientId = Guid.NewGuid();
         var price = new Money(0.00m);
 
@@ -87,14 +90,16 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
     {
         // Given
         var scheduleDate = new DateOnly(2024, 1, 15);
-        var schedule = new DailyAppointmentSchedule(new DailyAppointmentSchedule.Key("SMITH", scheduleDate));
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", scheduleDate), workingHours);
         var patientId = Guid.NewGuid();
         var price = new Money(-10.00m);
 
-        // When & Then
-        var exception = Assert.Throws<ArgumentException>(() =>
+        // When
+        var exception = Should.Throw<ArgumentException>(() =>
             schedule.ScheduleAppointment(patientId, "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), price));
 
+        // Then
         exception!.Message.ShouldBe("Appointment price must be 0 or greater");
     }
 }

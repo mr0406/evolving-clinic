@@ -32,8 +32,11 @@ src/EvolvingClinic/
 - **BDD Tests**: Use Reqnroll for business scenario testing
 - **Unit Tests**: Focus on domain logic and behavior using NUnit
 - **Step Definitions**: Keep them focused and reusable
-- **Test Structure**: Given-When-Then pattern in both BDD and unit tests
-- **Assertions**: Use Shouldly for readable assertions
+- **Test Structure**: Given-When-Then pattern in both BDD and unit tests with explicit `// Given`, `// When`, `// Then` comments
+  - `// Given`: Test setup, arrange data
+  - `// When`: Single action only (method call, sometimes with setup date before action)
+  - `// Then`: All assertions and snapshot creation. Never use `// When & Then`
+- **Assertions**: Use Shouldly for readable assertions, including `Should.Throw<T>()` for exception testing
 - Always run tests after changes: `dotnet test`
 
 ### Unit Test Naming Conventions

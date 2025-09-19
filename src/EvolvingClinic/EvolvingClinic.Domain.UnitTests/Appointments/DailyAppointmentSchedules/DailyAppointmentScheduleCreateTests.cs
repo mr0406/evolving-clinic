@@ -1,4 +1,5 @@
 using EvolvingClinic.Domain.Appointments;
+using EvolvingClinic.Domain.Shared;
 using Shouldly;
 using NUnit.Framework;
 
@@ -15,7 +16,8 @@ public class DailyAppointmentScheduleCreateTests : TestBase
         var key = new DailyAppointmentSchedule.Key(doctorCode, scheduleDate);
 
         // When
-        var schedule = new DailyAppointmentSchedule(key);
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(key, workingHours);
 
         // Then
         schedule.ShouldNotBeNull();
@@ -33,7 +35,8 @@ public class DailyAppointmentScheduleCreateTests : TestBase
         var key = new DailyAppointmentSchedule.Key(doctorCode, scheduleDate);
 
         // When
-        var schedule = new DailyAppointmentSchedule(key);
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(key, workingHours);
 
         // Then
         var snapshot = schedule.CreateSnapshot();
@@ -51,9 +54,10 @@ public class DailyAppointmentScheduleCreateTests : TestBase
         var thirdKey = new DailyAppointmentSchedule.Key("SMITH", new DateOnly(2024, 2, 1));
 
         // When
-        var firstSchedule = new DailyAppointmentSchedule(firstKey);
-        var secondSchedule = new DailyAppointmentSchedule(secondKey);
-        var thirdSchedule = new DailyAppointmentSchedule(thirdKey);
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var firstSchedule = DailyAppointmentSchedule.Create(firstKey, workingHours);
+        var secondSchedule = DailyAppointmentSchedule.Create(secondKey, workingHours);
+        var thirdSchedule = DailyAppointmentSchedule.Create(thirdKey, workingHours);
 
         // Then
         firstSchedule.ScheduleKey.ShouldBe(firstKey);
@@ -84,7 +88,8 @@ public class DailyAppointmentScheduleCreateTests : TestBase
         var key = new DailyAppointmentSchedule.Key("SMITH", leapYearDate);
 
         // When
-        var schedule = new DailyAppointmentSchedule(key);
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(key, workingHours);
 
         // Then
         schedule.ScheduleKey.Date.ShouldBe(leapYearDate);
@@ -101,7 +106,8 @@ public class DailyAppointmentScheduleCreateTests : TestBase
         var key = new DailyAppointmentSchedule.Key("SMITH", minimumDate);
 
         // When
-        var schedule = new DailyAppointmentSchedule(key);
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(key, workingHours);
 
         // Then
         schedule.ScheduleKey.Date.ShouldBe(minimumDate);
@@ -118,7 +124,8 @@ public class DailyAppointmentScheduleCreateTests : TestBase
         var key = new DailyAppointmentSchedule.Key("SMITH", maximumDate);
 
         // When
-        var schedule = new DailyAppointmentSchedule(key);
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = DailyAppointmentSchedule.Create(key, workingHours);
 
         // Then
         schedule.ScheduleKey.Date.ShouldBe(maximumDate);

@@ -29,7 +29,7 @@ public class PersonNameCreateTests : TestBase
         var lastName = "Smith";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new PersonName(firstName, lastName));
         
         // Then
@@ -44,7 +44,7 @@ public class PersonNameCreateTests : TestBase
         var lastName = "Smith";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new PersonName(firstName, lastName));
         
         // Then
@@ -59,7 +59,7 @@ public class PersonNameCreateTests : TestBase
         var lastName = "";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new PersonName(firstName, lastName));
         
         // Then
@@ -74,7 +74,7 @@ public class PersonNameCreateTests : TestBase
         string lastName = null!;
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new PersonName(firstName, lastName));
         
         // Then

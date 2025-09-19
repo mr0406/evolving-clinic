@@ -5,12 +5,19 @@ namespace EvolvingClinic.Domain.Appointments;
 public class DailyAppointmentSchedule
 {
     public Key ScheduleKey { get; }
+    private readonly TimeRange _workingHours;
     private readonly List<ScheduledAppointment> _appointments;
 
-    public DailyAppointmentSchedule(Key scheduleKey)
+    private DailyAppointmentSchedule(Key scheduleKey, TimeRange workingHours)
     {
         ScheduleKey = scheduleKey;
+        _workingHours = workingHours;
         _appointments = new List<ScheduledAppointment>();
+    }
+
+    public static DailyAppointmentSchedule Create(Key scheduleKey, TimeRange workingHours)
+    {
+        return new DailyAppointmentSchedule(scheduleKey, workingHours);
     }
 
     public record Key(string DoctorCode, DateOnly Date);
@@ -24,7 +31,7 @@ public class DailyAppointmentSchedule
     {
         var timeSlot = new AppointmentTimeSlot(ScheduleKey.Date, startTime, endTime);
 
-        ValidateBusinessHours(timeSlot);
+        ValidateWorkingHours(timeSlot);
 
         if (_appointments.Any(existing => existing.HasCollisionWith(timeSlot)))
         {
@@ -37,20 +44,11 @@ public class DailyAppointmentSchedule
         return appointment;
     }
 
-    private static void ValidateBusinessHours(AppointmentTimeSlot timeSlot)
+    private void ValidateWorkingHours(AppointmentTimeSlot timeSlot)
     {
-        var dayOfWeek = timeSlot.Date.DayOfWeek;
-        if (dayOfWeek == DayOfWeek.Saturday || dayOfWeek == DayOfWeek.Sunday)
+        if (timeSlot.StartTime < _workingHours.Start || timeSlot.EndTime > _workingHours.End)
         {
-            throw new ArgumentException("Appointments can only be scheduled Monday through Friday");
-        }
-
-        var businessStart = new TimeOnly(9, 0);
-        var businessEnd = new TimeOnly(17, 0);
-
-        if (timeSlot.StartTime < businessStart || timeSlot.EndTime > businessEnd)
-        {
-            throw new ArgumentException("Appointments can only be scheduled between 9:00 AM and 5:00 PM");
+            throw new ArgumentException($"Appointments can only be scheduled between {_workingHours.Start:HH:mm} and {_workingHours.End:HH:mm}");
         }
     }
     
