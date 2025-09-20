@@ -171,7 +171,7 @@ public class DoctorWorkScheduleCreateTests : TestBase
         // When
         var exception = Should.Throw<ArgumentException>(() => DoctorWorkSchedule.Create("SMITH", workingDays));
 
-        // ThenGood
+        // Then
         exception.Message.ShouldBe("Duplicate days found: Monday, Tuesday");
     }
 }
