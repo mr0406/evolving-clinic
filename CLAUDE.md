@@ -31,13 +31,51 @@ src/EvolvingClinic/
 ### Testing Approach
 - **BDD Tests**: Use Reqnroll for business scenario testing
 - **Unit Tests**: Focus on domain logic and behavior using NUnit
-- **Step Definitions**: Keep them focused and reusable
 - **Test Structure**: Given-When-Then pattern in both BDD and unit tests with explicit `// Given`, `// When`, `// Then` comments
   - `// Given`: Test setup, arrange data
   - `// When`: Single action only (method call, sometimes with setup date before action)
   - `// Then`: All assertions and snapshot creation. Never use `// When & Then`
 - **Assertions**: Use Shouldly for readable assertions, including `Should.Throw<T>()` for exception testing
 - Always run tests after changes: `dotnet test`
+
+### BDD/Business Test Guidelines
+
+#### Step Definition Tenses & Patterns
+Follow natural language patterns where each step type has a specific grammatical role:
+- **Given** = Past tense/State: "patient is registered", "service type exists"
+  - Sets up preconditions and context
+  - Describes the world state before the action
+- **When** = Present tense/Action: "I register a patient", "I schedule an appointment"
+  - Describes the action being tested
+  - The behavior under test
+- **Then** = Present tense/Assertion: "appointment should be scheduled"
+  - Describes expected outcomes
+  - Verifies the result of the action
+
+#### Step Definition Entity Separation
+- **Single Responsibility**: Each step definition class should ONLY contain steps for its own entity
+- **One Entity, One Class**: Each domain entity has exactly ONE step definition class
+  - ❌ BAD: Creating `GivenIRegisteredADoctor` in DoctorWorkScheduleStepDefinitions
+  - ✅ GOOD: DoctorWorkScheduleStepDefinitions only contains work schedule steps
+- **Cross-Feature Usage**: Features can use multiple step definition classes, but each class maintains its single responsibility
+- **Separate Dispatchers**: Each step definition class has its own Dispatcher instance - this is correct and normal
+
+#### Validation Patterns
+- **Explicit Table Validation**: Use explicit business-friendly tables instead of hidden assertions
+  - ✅ GOOD: `Then the registered patient should be:` with full table of expected data
+  - ❌ BAD: `Then the patient should be registered with the correct data` (hidden logic)
+- **Business Language**: Use business column names ("First Name" not "firstName")
+- **Complete Transparency**: Business stakeholders should see exactly what's being validated
+- **Direct Validation**: Validate directly from tables, avoid intermediate data structures
+
+#### Anti-Patterns to Avoid
+- ❌ Cross-domain logic (appointment steps creating patients)
+- ❌ Shared utilities between step definition classes
+- ❌ Technical language in feature files
+- ❌ God classes with multiple domain responsibilities
+- ❌ Hidden validation logic in step definitions
+- ❌ Generic assertions like "should have correct data"
+- ❌ Technical Property/Value table structures
 
 ### Unit Test Naming Conventions
 - **Test Classes**: `{ClassUnderTest}{MethodUnderTest}Tests` (e.g., `PatientRegisterTests`)

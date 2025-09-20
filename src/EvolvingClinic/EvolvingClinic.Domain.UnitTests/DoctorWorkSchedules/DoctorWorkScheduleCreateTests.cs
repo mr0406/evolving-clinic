@@ -1,9 +1,9 @@
-using EvolvingClinic.Domain.Doctors;
+using EvolvingClinic.Domain.DoctorWorkSchedules;
 using EvolvingClinic.Domain.Shared;
 using NUnit.Framework;
 using Shouldly;
 
-namespace EvolvingClinic.Domain.UnitTests.Doctors;
+namespace EvolvingClinic.Domain.UnitTests.DoctorWorkSchedules;
 
 public class DoctorWorkScheduleCreateTests : TestBase
 {

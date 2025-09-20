@@ -1,6 +1,6 @@
 using EvolvingClinic.Domain.Shared;
 
-namespace EvolvingClinic.Domain.Doctors;
+namespace EvolvingClinic.Domain.DoctorWorkSchedules;
 
 public class DoctorWorkSchedule
 {
