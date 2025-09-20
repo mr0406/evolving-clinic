@@ -128,10 +128,11 @@ public class HealthcareServiceTypeCreateTests : TestBase
         var existingNames = new List<string> { "Blood Test", "X-Ray" };
         var existingCodes = new List<string> { "BT", "XR" };
 
-        // When & Then
-        var exception = Assert.Throws<ArgumentException>(() =>
-            HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes));
+        // When
+        Action createService = () => HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes);
 
+        // Then
+        var exception = Should.Throw<ArgumentException>(createService);
         exception!.Message.ShouldBe("A service with the name 'Blood Test' already exists");
     }
 
@@ -146,10 +147,11 @@ public class HealthcareServiceTypeCreateTests : TestBase
         var existingNames = new List<string> { "Blood Test", "X-Ray" };
         var existingCodes = new List<string> { "BT", "XR" };
 
-        // When & Then
-        var exception = Assert.Throws<ArgumentException>(() =>
-            HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes));
+        // When
+        Action createService = () => HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes);
 
+        // Then
+        var exception = Should.Throw<ArgumentException>(createService);
         exception!.Message.ShouldBe("A service with the name 'BLOOD TEST' already exists");
     }
 
@@ -164,10 +166,11 @@ public class HealthcareServiceTypeCreateTests : TestBase
         var existingNames = new List<string> { "Blood Test", "X-Ray" };
         var existingCodes = new List<string> { "BT", "XR" };
 
-        // When & Then
-        var exception = Assert.Throws<ArgumentException>(() =>
-            HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes));
+        // When
+        Action createService = () => HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes);
 
+        // Then
+        var exception = Should.Throw<ArgumentException>(createService);
         exception!.Message.ShouldBe("A service with the code 'BT' already exists");
     }
 
@@ -182,10 +185,11 @@ public class HealthcareServiceTypeCreateTests : TestBase
         var existingNames = new List<string> { "Blood Test", "X-Ray" };
         var existingCodes = new List<string> { "BT", "XR" };
 
-        // When & Then
-        var exception = Assert.Throws<ArgumentException>(() =>
-            HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes));
+        // When
+        Action createService = () => HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes);
 
+        // Then
+        var exception = Should.Throw<ArgumentException>(createService);
         exception!.Message.ShouldBe("A service with the code 'BT' already exists");
     }
 
@@ -200,10 +204,11 @@ public class HealthcareServiceTypeCreateTests : TestBase
         var existingNames = new List<string>();
         var existingCodes = new List<string>();
 
-        // When & Then
-        var exception = Assert.Throws<ArgumentException>(() =>
-            HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes));
+        // When
+        Action createService = () => HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes);
 
+        // Then
+        var exception = Should.Throw<ArgumentException>(createService);
         exception!.Message.ShouldBe("Service name is required");
     }
 
@@ -218,10 +223,11 @@ public class HealthcareServiceTypeCreateTests : TestBase
         var existingNames = new List<string>();
         var existingCodes = new List<string>();
 
-        // When & Then
-        var exception = Assert.Throws<ArgumentException>(() =>
-            HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes));
+        // When
+        Action createService = () => HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes);
 
+        // Then
+        var exception = Should.Throw<ArgumentException>(createService);
         exception!.Message.ShouldBe("Service name is required");
     }
 
@@ -236,10 +242,11 @@ public class HealthcareServiceTypeCreateTests : TestBase
         var existingNames = new List<string>();
         var existingCodes = new List<string>();
 
-        // When & Then
-        var exception = Assert.Throws<ArgumentException>(() =>
-            HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes));
+        // When
+        Action createService = () => HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes);
 
+        // Then
+        var exception = Should.Throw<ArgumentException>(createService);
         exception!.Message.ShouldBe("Service code is required");
     }
 
@@ -254,10 +261,11 @@ public class HealthcareServiceTypeCreateTests : TestBase
         var existingNames = new List<string>();
         var existingCodes = new List<string>();
 
-        // When & Then
-        var exception = Assert.Throws<ArgumentException>(() =>
-            HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes));
+        // When
+        Action createService = () => HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes);
 
+        // Then
+        var exception = Should.Throw<ArgumentException>(createService);
         exception!.Message.ShouldBe("Service code is required");
     }
 
@@ -272,10 +280,11 @@ public class HealthcareServiceTypeCreateTests : TestBase
         var existingNames = new List<string>();
         var existingCodes = new List<string>();
 
-        // When & Then
-        var exception = Assert.Throws<ArgumentException>(() =>
-            HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes));
+        // When
+        Action createService = () => HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes);
 
+        // Then
+        var exception = Should.Throw<ArgumentException>(createService);
         exception!.Message.ShouldBe("Service duration must be at least 15 minutes");
     }
 
@@ -290,10 +299,11 @@ public class HealthcareServiceTypeCreateTests : TestBase
         var existingNames = new List<string>();
         var existingCodes = new List<string>();
 
-        // When & Then
-        var exception = Assert.Throws<ArgumentException>(() =>
-            HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes));
+        // When
+        Action createService = () => HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes);
 
+        // Then
+        var exception = Should.Throw<ArgumentException>(createService);
         exception!.Message.ShouldBe("Service duration cannot exceed 8 hours");
     }
 
@@ -327,10 +337,11 @@ public class HealthcareServiceTypeCreateTests : TestBase
         var existingNames = new List<string>();
         var existingCodes = new List<string>();
 
-        // When & Then
-        var exception = Assert.Throws<ArgumentException>(() =>
-            HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes));
+        // When
+        Action createService = () => HealthcareServiceType.Create(name, code, duration, price, existingNames, existingCodes);
 
+        // Then
+        var exception = Should.Throw<ArgumentException>(createService);
         exception!.Message.ShouldBe("Service price must be 0 or greater");
     }
 }

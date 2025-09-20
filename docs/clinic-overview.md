@@ -22,11 +22,18 @@ This document describes the current operational state of Dr. Smith's medical pra
 - Consistent pricing eliminates manual price entry errors
 - Complete price history tracking maintains records of all pricing changes with effective dates
 
+## Doctor Work Schedules
+- Each doctor can have individual work schedules with different days and hours
+- Doctors can work different days of the week (Monday through Sunday)
+- Flexible working hours - each doctor sets their own start and end times for each day
+- Doctors can have completely off days with no appointments
+- System enforces doctor-specific schedules instead of clinic-wide business hours
+
 ## Appointment Scheduling
 - No more double bookings
 - Appointments have guaranteed time slots
-- Business hours enforced (Monday-Friday, 9:00 AM - 5:00 PM only)
-- System prevents scheduling outside clinic operating hours
+- Doctor-specific working hours enforced (replaces old Monday-Friday, 9:00 AM - 5:00 PM system-wide restriction)
+- System prevents scheduling outside individual doctor's working hours
 - Automated duration calculation based on service types
 - Automatic price capture from service type at time of scheduling
 - Appointments can be scheduled for specific doctors

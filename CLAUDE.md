@@ -31,10 +31,60 @@ src/EvolvingClinic/
 ### Testing Approach
 - **BDD Tests**: Use Reqnroll for business scenario testing
 - **Unit Tests**: Focus on domain logic and behavior using NUnit
-- **Step Definitions**: Keep them focused and reusable
-- **Test Structure**: Given-When-Then pattern in both BDD and unit tests
-- **Assertions**: Use Shouldly for readable assertions
+- **Test Structure**: Given-When-Then pattern in both BDD and unit tests with explicit `// Given`, `// When`, `// Then` comments
+  - `// Given`: Test setup, arrange data
+  - `// When`: Single action only (method call, sometimes with setup date before action)
+  - `// Then`: All assertions and snapshot creation. Never use `// When & Then`
+- **Assertions**: Use Shouldly for readable assertions, including `Should.Throw<T>()` for exception testing
+- **Exception Testing Pattern**: Follow correct Given-When-Then structure for exception tests:
+  ```csharp
+  // When
+  Action methodCall = () => SomeMethod(parameters);
+
+  // Then
+  var exception = Should.Throw<ArgumentException>(methodCall);
+  exception.Message.ShouldBe("Expected error message");
+  ```
 - Always run tests after changes: `dotnet test`
+
+### BDD/Business Test Guidelines
+
+#### Step Definition Tenses & Patterns
+Follow natural language patterns where each step type has a specific grammatical role:
+- **Given** = Past tense/State: "patient is registered", "service type exists"
+  - Sets up preconditions and context
+  - Describes the world state before the action
+- **When** = Present tense/Action: "I register a patient", "I schedule an appointment"
+  - Describes the action being tested
+  - The behavior under test
+- **Then** = Present tense/Assertion: "appointment should be scheduled"
+  - Describes expected outcomes
+  - Verifies the result of the action
+
+#### Step Definition Entity Separation
+- **Single Responsibility**: Each step definition class should ONLY contain steps for its own entity
+- **One Entity, One Class**: Each domain entity has exactly ONE step definition class
+  - ❌ BAD: Creating `GivenIRegisteredADoctor` in DoctorWorkScheduleStepDefinitions
+  - ✅ GOOD: DoctorWorkScheduleStepDefinitions only contains work schedule steps
+- **Cross-Feature Usage**: Features can use multiple step definition classes, but each class maintains its single responsibility
+- **Separate Dispatchers**: Each step definition class has its own Dispatcher instance - this is correct and normal
+
+#### Validation Patterns
+- **Explicit Table Validation**: Use explicit business-friendly tables instead of hidden assertions
+  - ✅ GOOD: `Then the registered patient should be:` with full table of expected data
+  - ❌ BAD: `Then the patient should be registered with the correct data` (hidden logic)
+- **Business Language**: Use business column names ("First Name" not "firstName")
+- **Complete Transparency**: Business stakeholders should see exactly what's being validated
+- **Direct Validation**: Validate directly from tables, avoid intermediate data structures
+
+#### Anti-Patterns to Avoid
+- ❌ Cross-domain logic (appointment steps creating patients)
+- ❌ Shared utilities between step definition classes
+- ❌ Technical language in feature files
+- ❌ God classes with multiple domain responsibilities
+- ❌ Hidden validation logic in step definitions
+- ❌ Generic assertions like "should have correct data"
+- ❌ Technical Property/Value table structures
 
 ### Unit Test Naming Conventions
 - **Test Classes**: `{ClassUnderTest}{MethodUnderTest}Tests` (e.g., `PatientRegisterTests`)
@@ -98,12 +148,12 @@ When adding a new feature idea to the backlog:
 When implementing a new feature from the backlog:
 
 ### ALWAYS start with these steps:
-1. **Create feature branch**: `git checkout -b iteration-{number}-{feature-name}`
+1. **Create feature branch**: `git checkout -b {feature-name}`
 2. **Create next iteration folder**: `docs/iterations/{next-number}-{feature-name}/`
 3. **Move backlog item**: Take the selected item from backlog and place it in the new iteration
-4. **Create development log**: Set up empty development log file in the iteration folder
+4. **Create development log**: Set up EMPTY development log file in the iteration folder with only the title "# Development Log - {Feature Name}". NEVER pre-fill content - the log will be filled during implementation only when explicitly instructed by the user.
 5. **Update clinic-overview.md**: Mark the feature as implemented
-6. **Update README.md**: Add link to the new iteration
+6. **Update README.md**: Add link to the new iteration folder (use pattern `docs/iterations/{number}-{name}/` NOT the specific file)
 
 ## Specific Preferences
 - Use `Dispatcher` pattern for command/query execution

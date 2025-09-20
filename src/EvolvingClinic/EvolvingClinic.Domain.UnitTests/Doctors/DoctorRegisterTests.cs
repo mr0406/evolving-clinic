@@ -67,10 +67,12 @@ public class DoctorRegisterTests : TestBase
         var name = new PersonName("Jane", "Smith");
         var existingCodes = new List<string> { "SMITH", "JONES" };
 
-        // When & Then
-        var exception = Assert.Throws<ArgumentException>(() =>
-            Doctor.Register(code, name, existingCodes));
+        // When
+        Action registerDoctor = () =>
+            Doctor.Register(code, name, existingCodes);
 
+        // Then
+        var exception = Should.Throw<ArgumentException>(registerDoctor);
         exception!.Message.ShouldBe("A doctor with the code 'SMITH' already exists");
     }
 
@@ -82,10 +84,12 @@ public class DoctorRegisterTests : TestBase
         var name = new PersonName("Jane", "Smith");
         var existingCodes = new List<string> { "SMITH", "JONES" };
 
-        // When & Then
-        var exception = Assert.Throws<ArgumentException>(() =>
-            Doctor.Register(code, name, existingCodes));
+        // When
+        Action registerDoctor = () =>
+            Doctor.Register(code, name, existingCodes);
 
+        // Then
+        var exception = Should.Throw<ArgumentException>(registerDoctor);
         exception!.Message.ShouldBe("A doctor with the code 'SMITH' already exists");
     }
 
@@ -97,10 +101,12 @@ public class DoctorRegisterTests : TestBase
         var name = new PersonName("John", "Smith");
         var existingCodes = new List<string>();
 
-        // When & Then
-        var exception = Assert.Throws<ArgumentException>(() =>
-            Doctor.Register(code, name, existingCodes));
+        // When
+        Action registerDoctor = () =>
+            Doctor.Register(code, name, existingCodes);
 
+        // Then
+        var exception = Should.Throw<ArgumentException>(registerDoctor);
         exception!.Message.ShouldBe("Doctor code is required");
     }
 
@@ -112,10 +118,12 @@ public class DoctorRegisterTests : TestBase
         var name = new PersonName("John", "Smith");
         var existingCodes = new List<string>();
 
-        // When & Then
-        var exception = Assert.Throws<ArgumentException>(() =>
-            Doctor.Register(code, name, existingCodes));
+        // When
+        Action registerDoctor = () =>
+            Doctor.Register(code, name, existingCodes);
 
+        // Then
+        var exception = Should.Throw<ArgumentException>(registerDoctor);
         exception!.Message.ShouldBe("Doctor code is required");
     }
 
@@ -127,10 +135,12 @@ public class DoctorRegisterTests : TestBase
         var name = new PersonName("John", "Smith");
         var existingCodes = new List<string>();
 
-        // When & Then
-        var exception = Assert.Throws<ArgumentException>(() =>
-            Doctor.Register(code, name, existingCodes));
+        // When
+        Action registerDoctor = () =>
+            Doctor.Register(code, name, existingCodes);
 
+        // Then
+        var exception = Should.Throw<ArgumentException>(registerDoctor);
         exception!.Message.ShouldBe("Doctor code is required");
     }
 

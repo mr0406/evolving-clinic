@@ -76,10 +76,11 @@ public class AddressCreateTests : TestBase
         var city = "Warsaw";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            new Address(street, houseNumber, apartment, postalCode, city));
-        
+        Action createAddress = () =>
+            new Address(street, houseNumber, apartment, postalCode, city);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createAddress);
         exception!.Message.ShouldBe("Street is required");
     }
 
@@ -94,10 +95,11 @@ public class AddressCreateTests : TestBase
         var city = "Warsaw";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            new Address(street, houseNumber, apartment, postalCode, city));
-        
+        Action createAddress = () =>
+            new Address(street, houseNumber, apartment, postalCode, city);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createAddress);
         exception!.Message.ShouldBe("Street is required");
     }
 
@@ -112,10 +114,11 @@ public class AddressCreateTests : TestBase
         var city = "Warsaw";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            new Address(street, houseNumber, apartment, postalCode, city));
-        
+        Action createAddress = () =>
+            new Address(street, houseNumber, apartment, postalCode, city);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createAddress);
         exception!.Message.ShouldBe("House number is required");
     }
 
@@ -130,10 +133,11 @@ public class AddressCreateTests : TestBase
         var city = "Warsaw";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            new Address(street, houseNumber, apartment, postalCode, city));
-        
+        Action createAddress = () =>
+            new Address(street, houseNumber, apartment, postalCode, city);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createAddress);
         exception!.Message.ShouldBe("House number is required");
     }
 
@@ -148,10 +152,11 @@ public class AddressCreateTests : TestBase
         var city = "Warsaw";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            new Address(street, houseNumber, apartment, postalCode, city));
-        
+        Action createAddress = () =>
+            new Address(street, houseNumber, apartment, postalCode, city);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createAddress);
         exception!.Message.ShouldBe("Postal code is required");
     }
 
@@ -166,10 +171,11 @@ public class AddressCreateTests : TestBase
         var city = "Warsaw";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            new Address(street, houseNumber, apartment, postalCode, city));
-        
+        Action createAddress = () =>
+            new Address(street, houseNumber, apartment, postalCode, city);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createAddress);
         exception!.Message.ShouldBe("Postal code is required");
     }
 
@@ -184,10 +190,11 @@ public class AddressCreateTests : TestBase
         var city = "";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            new Address(street, houseNumber, apartment, postalCode, city));
-        
+        Action createAddress = () =>
+            new Address(street, houseNumber, apartment, postalCode, city);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createAddress);
         exception!.Message.ShouldBe("City is required");
     }
 
@@ -202,10 +209,11 @@ public class AddressCreateTests : TestBase
         string city = null!;
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            new Address(street, houseNumber, apartment, postalCode, city));
-        
+        Action createAddress = () =>
+            new Address(street, houseNumber, apartment, postalCode, city);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createAddress);
         exception!.Message.ShouldBe("City is required");
     }
 }

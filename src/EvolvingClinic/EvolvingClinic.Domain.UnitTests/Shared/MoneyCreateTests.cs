@@ -130,7 +130,7 @@ public class MoneyCreateTests : TestBase
         var money1 = new Money(100.00m);
         var money2 = new Money(100.00m);
 
-        // When & Then
+        // Then
         money1.ShouldBe(money2);
         (money1 == money2).ShouldBeTrue();
         money1.Equals(money2).ShouldBeTrue();
@@ -143,7 +143,7 @@ public class MoneyCreateTests : TestBase
         var money1 = new Money(100.00m);
         var money2 = new Money(200.00m);
 
-        // When & Then
+        // Then
         money1.ShouldNotBe(money2);
         (money1 == money2).ShouldBeFalse();
         money1.Equals(money2).ShouldBeFalse();
@@ -156,7 +156,7 @@ public class MoneyCreateTests : TestBase
         var money1 = new Money(100.00m);
         var money2 = new Money(100.0m);
 
-        // When & Then
+        // Then
         money1.ShouldBe(money2);
     }
 }

@@ -7,78 +7,15 @@ namespace EvolvingClinic.Domain.UnitTests.Appointments.DailyAppointmentSchedules
 
 public class DailyAppointmentScheduleBusinessHoursTests : TestBase
 {
-    [TestCase(DayOfWeek.Saturday)]
-    [TestCase(DayOfWeek.Sunday)]
-    public void ShouldRejectWeekendAppointments(DayOfWeek dayOfWeek)
-    {
-        // Given
-        var schedule = CreateScheduleFor(dayOfWeek);
-
-        // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m)));
-
-        // Then
-        exception!.Message.ShouldBe("Appointments can only be scheduled Monday through Friday");
-        schedule.CreateSnapshot().Appointments.ShouldBeEmpty();
-    }
-
-    [TestCase(DayOfWeek.Monday)]
-    [TestCase(DayOfWeek.Tuesday)]
-    [TestCase(DayOfWeek.Wednesday)]
-    [TestCase(DayOfWeek.Thursday)]
-    [TestCase(DayOfWeek.Friday)]
-    public void ShouldAllowWeekdayAppointmentsDuringBusinessHours(DayOfWeek dayOfWeek)
-    {
-        // Given
-        var schedule = CreateScheduleFor(dayOfWeek);
-
-        // When
-        var appointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(10, 0), new TimeOnly(11, 0), new Money(100.00m));
-
-        // Then
-        appointment.ShouldNotBeNull();
-        schedule.CreateSnapshot().Appointments.Count.ShouldBe(1);
-    }
-    
     [Test]
-    public void ShouldRejectAppointmentsStartingBeforeBusinessHours()
+    public void GivenWorkingHours9To17_WhenScheduleAppointmentWithin_ThenIsScheduledSuccessfully()
     {
         // Given
-        var schedule = CreateScheduleFor(DayOfWeek.Monday);
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = CreateScheduleWithWorkingHours(DayOfWeek.Monday, workingHours);
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(8, 59), new TimeOnly(9, 20), new Money(100.00m)));
-
-        // Then
-        exception!.Message.ShouldBe("Appointments can only be scheduled between 9:00 AM and 5:00 PM");
-        schedule.CreateSnapshot().Appointments.ShouldBeEmpty();
-    }
-    
-    [Test]
-    public void ShouldRejectAppointmentsEndingAfterBusinessHours()
-    {
-        // Given
-        var schedule = CreateScheduleFor(DayOfWeek.Monday);
-
-        // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(16, 50), new TimeOnly(17, 10), new Money(100.00m)));
-
-        // Then
-        exception!.Message.ShouldBe("Appointments can only be scheduled between 9:00 AM and 5:00 PM");
-        schedule.CreateSnapshot().Appointments.ShouldBeEmpty();
-    }
-
-    [Test]
-    public void ShouldAllowAppointmentStartingExactlyAtNine()
-    {
-        // Given
-        var schedule = CreateScheduleFor(DayOfWeek.Monday);
-
-        // When
-        var appointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(9, 0), new TimeOnly(10, 0), new Money(100.00m));
+        var appointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(10, 0), new TimeOnly(11, 0)), new Money(100.00m));
 
         // Then
         appointment.ShouldNotBeNull();
@@ -86,30 +23,101 @@ public class DailyAppointmentScheduleBusinessHoursTests : TestBase
     }
 
     [Test]
-    public void ShouldAllowAppointmentEndingExactlyAtFive()
+    public void GivenWorkingHours9To17_WhenScheduleAppointmentStartingBefore9_ThenThrowsArgumentException()
     {
         // Given
-        var schedule = CreateScheduleFor(DayOfWeek.Monday);
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = CreateScheduleWithWorkingHours(DayOfWeek.Monday, workingHours);
 
         // When
-        var appointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeOnly(16, 0), new TimeOnly(17, 0), new Money(100.00m));
+        Action scheduleAppointment = () =>
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(8, 59), new TimeOnly(9, 20)), new Money(100.00m));
+
+        // Then
+        var exception = Should.Throw<ArgumentException>(scheduleAppointment);
+        exception.Message.ShouldBe("Appointments can only be scheduled between 09:00 and 17:00");
+        schedule.CreateSnapshot().Appointments.ShouldBeEmpty();
+    }
+
+    [Test]
+    public void GivenWorkingHours9To17_WhenScheduleAppointmentEndingAfter17_ThenThrowsArgumentException()
+    {
+        // Given
+        var workingHours = new TimeRange(new TimeOnly(9, 0), new TimeOnly(17, 0));
+        var schedule = CreateScheduleWithWorkingHours(DayOfWeek.Monday, workingHours);
+
+        // When
+        Action scheduleAppointment = () =>
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(16, 50), new TimeOnly(17, 10)), new Money(100.00m));
+
+        // Then
+        var exception = Should.Throw<ArgumentException>(scheduleAppointment);
+        exception.Message.ShouldBe("Appointments can only be scheduled between 09:00 and 17:00");
+        schedule.CreateSnapshot().Appointments.ShouldBeEmpty();
+    }
+
+    [Test]
+    public void GivenWorkingHours8To18_WhenScheduleAppointmentAt7_ThenThrowsArgumentException()
+    {
+        // Given
+        var workingHours = new TimeRange(new TimeOnly(8, 0), new TimeOnly(18, 0));
+        var schedule = CreateScheduleWithWorkingHours(DayOfWeek.Tuesday, workingHours);
+
+        // When
+        Action scheduleAppointment = () =>
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(7, 30), new TimeOnly(8, 30)), new Money(100.00m));
+
+        // Then
+        var exception = Should.Throw<ArgumentException>(scheduleAppointment);
+        exception.Message.ShouldBe("Appointments can only be scheduled between 08:00 and 18:00");
+    }
+
+    [Test]
+    public void GivenWorkingHours10To16_WhenScheduleAppointmentExactlyAt10To16_ThenIsScheduledSuccessfully()
+    {
+        // Given
+        var workingHours = new TimeRange(new TimeOnly(10, 0), new TimeOnly(16, 0));
+        var schedule = CreateScheduleWithWorkingHours(DayOfWeek.Saturday, workingHours);
+
+        // When
+        var appointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(10, 0), new TimeOnly(16, 0)), new Money(100.00m));
 
         // Then
         appointment.ShouldNotBeNull();
         schedule.CreateSnapshot().Appointments.Count.ShouldBe(1);
     }
-    
-    private static DailyAppointmentSchedule CreateScheduleFor(DayOfWeek dayOfWeek) => new(new DailyAppointmentSchedule.Key("SMITH", GetDateFor(dayOfWeek)));
+
+    [Test]
+    public void GivenDifferentWorkingHours_WhenScheduleAppointment_ThenValidatesAgainstSpecificHours()
+    {
+        // Given
+        var morningHours = new TimeRange(new TimeOnly(6, 0), new TimeOnly(12, 0));
+        var schedule = CreateScheduleWithWorkingHours(DayOfWeek.Sunday, morningHours);
+
+        // When
+        var appointment = schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(8, 0), new TimeOnly(10, 0)), new Money(100.00m));
+
+        // Then
+        appointment.ShouldNotBeNull();
+        schedule.CreateSnapshot().Appointments.Count.ShouldBe(1);
+    }
+
+    private static DailyAppointmentSchedule CreateScheduleWithWorkingHours(DayOfWeek dayOfWeek, TimeRange workingHours)
+    {
+        var date = GetDateFor(dayOfWeek);
+        var key = new DailyAppointmentSchedule.Key("SMITH", date);
+        return DailyAppointmentSchedule.Create(key, workingHours);
+    }
 
     private static DateOnly GetDateFor(DayOfWeek targetDayOfWeek)
     {
         var monday = new DateOnly(2025, 9, 1);
         var daysToAdd = (int)targetDayOfWeek - (int)DayOfWeek.Monday;
-        
+
         if (daysToAdd < 0) {
             daysToAdd += 7; // Handle Sunday
         }
-        
+
         return monday.AddDays(daysToAdd);
     }
 }

@@ -44,10 +44,11 @@ public class PhoneNumberCreateTests : TestBase
         var number = "5551234567";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            new PhoneNumber(countryCode, number));
-        
+        Action createPhoneNumber = () =>
+            new PhoneNumber(countryCode, number);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createPhoneNumber);
         exception!.Message.ShouldBe("Country code is required");
     }
 
@@ -59,10 +60,11 @@ public class PhoneNumberCreateTests : TestBase
         var number = "5551234567";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            new PhoneNumber(countryCode, number));
-        
+        Action createPhoneNumber = () =>
+            new PhoneNumber(countryCode, number);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createPhoneNumber);
         exception!.Message.ShouldBe("Country code is required");
     }
 
@@ -74,10 +76,11 @@ public class PhoneNumberCreateTests : TestBase
         var number = "5551234567";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            new PhoneNumber(countryCode, number));
-        
+        Action createPhoneNumber = () =>
+            new PhoneNumber(countryCode, number);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createPhoneNumber);
         exception!.Message.ShouldBe("Country code must start with + followed by digits");
     }
 
@@ -89,10 +92,11 @@ public class PhoneNumberCreateTests : TestBase
         var number = "";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            new PhoneNumber(countryCode, number));
-        
+        Action createPhoneNumber = () =>
+            new PhoneNumber(countryCode, number);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createPhoneNumber);
         exception!.Message.ShouldBe("Phone number is required");
     }
 
@@ -104,10 +108,11 @@ public class PhoneNumberCreateTests : TestBase
         string number = null!;
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            new PhoneNumber(countryCode, number));
-        
+        Action createPhoneNumber = () =>
+            new PhoneNumber(countryCode, number);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createPhoneNumber);
         exception!.Message.ShouldBe("Phone number is required");
     }
 
@@ -119,10 +124,11 @@ public class PhoneNumberCreateTests : TestBase
         var number = "555-123-4567";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            new PhoneNumber(countryCode, number));
-        
+        Action createPhoneNumber = () =>
+            new PhoneNumber(countryCode, number);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createPhoneNumber);
         exception!.Message.ShouldBe("Phone number must contain only digits");
     }
 
@@ -134,10 +140,11 @@ public class PhoneNumberCreateTests : TestBase
         var number = "555HELP";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            new PhoneNumber(countryCode, number));
-        
+        Action createPhoneNumber = () =>
+            new PhoneNumber(countryCode, number);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createPhoneNumber);
         exception!.Message.ShouldBe("Phone number must contain only digits");
     }
 }

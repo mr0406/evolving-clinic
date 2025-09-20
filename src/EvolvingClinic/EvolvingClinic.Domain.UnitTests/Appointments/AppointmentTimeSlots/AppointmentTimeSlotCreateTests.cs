@@ -50,10 +50,11 @@ public class AppointmentTimeSlotCreateTests : TestBase
         var endTime = new TimeOnly(10, 0);
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            new AppointmentTimeSlot(date, startTime, endTime));
-        
+        Action createTimeSlot = () =>
+            new AppointmentTimeSlot(date, startTime, endTime);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createTimeSlot);
         exception!.Message.ShouldBe("Start time must be before end time");
     }
 
@@ -65,10 +66,11 @@ public class AppointmentTimeSlotCreateTests : TestBase
         var sameTime = new TimeOnly(10, 0);
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            new AppointmentTimeSlot(date, sameTime, sameTime));
-        
+        Action createTimeSlot = () =>
+            new AppointmentTimeSlot(date, sameTime, sameTime);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createTimeSlot);
         exception!.Message.ShouldBe("Start time must be before end time");
     }
 
@@ -81,10 +83,11 @@ public class AppointmentTimeSlotCreateTests : TestBase
         var endTime = new TimeOnly(10, 10);
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
-            new AppointmentTimeSlot(date, startTime, endTime));
-        
+        Action createTimeSlot = () =>
+            new AppointmentTimeSlot(date, startTime, endTime);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createTimeSlot);
         exception!.Message.ShouldBe("Appointment must be at least 15 minutes long");
     }
 }
