@@ -1,6 +1,6 @@
-using EvolvingClinic.Application.Common;
 using EvolvingClinic.Application.HealthcareServices.Commands;
 using EvolvingClinic.Application.HealthcareServices.Queries;
+using EvolvingClinic.BusinessTests.Utils;
 using EvolvingClinic.Domain.Utils;
 using Reqnroll;
 using Shouldly;
@@ -10,7 +10,6 @@ namespace EvolvingClinic.BusinessTests.StepDefinitions;
 [Binding]
 public sealed class AddHealthcareServiceTypeStepDefinitions
 {
-    private readonly Dispatcher _dispatcher = new();
     private string? _scenarioServiceTypeCode;
 
     [Given("I added healthcare service types:")]
@@ -62,15 +61,8 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
         var timeSpan = ParseDuration(duration);
         var priceValue = ParsePrice(price);
 
-        try
-        {
-            await AddHealthcareServiceType(name, code, timeSpan, priceValue);
-            _scenarioServiceTypeCode = code;
-        }
-        catch (Exception)
-        {
-            _scenarioServiceTypeCode = null;
-        }
+        await AddHealthcareServiceType(name, code, timeSpan, priceValue);
+        _scenarioServiceTypeCode = code;
     }
 
 
@@ -81,7 +73,7 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
         _scenarioServiceTypeCode.ShouldNotBeNull();
 
         var query = new GetHealthcareServiceTypeQuery(_scenarioServiceTypeCode);
-        var serviceType = await _dispatcher.ExecuteQuery(query);
+        var serviceType = await TestDispatcher.ExecuteQuery(query);
 
         serviceType.ShouldNotBeNull();
 
@@ -91,8 +83,7 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
         serviceType.Code.ShouldBe(expectedRow["Code"]);
         serviceType.Duration.ShouldBe(ParseDuration(expectedRow["Duration"]));
         serviceType.Price.ShouldBe(ParsePrice(expectedRow["Current Price"]));
-
-        // Validate price history
+        
         serviceType.PriceHistory.Count.ShouldBe(1);
         var historyEntry = serviceType.PriceHistory[0];
         historyEntry.Price.ShouldBe(ParsePrice(expectedRow["Current Price"]));
@@ -105,14 +96,14 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
     public async Task ThenThereShouldBeHealthcareServiceTypes(int expectedCount)
     {
         var query = new GetAllHealthcareServiceTypesQuery();
-        var serviceTypes = await _dispatcher.ExecuteQuery(query);
+        var serviceTypes = await TestDispatcher.ExecuteQuery(query);
         serviceTypes.Count.ShouldBe(expectedCount);
     }
 
     private async Task AddHealthcareServiceType(string name, string code, TimeSpan duration, decimal price)
     {
         var command = new AddHealthcareServiceTypeCommand(name, code, duration, price);
-        await _dispatcher.Execute(command);
+        await TestDispatcher.Execute(command);
     }
 
     private static TimeSpan ParseDuration(string duration)
@@ -128,8 +119,7 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
             _ => throw new ArgumentException($"Unknown duration unit: {unit}")
         };
     }
-
-
+    
     private static decimal ParsePrice(string price)
     {
         if (price.StartsWith("$"))
@@ -139,8 +129,7 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
 
         return decimal.Parse(price);
     }
-
-
+    
     [When("I change healthcare service type price of {string} to {string} on {string}")]
     public async Task WhenIChangeThePriceOn(string serviceCode, string newPrice, string dateString)
     {
@@ -149,16 +138,15 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
 
         var priceValue = ParsePrice(newPrice);
         var command = new ChangeHealthcareServiceTypePriceCommand(serviceCode, priceValue);
-        await _dispatcher.Execute(command);
+        await TestDispatcher.Execute(command);
     }
-
-
+    
     [Then("the price history should contain exactly:")]
     public async Task ThenThePriceHistoryShouldContain(Table table)
     {
         _scenarioServiceTypeCode.ShouldNotBeNull();
         var query = new GetHealthcareServiceTypeQuery(_scenarioServiceTypeCode);
-        var serviceType = await _dispatcher.ExecuteQuery(query);
+        var serviceType = await TestDispatcher.ExecuteQuery(query);
 
         var expectedEntries = table.Rows.Select(row => new
         {
@@ -169,7 +157,7 @@ public sealed class AddHealthcareServiceTypeStepDefinitions
 
         serviceType.PriceHistory.Count.ShouldBe(expectedEntries.Count);
 
-        for (int i = 0; i < expectedEntries.Count; i++)
+        for (var i = 0; i < expectedEntries.Count; i++)
         {
             var expected = expectedEntries[i];
             var actual = serviceType.PriceHistory[i];

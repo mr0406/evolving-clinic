@@ -1,6 +1,6 @@
-using EvolvingClinic.Application.Common;
 using EvolvingClinic.Application.DoctorWorkSchedules.Commands;
 using EvolvingClinic.Application.DoctorWorkSchedules.Queries;
+using EvolvingClinic.BusinessTests.Utils;
 using EvolvingClinic.Domain.Shared;
 using Reqnroll;
 using Shouldly;
@@ -10,9 +10,6 @@ namespace EvolvingClinic.BusinessTests.StepDefinitions;
 [Binding]
 public sealed class CreateOrReplaceDoctorWorkScheduleStepDefinitions
 {
-    private readonly Dispatcher _dispatcher = new();
-    private Exception? _scenarioException;
-
     [Given("I created doctor work schedule for {string}:")]
     public async Task GivenICreatedDoctorWorkScheduleFor(string doctorCode, Table table)
     {
@@ -22,21 +19,14 @@ public sealed class CreateOrReplaceDoctorWorkScheduleStepDefinitions
     [When("I create or replace doctor work schedule for {string}:")]
     public async Task WhenICreateOrReplaceDoctorWorkScheduleFor(string doctorCode, Table table)
     {
-        try
-        {
-            await CreateOrReplaceDoctorWorkSchedule(doctorCode, table);
-        }
-        catch (Exception ex)
-        {
-            _scenarioException = ex;
-        }
+        await CreateOrReplaceDoctorWorkSchedule(doctorCode, table);
     }
 
     [Then("the doctor work schedule for {string} should be:")]
     public async Task ThenTheDoctorWorkScheduleForShouldBe(string doctorCode, Table table)
     {
         var query = new GetDoctorWorkScheduleQuery(doctorCode);
-        var schedule = await _dispatcher.ExecuteQuery(query);
+        var schedule = await TestDispatcher.ExecuteQuery(query);
 
         schedule.ShouldNotBeNull();
         schedule.DoctorCode.ShouldBe(doctorCode);
@@ -58,8 +48,9 @@ public sealed class CreateOrReplaceDoctorWorkScheduleStepDefinitions
     [Then("I should get an error {string}")]
     public void ThenIShouldGetAnError(string expectedErrorMessage)
     {
-        _scenarioException.ShouldNotBeNull();
-        _scenarioException.Message.ShouldBe(expectedErrorMessage);
+        var lastError = TestErrorContext.GetLastError();
+        lastError.ShouldNotBeNull();
+        lastError.Message.ShouldBe(expectedErrorMessage);
     }
 
     private async Task CreateOrReplaceDoctorWorkSchedule(string doctorCode, Table table)
@@ -75,6 +66,6 @@ public sealed class CreateOrReplaceDoctorWorkScheduleStepDefinitions
         }).ToList();
 
         var command = new CreateOrReplaceDoctorWorkScheduleCommand(doctorCode, workingDays);
-        await _dispatcher.Execute(command);
+        await TestDispatcher.Execute(command);
     }
 }

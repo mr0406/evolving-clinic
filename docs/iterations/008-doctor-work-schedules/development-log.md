@@ -49,7 +49,7 @@
 
 **Technical debt**: Consider moving validation to domain service in future iterations.
 
-### 5. Consolidate BDD Guidelines into CLAUDE.md 📋
+### 6. Consolidate BDD Guidelines into CLAUDE.md 📋
 **Action**: Moved business test guidelines from separate `docs/guidelines/business-tests-guidelines.md` into main `CLAUDE.md` file.
 
 **Benefits**:
@@ -69,8 +69,17 @@
 - **Consistency**: Same time range concept across both aggregates
 - **Simplified API**: Single parameter instead of two separate times
 
+### 3. IDispatcher Interface and BusinessTestsDispatcher 🔧
+**Decision**: Create `IDispatcher` interface and `BusinessTestsDispatcher` decorator for BDD error handling.
+
+**Implementation**:
+- **IDispatcher**: Interface with 3 methods (Execute command, Execute command with result, ExecuteQuery)
+- **BusinessTestsDispatcher**: Decorator that captures exceptions globally in `BddErrorContext`
+- **Global error state**: Simple static field, no thread safety (single-threaded tests)
+
+**Benefits**:
+- **Clean separation**: Application layer unchanged, BDD concerns isolated
+- **DRY**: No more `_scenarioException` fields in every step definition
+- **Global error handling**: One place to capture and check exceptions
+
 ---
-
-## TODO Items (Work in Progress)
-
-_All items completed for this iteration._

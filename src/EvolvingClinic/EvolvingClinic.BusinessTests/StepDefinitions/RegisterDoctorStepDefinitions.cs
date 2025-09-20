@@ -1,6 +1,6 @@
-using EvolvingClinic.Application.Common;
 using EvolvingClinic.Application.Doctors.Commands;
 using EvolvingClinic.Application.Doctors.Queries;
+using EvolvingClinic.BusinessTests.Utils;
 using Reqnroll;
 using Shouldly;
 
@@ -9,9 +9,7 @@ namespace EvolvingClinic.BusinessTests.StepDefinitions;
 [Binding]
 public sealed class RegisterDoctorStepDefinitions
 {
-    private readonly Dispatcher _dispatcher = new();
     private string? _scenarioDoctorCode;
-    private Exception? _scenarioException;
 
     [When("I register a doctor:")]
     public async Task WhenIRegisterADoctor(Table table)
@@ -21,15 +19,7 @@ public sealed class RegisterDoctorStepDefinitions
         var firstName = row["First Name"];
         var lastName = row["Last Name"];
 
-        try
-        {
-            _scenarioDoctorCode = await RegisterDoctor(code, firstName, lastName);
-        }
-        catch (Exception ex)
-        {
-            _scenarioException = ex;
-            _scenarioDoctorCode = null;
-        }
+        _scenarioDoctorCode = await RegisterDoctor(code, firstName, lastName);
     }
 
     [Given("doctor {string} {string} is registered")]
@@ -40,7 +30,7 @@ public sealed class RegisterDoctorStepDefinitions
             code,
             new RegisterDoctorCommand.PersonNameData(firstName, lastName));
 
-        await _dispatcher.Execute(command);
+        await TestDispatcher.Execute(command);
     }
 
     [Then("the registered doctor should be:")]
@@ -49,7 +39,7 @@ public sealed class RegisterDoctorStepDefinitions
         _scenarioDoctorCode.ShouldNotBeNull();
 
         var query = new GetDoctorQuery(_scenarioDoctorCode);
-        var doctor = await _dispatcher.ExecuteQuery(query);
+        var doctor = await TestDispatcher.ExecuteQuery(query);
 
         doctor.ShouldNotBeNull();
 
@@ -66,6 +56,6 @@ public sealed class RegisterDoctorStepDefinitions
             code,
             new RegisterDoctorCommand.PersonNameData(firstName, lastName));
 
-        return await _dispatcher.Execute(command);
+        return await TestDispatcher.Execute(command);
     }
 }

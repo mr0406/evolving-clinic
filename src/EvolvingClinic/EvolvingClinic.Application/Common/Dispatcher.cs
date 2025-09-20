@@ -6,7 +6,7 @@ using EvolvingClinic.Application.Patients;
 
 namespace EvolvingClinic.Application.Common;
 
-public class Dispatcher
+public class Dispatcher : IDispatcher
 {
     private readonly Dictionary<Type, object> _handlers = new();
     private readonly Dictionary<Type, object> _services = new();

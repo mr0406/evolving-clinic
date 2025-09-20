@@ -1,12 +1,12 @@
 using System.Globalization;
 using EvolvingClinic.Application.Appointments.Commands;
 using EvolvingClinic.Application.Appointments.Queries;
-using EvolvingClinic.Application.Common;
 using EvolvingClinic.Application.Doctors.Commands;
 using EvolvingClinic.Application.Doctors.Queries;
 using EvolvingClinic.Application.HealthcareServices.Commands;
 using EvolvingClinic.Application.HealthcareServices.Queries;
 using EvolvingClinic.Application.Patients.Queries;
+using EvolvingClinic.BusinessTests.Utils;
 using Reqnroll;
 using Shouldly;
 
@@ -15,7 +15,6 @@ namespace EvolvingClinic.BusinessTests.StepDefinitions;
 [Binding]
 public sealed class ScheduleAppointmentStepDefinitions
 {
-    private readonly Dispatcher _dispatcher = new();
     private Guid? _scenarioAppointmentId;
     
     [Given("I registered doctors:")]
@@ -31,11 +30,10 @@ public sealed class ScheduleAppointmentStepDefinitions
                 code,
                 new RegisterDoctorCommand.PersonNameData(firstName, lastName));
 
-            await _dispatcher.Execute(command);
+            await TestDispatcher.Execute(command);
         }
     }
-
-
+    
     [Given("I scheduled appointment on {string}:")]
     public async Task GivenIScheduledAppointmentOn(string dateString, Table table)
     {
@@ -71,14 +69,7 @@ public sealed class ScheduleAppointmentStepDefinitions
         var firstName = nameParts[0];
         var lastName = nameParts[1];
 
-        try
-        {
-            _scenarioAppointmentId = await ScheduleAppointment(date, doctorCode, firstName, lastName, serviceCode, startTime);
-        }
-        catch (Exception)
-        {
-            _scenarioAppointmentId = null;
-        }
+        _scenarioAppointmentId = await ScheduleAppointment(date, doctorCode, firstName, lastName, serviceCode, startTime);
     }
 
 
@@ -95,7 +86,7 @@ public sealed class ScheduleAppointmentStepDefinitions
     {
         var date = DateOnly.Parse(dateString);
         var query = new GetDailyAppointmentScheduleQuery(doctorCode, date);
-        var schedule = await _dispatcher.ExecuteQuery(query);
+        var schedule = await TestDispatcher.ExecuteQuery(query);
 
         schedule.ShouldNotBeNull();
         schedule.Date.ShouldBe(date);
@@ -113,17 +104,17 @@ public sealed class ScheduleAppointmentStepDefinitions
         var date = DateOnly.Parse(dateString);
 
         var query = new GetDailyAppointmentScheduleQuery(doctorCode, date);
-        var schedule = await _dispatcher.ExecuteQuery(query);
+        var schedule = await TestDispatcher.ExecuteQuery(query);
 
         schedule.ShouldNotBeNull();
         var appointment = schedule.Appointments.Single(a => a.Id == _scenarioAppointmentId.Value);
         
         var patientQuery = new GetPatientQuery(appointment.PatientId);
-        var patient = await _dispatcher.ExecuteQuery(patientQuery);
+        var patient = await TestDispatcher.ExecuteQuery(patientQuery);
         var patientName = $"{patient.Name.FirstName} {patient.Name.LastName}";
         
         var serviceTypeQuery = new GetHealthcareServiceTypeQuery(appointment.HealthcareServiceTypeCode);
-        var serviceType = await _dispatcher.ExecuteQuery(serviceTypeQuery);
+        var serviceType = await TestDispatcher.ExecuteQuery(serviceTypeQuery);
 
         patientName.ShouldBe(expectedRow["Patient Name"]);
         schedule.DoctorCode.ShouldBe(expectedRow["Doctor Code"]);
@@ -144,7 +135,7 @@ public sealed class ScheduleAppointmentStepDefinitions
         TimeOnly startTime)
     {
         var getAllPatientsQuery = new GetAllPatientsQuery();
-        var allPatients = await _dispatcher.ExecuteQuery(getAllPatientsQuery);
+        var allPatients = await TestDispatcher.ExecuteQuery(getAllPatientsQuery);
 
         var patient = allPatients.SingleOrDefault(p =>
             p.Name.FirstName == firstName && p.Name.LastName == lastName);
@@ -161,30 +152,6 @@ public sealed class ScheduleAppointmentStepDefinitions
             serviceCode,
             startTime);
 
-        return await _dispatcher.Execute(command);
-    }
-
-    private static TimeSpan ParseDuration(string duration)
-    {
-        var parts = duration.Split(' ');
-        var value = int.Parse(parts[0]);
-        var unit = parts[1].ToLowerInvariant();
-
-        return unit switch
-        {
-            "minutes" or "minute" => TimeSpan.FromMinutes(value),
-            "hours" or "hour" => TimeSpan.FromHours(value),
-            _ => throw new ArgumentException($"Unknown duration unit: {unit}")
-        };
-    }
-
-    private static decimal ParsePrice(string price)
-    {
-        if (price.StartsWith("$"))
-        {
-            return decimal.Parse(price[1..]);
-        }
-
-        return decimal.Parse(price);
+        return await TestDispatcher.Execute(command);
     }
 }
