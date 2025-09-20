@@ -28,9 +28,10 @@ public class TimeRangeCreateTests : TestBase
         var time = new TimeOnly(12, 0);
 
         // When
-        var exception = Should.Throw<ArgumentException>(() => new TimeRange(time, time));
+        Action createTimeRange = () => new TimeRange(time, time);
 
         // Then
+        var exception = Should.Throw<ArgumentException>(createTimeRange);
         exception.Message.ShouldBe("End time must be after start time");
     }
 
@@ -42,9 +43,10 @@ public class TimeRangeCreateTests : TestBase
         var end = new TimeOnly(9, 0);
 
         // When
-        var exception = Should.Throw<ArgumentException>(() => new TimeRange(start, end));
+        Action createTimeRange = () => new TimeRange(start, end);
 
         // Then
+        var exception = Should.Throw<ArgumentException>(createTimeRange);
         exception.Message.ShouldBe("End time must be after start time");
     }
 

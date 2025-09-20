@@ -29,10 +29,11 @@ public class PersonNameCreateTests : TestBase
         var lastName = "Smith";
 
         // When
-        var exception = Should.Throw<ArgumentException>(() => 
-            new PersonName(firstName, lastName));
-        
+        Action createPersonName = () =>
+            new PersonName(firstName, lastName);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createPersonName);
         exception!.Message.ShouldBe("First name is required");
     }
 
@@ -44,10 +45,11 @@ public class PersonNameCreateTests : TestBase
         var lastName = "Smith";
 
         // When
-        var exception = Should.Throw<ArgumentException>(() => 
-            new PersonName(firstName, lastName));
-        
+        Action createPersonName = () =>
+            new PersonName(firstName, lastName);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createPersonName);
         exception!.Message.ShouldBe("First name is required");
     }
 
@@ -59,10 +61,11 @@ public class PersonNameCreateTests : TestBase
         var lastName = "";
 
         // When
-        var exception = Should.Throw<ArgumentException>(() => 
-            new PersonName(firstName, lastName));
-        
+        Action createPersonName = () =>
+            new PersonName(firstName, lastName);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createPersonName);
         exception!.Message.ShouldBe("Last name is required");
     }
 
@@ -74,10 +77,11 @@ public class PersonNameCreateTests : TestBase
         string lastName = null!;
 
         // When
-        var exception = Should.Throw<ArgumentException>(() => 
-            new PersonName(firstName, lastName));
-        
+        Action createPersonName = () =>
+            new PersonName(firstName, lastName);
+
         // Then
+        var exception = Should.Throw<ArgumentException>(createPersonName);
         exception!.Message.ShouldBe("Last name is required");
     }
 }

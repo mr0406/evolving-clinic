@@ -96,10 +96,11 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
         var price = new Money(-10.00m);
 
         // When
-        var exception = Should.Throw<ArgumentException>(() =>
-            schedule.ScheduleAppointment(patientId, "TEST", new TimeRange(new TimeOnly(10, 0), new TimeOnly(11, 0)), price));
+        Action scheduleAppointment = () =>
+            schedule.ScheduleAppointment(patientId, "TEST", new TimeRange(new TimeOnly(10, 0), new TimeOnly(11, 0)), price);
 
         // Then
+        var exception = Should.Throw<ArgumentException>(scheduleAppointment);
         exception!.Message.ShouldBe("Appointment price must be 0 or greater");
     }
 
@@ -113,10 +114,11 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
         schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(10, 0), new TimeOnly(11, 0)), new Money(100.00m));
 
         // When
-        var exception = Should.Throw<ArgumentException>(() =>
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(10, 30), new TimeOnly(11, 30)), new Money(100.00m)));
+        Action scheduleAppointment = () =>
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(10, 30), new TimeOnly(11, 30)), new Money(100.00m));
 
         // Then
+        var exception = Should.Throw<ArgumentException>(scheduleAppointment);
         exception.Message.ShouldBe("Appointment time slot conflicts with existing appointment");
 
         var snapshot = schedule.CreateSnapshot();
@@ -131,10 +133,11 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
         var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", new DateOnly(2024, 1, 15)), workingHours);
 
         // When
-        var exception = Should.Throw<ArgumentException>(() =>
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(8, 30), new TimeOnly(9, 30)), new Money(100.00m)));
+        Action scheduleAppointment = () =>
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(8, 30), new TimeOnly(9, 30)), new Money(100.00m));
 
         // Then
+        var exception = Should.Throw<ArgumentException>(scheduleAppointment);
         exception.Message.ShouldBe("Appointments can only be scheduled between 09:00 and 17:00");
     }
 
@@ -146,10 +149,11 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
         var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", new DateOnly(2024, 1, 15)), workingHours);
 
         // When
-        var exception = Should.Throw<ArgumentException>(() =>
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(16, 30), new TimeOnly(17, 30)), new Money(100.00m)));
+        Action scheduleAppointment = () =>
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(16, 30), new TimeOnly(17, 30)), new Money(100.00m));
 
         // Then
+        var exception = Should.Throw<ArgumentException>(scheduleAppointment);
         exception.Message.ShouldBe("Appointments can only be scheduled between 09:00 and 17:00");
     }
 
@@ -161,10 +165,11 @@ public class DailyAppointmentScheduleScheduleAppointmentTests : TestBase
         var schedule = DailyAppointmentSchedule.Create(new DailyAppointmentSchedule.Key("SMITH", new DateOnly(2024, 1, 15)), workingHours);
 
         // When
-        var exception = Should.Throw<ArgumentException>(() =>
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(18, 0), new TimeOnly(19, 0)), new Money(100.00m)));
+        Action scheduleAppointment = () =>
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(18, 0), new TimeOnly(19, 0)), new Money(100.00m));
 
         // Then
+        var exception = Should.Throw<ArgumentException>(scheduleAppointment);
         exception.Message.ShouldBe("Appointments can only be scheduled between 09:00 and 17:00");
     }
 }

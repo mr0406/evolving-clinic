@@ -88,9 +88,10 @@ public class DoctorWorkScheduleCreateTests : TestBase
         };
 
         // When
-        var exception = Should.Throw<ArgumentException>(() => DoctorWorkSchedule.Create(null!, workingDays));
+        Action createSchedule = () => DoctorWorkSchedule.Create(null!, workingDays);
 
         // Then
+        var exception = Should.Throw<ArgumentException>(createSchedule);
         exception.Message.ShouldBe("Doctor code is required");
     }
 
@@ -104,9 +105,10 @@ public class DoctorWorkScheduleCreateTests : TestBase
         };
 
         // When
-        var exception = Should.Throw<ArgumentException>(() => DoctorWorkSchedule.Create("", workingDays));
+        Action createSchedule = () => DoctorWorkSchedule.Create("", workingDays);
 
         // Then
+        var exception = Should.Throw<ArgumentException>(createSchedule);
         exception.Message.ShouldBe("Doctor code is required");
     }
 
@@ -120,9 +122,10 @@ public class DoctorWorkScheduleCreateTests : TestBase
         };
 
         // When
-        var exception = Should.Throw<ArgumentException>(() => DoctorWorkSchedule.Create("   ", workingDays));
+        Action createSchedule = () => DoctorWorkSchedule.Create("   ", workingDays);
 
         // Then
+        var exception = Should.Throw<ArgumentException>(createSchedule);
         exception.Message.ShouldBe("Doctor code is required");
     }
 
@@ -133,9 +136,10 @@ public class DoctorWorkScheduleCreateTests : TestBase
         var workingDays = new List<DoctorWorkSchedule.WorkingDay>();
 
         // When
-        var exception = Should.Throw<ArgumentException>(() => DoctorWorkSchedule.Create("SMITH", workingDays));
+        Action createSchedule = () => DoctorWorkSchedule.Create("SMITH", workingDays);
 
         // Then
+        var exception = Should.Throw<ArgumentException>(createSchedule);
         exception.Message.ShouldBe("At least one working day is required");
     }
 
@@ -150,9 +154,10 @@ public class DoctorWorkScheduleCreateTests : TestBase
         };
 
         // When
-        var exception = Should.Throw<ArgumentException>(() => DoctorWorkSchedule.Create("SMITH", workingDays));
+        Action createSchedule = () => DoctorWorkSchedule.Create("SMITH", workingDays);
 
         // Then
+        var exception = Should.Throw<ArgumentException>(createSchedule);
         exception.Message.ShouldBe("Duplicate days found: Monday");
     }
 
@@ -169,9 +174,10 @@ public class DoctorWorkScheduleCreateTests : TestBase
         };
 
         // When
-        var exception = Should.Throw<ArgumentException>(() => DoctorWorkSchedule.Create("SMITH", workingDays));
+        Action createSchedule = () => DoctorWorkSchedule.Create("SMITH", workingDays);
 
         // Then
+        var exception = Should.Throw<ArgumentException>(createSchedule);
         exception.Message.ShouldBe("Duplicate days found: Monday, Tuesday");
     }
 }

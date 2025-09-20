@@ -30,10 +30,11 @@ public class DailyAppointmentScheduleBusinessHoursTests : TestBase
         var schedule = CreateScheduleWithWorkingHours(DayOfWeek.Monday, workingHours);
 
         // When
-        var exception = Should.Throw<ArgumentException>(() =>
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(8, 59), new TimeOnly(9, 20)), new Money(100.00m)));
+        Action scheduleAppointment = () =>
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(8, 59), new TimeOnly(9, 20)), new Money(100.00m));
 
         // Then
+        var exception = Should.Throw<ArgumentException>(scheduleAppointment);
         exception.Message.ShouldBe("Appointments can only be scheduled between 09:00 and 17:00");
         schedule.CreateSnapshot().Appointments.ShouldBeEmpty();
     }
@@ -46,10 +47,11 @@ public class DailyAppointmentScheduleBusinessHoursTests : TestBase
         var schedule = CreateScheduleWithWorkingHours(DayOfWeek.Monday, workingHours);
 
         // When
-        var exception = Should.Throw<ArgumentException>(() =>
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(16, 50), new TimeOnly(17, 10)), new Money(100.00m)));
+        Action scheduleAppointment = () =>
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(16, 50), new TimeOnly(17, 10)), new Money(100.00m));
 
         // Then
+        var exception = Should.Throw<ArgumentException>(scheduleAppointment);
         exception.Message.ShouldBe("Appointments can only be scheduled between 09:00 and 17:00");
         schedule.CreateSnapshot().Appointments.ShouldBeEmpty();
     }
@@ -62,10 +64,11 @@ public class DailyAppointmentScheduleBusinessHoursTests : TestBase
         var schedule = CreateScheduleWithWorkingHours(DayOfWeek.Tuesday, workingHours);
 
         // When
-        var exception = Should.Throw<ArgumentException>(() =>
-            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(7, 30), new TimeOnly(8, 30)), new Money(100.00m)));
+        Action scheduleAppointment = () =>
+            schedule.ScheduleAppointment(Guid.NewGuid(), "TEST", new TimeRange(new TimeOnly(7, 30), new TimeOnly(8, 30)), new Money(100.00m));
 
         // Then
+        var exception = Should.Throw<ArgumentException>(scheduleAppointment);
         exception.Message.ShouldBe("Appointments can only be scheduled between 08:00 and 18:00");
     }
 

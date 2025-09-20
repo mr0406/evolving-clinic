@@ -36,6 +36,15 @@ src/EvolvingClinic/
   - `// When`: Single action only (method call, sometimes with setup date before action)
   - `// Then`: All assertions and snapshot creation. Never use `// When & Then`
 - **Assertions**: Use Shouldly for readable assertions, including `Should.Throw<T>()` for exception testing
+- **Exception Testing Pattern**: Follow correct Given-When-Then structure for exception tests:
+  ```csharp
+  // When
+  Action methodCall = () => SomeMethod(parameters);
+
+  // Then
+  var exception = Should.Throw<ArgumentException>(methodCall);
+  exception.Message.ShouldBe("Expected error message");
+  ```
 - Always run tests after changes: `dotnet test`
 
 ### BDD/Business Test Guidelines
