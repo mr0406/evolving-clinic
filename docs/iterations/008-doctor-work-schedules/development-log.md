@@ -1,11 +1,76 @@
 # Development Log - Doctor Work Schedules
 
-1. Copy time to the DailyAppointmentSchedule during creation. Minus is that it can change or something, but our system is too naive to care about this right now :)
-2. Pass not whole object to the appointment scheduling but only some data.
-3. Throw error o application layer then no work schedule for doctor.
-4. Create TimeRange value object
-5. ScheduleAppointmentCommandHandler - feel like to much logic in the application layer
-6. Remove BDD tests guidelines and move them to claude 
+## Key Decisions
 
-Refactor:
-1. Use TimeRange in the DailyAppointmentSchedule
+### 1. TimeRange Value Object Creation 🕒
+**Decision**: Create `TimeRange` value object instead of separate start/end times.
+
+**Implementation**: `public record TimeRange(TimeOnly Start, TimeOnly End)` in `Domain.Shared`
+
+**Benefits**:
+- **Type safety**: Can't swap start/end parameters
+- **Validation**: Start < End validation encapsulated
+- **Reusable**: Shared across aggregates
+
+### 2. Copy TimeRange to DailyAppointmentSchedule 📋
+**Decision**: Copy doctor's working hours to `DailyAppointmentSchedule` during creation instead of maintaining reference.
+
+**Trade-off**: Working hours might change later, but system is too naive to handle this complexity right now.
+
+**Benefits**:
+- **Simple implementation**: No need to track changes to doctor schedules
+- **Performance**: No lookups needed during appointment scheduling
+- **Pragmatic**: Solves current needs without over-engineering
+
+### 3. Pass Data Instead of Whole Aggregate 📦
+**Decision**: Extract working hours data from `DoctorWorkSchedule` instead of passing whole aggregate to appointment scheduling.
+
+**Implementation**: Use `doctorWorkSchedule.CreateSnapshot().WeeklySchedule` to get only needed data.
+
+**Benefits**:
+- **Aggregate boundaries**: Respects DDD principle of not passing whole aggregates between contexts
+- **Minimal coupling**: Appointment scheduling only gets what it needs
+- **Clear dependencies**: Explicit about which data is required
+
+### 4. Application Layer Validation in ScheduleAppointmentCommandHandler ⚠️
+**Decision**: Add doctor work schedule validation and existence checks in application layer.
+
+**Implementation**:
+- Validate doctor work schedule exists
+- Check if doctor works on requested day
+- Throw `ArgumentException` for validation failures
+
+**Trade-off**: Application layer now contains business validation logic that feels heavy.
+
+**Rationale**:
+- **Defensive programming**: Prevents invalid appointments from being created
+- **Clear error messages**: Users get specific feedback about validation failures
+- **Pragmatic**: Keeps domain aggregate focused on core scheduling logic
+
+**Technical debt**: Consider moving validation to domain service in future iterations.
+
+### 5. Consolidate BDD Guidelines into CLAUDE.md 📋
+**Action**: Moved business test guidelines from separate `docs/guidelines/business-tests-guidelines.md` into main `CLAUDE.md` file.
+
+**Benefits**:
+- **Single source**: All project guidelines in one centralized location
+- **Easier maintenance**: No need to sync multiple guideline files
+- **Better discoverability**: Developers only need to reference CLAUDE.md
+
+---
+
+## Refactors
+
+### 1. Use TimeRange in DailyAppointmentSchedule 🔄
+**Before**: `DailyAppointmentSchedule.Create(key, workingStartTime, workingEndTime)`
+**After**: `DailyAppointmentSchedule.Create(key, workingHours)`
+
+**Benefits**:
+- **Consistency**: Same time range concept across both aggregates
+- **Simplified API**: Single parameter instead of two separate times
+
+---
+
+## TODO Items (Work in Progress)
+
+_All items completed for this iteration._
