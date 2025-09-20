@@ -71,6 +71,7 @@ See [Clinic Overview](docs/clinic-overview.md) for the current operational state
 - [005 - Service Pricing](docs/iterations/005-service-pricing/)
 - [006 - Price History Tracking](docs/iterations/006-price-history-tracking/)
 - [007 - Multiple Doctors](docs/iterations/007-multiple-doctors)
+- [008 - Doctor Work Schedules](docs/iterations/008-doctor-work-schedules/)
 
 ## 📝 Development Logs
 

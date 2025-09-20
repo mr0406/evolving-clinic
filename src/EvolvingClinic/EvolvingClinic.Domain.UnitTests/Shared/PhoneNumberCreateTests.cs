@@ -44,7 +44,7 @@ public class PhoneNumberCreateTests : TestBase
         var number = "5551234567";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new PhoneNumber(countryCode, number));
         
         // Then
@@ -59,7 +59,7 @@ public class PhoneNumberCreateTests : TestBase
         var number = "5551234567";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new PhoneNumber(countryCode, number));
         
         // Then
@@ -74,7 +74,7 @@ public class PhoneNumberCreateTests : TestBase
         var number = "5551234567";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new PhoneNumber(countryCode, number));
         
         // Then
@@ -89,7 +89,7 @@ public class PhoneNumberCreateTests : TestBase
         var number = "";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new PhoneNumber(countryCode, number));
         
         // Then
@@ -104,7 +104,7 @@ public class PhoneNumberCreateTests : TestBase
         string number = null!;
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new PhoneNumber(countryCode, number));
         
         // Then
@@ -119,7 +119,7 @@ public class PhoneNumberCreateTests : TestBase
         var number = "555-123-4567";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new PhoneNumber(countryCode, number));
         
         // Then
@@ -134,7 +134,7 @@ public class PhoneNumberCreateTests : TestBase
         var number = "555HELP";
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new PhoneNumber(countryCode, number));
         
         // Then

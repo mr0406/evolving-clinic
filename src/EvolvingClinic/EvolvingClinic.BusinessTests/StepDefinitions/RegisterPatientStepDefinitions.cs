@@ -1,6 +1,6 @@
-using EvolvingClinic.Application.Common;
 using EvolvingClinic.Application.Patients.Commands;
 using EvolvingClinic.Application.Patients.Queries;
+using EvolvingClinic.BusinessTests.Utils;
 using Reqnroll;
 using Shouldly;
 
@@ -9,9 +9,7 @@ namespace EvolvingClinic.BusinessTests.StepDefinitions;
 [Binding]
 public sealed class RegisterPatientStepDefinitions
 {
-    private readonly Dispatcher _dispatcher = new();
     private Guid? _scenarioPatientId;
-    private Exception? _scenarioException;
 
     [When("I register a patient {string} born on {string} with phone {string} and address {string}")]
     public async Task WhenIRegisterAPatient(
@@ -44,25 +42,17 @@ public sealed class RegisterPatientStepDefinitions
         var postalCode = cityWords[0]; // "10001"
         var city = string.Join(" ", cityWords.Skip(1)); // "New York"
 
-        try
-        {
-            _scenarioPatientId = await RegisterPatient(
-                firstName, 
-                lastName, 
-                birthDate, 
-                countryCode, 
-                phoneNumber, 
-                street, 
-                houseNumber, 
-                apartment, 
-                postalCode, 
-                city);
-        }
-        catch (Exception ex)
-        {
-            _scenarioException = ex;
-            _scenarioPatientId = null;
-        }
+        _scenarioPatientId = await RegisterPatient(
+            firstName,
+            lastName,
+            birthDate,
+            countryCode,
+            phoneNumber,
+            street,
+            houseNumber,
+            apartment,
+            postalCode,
+            city);
     }
     
     [Given("I registered patients:")]
@@ -79,7 +69,7 @@ public sealed class RegisterPatientStepDefinitions
                 new RegisterPatientCommand.PhoneNumberData("+1", "5551234567"),
                 new RegisterPatientCommand.AddressData("Test Street", "123", null, "12345", "Test City"));
 
-            await _dispatcher.Execute(registerCommand);
+            await TestDispatcher.Execute(registerCommand);
         }
     }
 
@@ -104,25 +94,17 @@ public sealed class RegisterPatientStepDefinitions
         var houseNumber = streetParts[^2];
         var apartment = streetParts[^1];
 
-        try
-        {
-            _scenarioPatientId = await RegisterPatient(
-                firstName,
-                lastName,
-                dateOfBirth,
-                countryCode,
-                phoneNumber,
-                street,
-                houseNumber,
-                apartment,
-                postalCode,
-                city);
-        }
-        catch (Exception ex)
-        {
-            _scenarioException = ex;
-            _scenarioPatientId = null;
-        }
+        _scenarioPatientId = await RegisterPatient(
+            firstName,
+            lastName,
+            dateOfBirth,
+            countryCode,
+            phoneNumber,
+            street,
+            houseNumber,
+            apartment,
+            postalCode,
+            city);
     }
 
     [Given("patient {string} {string} is registered")]
@@ -134,7 +116,7 @@ public sealed class RegisterPatientStepDefinitions
             new RegisterPatientCommand.PhoneNumberData("+1", "5551234567"),
             new RegisterPatientCommand.AddressData("Test Street", "123", null, "12345", "Test City"));
 
-        await _dispatcher.Execute(registerCommand);
+        await TestDispatcher.Execute(registerCommand);
     }
     
     [Then("the patient should be registered successfully")]
@@ -142,7 +124,6 @@ public sealed class RegisterPatientStepDefinitions
     {
         _scenarioPatientId.ShouldNotBeNull();
         _scenarioPatientId.ShouldNotBe(Guid.Empty);
-        _scenarioException.ShouldBeNull();
     }
     
     [Then("the registered patient should be:")]
@@ -151,7 +132,7 @@ public sealed class RegisterPatientStepDefinitions
         _scenarioPatientId.ShouldNotBeNull();
 
         var query = new GetPatientQuery(_scenarioPatientId.Value);
-        var patient = await _dispatcher.ExecuteQuery(query);
+        var patient = await TestDispatcher.ExecuteQuery(query);
 
         patient.ShouldNotBeNull();
 
@@ -184,6 +165,6 @@ public sealed class RegisterPatientStepDefinitions
             new RegisterPatientCommand.PhoneNumberData(countryCode, phoneNumber),
             new RegisterPatientCommand.AddressData(street, houseNumber, apartment, postalCode, city));
 
-        return await _dispatcher.Execute(command);
+        return await TestDispatcher.Execute(command);
     }
 }

@@ -50,7 +50,7 @@ public class AppointmentTimeSlotCreateTests : TestBase
         var endTime = new TimeOnly(10, 0);
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new AppointmentTimeSlot(date, startTime, endTime));
         
         // Then
@@ -65,7 +65,7 @@ public class AppointmentTimeSlotCreateTests : TestBase
         var sameTime = new TimeOnly(10, 0);
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new AppointmentTimeSlot(date, sameTime, sameTime));
         
         // Then
@@ -81,7 +81,7 @@ public class AppointmentTimeSlotCreateTests : TestBase
         var endTime = new TimeOnly(10, 10);
 
         // When
-        var exception = Assert.Throws<ArgumentException>(() => 
+        var exception = Should.Throw<ArgumentException>(() => 
             new AppointmentTimeSlot(date, startTime, endTime));
         
         // Then
